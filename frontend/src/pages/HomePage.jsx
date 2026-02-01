@@ -1,0 +1,276 @@
+import React, { useState, useEffect } from 'react';
+import { ShoppingCart, Search, Menu, ArrowRight, ChevronRight, ChevronLeft, Plus } from 'lucide-react';
+
+const HomePage = () => {
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    return (
+        <div className="font-['Plus_Jakarta_Sans'] bg-[#F5F5F7] min-h-screen text-gray-900 selection:bg-black selection:text-white">
+
+            {/* 1. HEADER (Navbar) */}
+            <nav
+                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/80 backdrop-blur-md py-4 shadow-sm' : 'bg-transparent py-6'
+                    }`}
+            >
+                <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                    {/* Logo */}
+                    <div className="text-2xl font-bold tracking-tighter">
+                        ÉLITAN
+                    </div>
+
+                    {/* Menu - Desktop */}
+                    <div className="hidden md:flex space-x-8 text-sm font-medium text-gray-600">
+                        {['Home', 'Furniture', 'Pricing', 'Contact'].map((item) => (
+                            <a key={item} href="#" className="hover:text-black transition-colors duration-200">
+                                {item}
+                            </a>
+                        ))}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center space-x-4">
+                        <button className="hidden md:block text-sm font-medium text-gray-600 hover:text-black transition">Login</button>
+                        <button className="bg-black text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200">
+                            Sign up
+                        </button>
+                        <button className="md:hidden">
+                            <Menu className="w-6 h-6 text-gray-900" />
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            {/* 2. HERO SECTION */}
+            <section className="relative w-full min-h-screen flex items-center justify-center pt-24 overflow-hidden">
+                {/* Background Texture */}
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1595116936302-3c82e303b30d?auto=format&fit=crop&q=80&w=2000"
+                        alt="Concrete Wall Background"
+                        className="w-full h-full object-cover opacity-30"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#F5F5F7]/40 to-[#F5F5F7]/90" />
+                </div>
+
+                <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 lg:grid-cols-5 gap-12 items-center h-full relative z-10">
+
+                    {/* Left Content (Center/Left text) */}
+                    <div className="lg:col-span-2 flex flex-col justify-center items-center lg:items-start text-center lg:text-left z-20">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-black/5 text-[10px] font-bold tracking-widest uppercase mb-6 animate-fade-in shadow-sm">
+                            New Collection 2024
+                        </span>
+
+                        <h1 className="text-6xl md:text-8xl font-serif font-extrabold leading-none mb-3 tracking-tighter text-gray-900 drop-shadow-sm">
+                            ÉLITAN.
+                        </h1>
+                        <h2 className="text-3xl md:text-5xl font-sans font-medium mb-6 text-gray-800 tracking-tight">
+                            Experience Luxury...
+                        </h2>
+
+                        <p className="text-gray-600 text-lg mb-8 max-w-sm font-light leading-relaxed">
+                            Refining your space with timeless pieces designed for the modern connoisseur.
+                        </p>
+                        <button className="group bg-black text-white px-8 py-4 rounded-full text-base font-medium hover:bg-gray-800 transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center gap-2 transform hover:-translate-y-1">
+                            Shop Now
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                    </div>
+
+                    {/* Right Image (Chair) */}
+                    <div className="lg:col-span-3 relative h-[500px] lg:h-[800px] flex items-center justify-center z-10">
+
+                        {/* Main Hero Image - Grey Armchair (Reliable URL) */}
+                        <img
+                            src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=1200&auto=format&fit=crop"
+                            alt="Luxury Grey Armchair"
+                            className="w-full h-full object-contain transform scale-110 drop-shadow-2xl relative z-10"
+                        />
+
+                        {/* FLOATING CARD 1 (Top Left) */}
+                        <div className="absolute top-[20%] left-[-50px] lg:left-[-20px] z-30 hidden lg:block animate-bounce-slow">
+                            <div className="bg-white/90 backdrop-blur-md p-4 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] w-64 transform -rotate-3 hover:rotate-0 transition duration-500 border border-white/50">
+                                <h3 className="text-lg font-bold mb-3 ml-1 text-gray-900">Collections</h3>
+                                <div className="bg-[#f2f2f2] rounded-2xl h-44 mb-4 overflow-hidden flex items-center justify-center relative shadow-inner">
+                                    <img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=400" alt="Chair" className="object-contain h-full w-full p-2" />
+                                </div>
+                                <div className="px-1 text-left">
+                                    <p className="font-bold text-base text-gray-900">Grey Fabric</p>
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide">Armchair</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* FLOATING CARD 2 (Bottom Left) */}
+                        <div className="absolute bottom-[20%] left-[25%] z-20 hidden lg:block animate-bounce-slow" style={{ animationDelay: '2s' }}>
+                            <div className="bg-white p-3 rounded-2xl shadow-xl w-40 transform rotate-6 hover:rotate-0 transition duration-500 border border-gray-100">
+                                <div className="bg-[#E5DACE] rounded-xl h-24 mb-2 overflow-hidden flex items-center justify-center shadow-inner">
+                                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=300" alt="Chair" className="object-cover h-full w-full mix-blend-multiply opacity-90 p-1" />
+                                </div>
+                                <div className="px-1 text-left">
+                                    <p className="font-bold text-sm text-gray-900">Velvet Clay</p>
+                                    <p className="text-[10px] text-gray-500 uppercase">Armchair</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            {/* 3. CURATED COLLECTIONS */}
+            <section className="py-20 max-w-7xl mx-auto px-6">
+                <div className="flex justify-between items-end mb-10">
+                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight">CURATED COLLECTIONS<br />FOR EVERY SPACE</h2>
+                    <a href="#" className="hidden md:flex items-center gap-2 text-sm font-medium border-b border-black pb-0.5 hover:text-gray-600 transition">
+                        View All Collections <ArrowRight className="w-4 h-4" />
+                    </a>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-auto md:h-[600px]">
+
+                    {/* Item 1: Living Room (Big) */}
+                    <div className="col-span-1 md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-[2rem] cursor-pointer">
+                        <img
+                            src="https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&q=80&w=1000"
+                            alt="Living Room"
+                            className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80" />
+                        <div className="absolute bottom-8 left-8 text-white">
+                            <h3 className="text-2xl font-bold mb-1">LIVING ROOM</h3>
+                            <button className="bg-white/20 backdrop-blur-md border border-white/30 px-4 py-2 rounded-full text-xs font-semibold hover:bg-white hover:text-black transition">
+                                EXPLORE
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Item 2: Dining */}
+                    <div className="col-span-1 md:col-span-2 md:row-span-1 relative group overflow-hidden rounded-[2rem] cursor-pointer">
+                        <img
+                            src="https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&q=80&w=800"
+                            alt="Dining"
+                            className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition" />
+                        <div className="absolute bottom-6 left-6 text-white">
+                            <h3 className="text-xl font-bold">DINING</h3>
+                        </div>
+                    </div>
+
+                    {/* Item 3: Bedroom */}
+                    <div className="col-span-1 md:col-span-2 md:row-span-1 relative group overflow-hidden rounded-[2rem] cursor-pointer">
+                        <img
+                            src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&q=80&w=800"
+                            alt="Bedroom"
+                            className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition" />
+                        <div className="absolute bottom-6 left-6 text-white">
+                            <h3 className="text-xl font-bold">BEDROOM</h3>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            {/* 4. BEST SELLERS */}
+            <section className="py-20 bg-white rounded-t-[3rem] mt-10">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="flex justify-between items-center mb-12">
+                        <h2 className="text-3xl font-bold uppercase tracking-tight">Best Sellers</h2>
+                        <div className="flex gap-2">
+                            <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition">
+                                <ChevronLeft className="w-5 h-5" />
+                            </button>
+                            <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition">
+                                <ChevronRight className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {[
+                            { name: "Luna Lounge Chair", price: "$1,299", img: "https://plus.unsplash.com/premium_photo-1668073445170-c22ae6147172?q=80&w=500&auto=format&fit=crop" },
+                            { name: "Nordic Armchair", price: "$899", img: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=500" },
+                            { name: "Velvet Sofa", price: "$2,499", img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=500" },
+                            { name: "Minimalist Lamp", price: "$299", img: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&q=80&w=500" },
+                        ].map((product, idx) => (
+                            <div key={idx} className="group cursor-pointer">
+                                <div className="bg-[#F5F5F7] rounded-3xl p-8 mb-4 relative h-[350px] flex items-center justify-center">
+                                    <img
+                                        src={product.img}
+                                        alt={product.name}
+                                        className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500"
+                                    />
+                                    <button className="absolute bottom-4 right-4 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-black hover:bg-black hover:text-white transition-colors duration-300">
+                                        <Plus className="w-5 h-5" />
+                                    </button>
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg">{product.name}</h3>
+                                    <p className="text-gray-500 font-medium">{product.price}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* 5. 3D STUDIO BANNER */}
+            <section className="bg-[#111827] text-white py-0 relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center min-h-[500px]">
+                    <div className="py-12 z-10">
+                        <span className="text-gray-400 text-sm font-bold tracking-widest uppercase mb-4 block">
+                            The 3D Studio Experience
+                        </span>
+                        <h2 className="text-5xl font-bold mb-6 leading-tight">
+                            VISUALIZE YOUR<br />DREAM HOME.<br />IN 3D.
+                        </h2>
+                        <p className="text-gray-400 mb-8 max-w-md">
+                            Experience luxury interiors before you buy. Customize colors, materials and layout in our real-time 3D studio.
+                        </p>
+                        <button className="bg-white text-black px-8 py-3 rounded-full text-sm font-bold hover:bg-gray-200 transition shadow-lg">
+                            TRY 3D STUDIO NOW
+                        </button>
+                    </div>
+
+                    <div className="relative h-full flex items-center justify-center">
+                        {/* Abstract 3D Room Image Placeholder */}
+                        <div className="relative w-full h-[400px]">
+                            <img
+                                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=1000"
+                                alt="3D Room"
+                                className="absolute inset-0 w-full h-full object-cover rounded-tl-[3rem] opacity-80"
+                                style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0% 100%)' }}
+                            />
+                            {/* Overlay isometric grid feel */}
+                            <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#111827]" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* FOOTER (Simple) */}
+            <footer className="bg-[#111827] text-white py-12 border-t border-gray-800">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                    <p>&copy; 2026 ÉLITAN. All rights reserved.</p>
+                    <div className="flex space-x-6 mt-4 md:mt-0">
+                        <a href="#" className="hover:text-white">Privacy Policy</a>
+                        <a href="#" className="hover:text-white">Terms of Service</a>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    );
+};
+
+export default HomePage;

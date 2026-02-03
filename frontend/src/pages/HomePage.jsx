@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Search, Menu, ArrowRight, ChevronRight, ChevronLeft, Plus } from 'lucide-react';
+import Hero from '../components/Hero';
 
 const HomePage = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -49,81 +50,7 @@ const HomePage = () => {
             </nav>
 
             {/* 2. HERO SECTION */}
-            <section className="relative w-full min-h-screen flex items-center justify-center pt-24 overflow-hidden">
-                {/* Background Texture */}
-                <div className="absolute inset-0 z-0">
-                    <img
-                        src="https://images.unsplash.com/photo-1595116936302-3c82e303b30d?auto=format&fit=crop&q=80&w=2000"
-                        alt="Concrete Wall Background"
-                        className="w-full h-full object-cover opacity-30"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#F5F5F7]/40 to-[#F5F5F7]/90" />
-                </div>
-
-                <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 lg:grid-cols-5 gap-12 items-center h-full relative z-10">
-
-                    {/* Left Content (Center/Left text) */}
-                    <div className="lg:col-span-2 flex flex-col justify-center items-center lg:items-start text-center lg:text-left z-20">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-black/5 text-[10px] font-bold tracking-widest uppercase mb-6 animate-fade-in shadow-sm">
-                            New Collection 2024
-                        </span>
-
-                        <h1 className="text-6xl md:text-8xl font-serif font-extrabold leading-none mb-3 tracking-tighter text-gray-900 drop-shadow-sm">
-                            ÉLITAN.
-                        </h1>
-                        <h2 className="text-3xl md:text-5xl font-sans font-medium mb-6 text-gray-800 tracking-tight">
-                            Experience Luxury...
-                        </h2>
-
-                        <p className="text-gray-600 text-lg mb-8 max-w-sm font-light leading-relaxed">
-                            Refining your space with timeless pieces designed for the modern connoisseur.
-                        </p>
-                        <button className="group bg-black text-white px-8 py-4 rounded-full text-base font-medium hover:bg-gray-800 transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center gap-2 transform hover:-translate-y-1">
-                            Shop Now
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </button>
-                    </div>
-
-                    {/* Right Image (Chair) */}
-                    <div className="lg:col-span-3 relative h-[500px] lg:h-[800px] flex items-center justify-center z-10">
-
-                        {/* Main Hero Image - Grey Armchair (Reliable URL) */}
-                        <img
-                            src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=1200&auto=format&fit=crop"
-                            alt="Luxury Grey Armchair"
-                            className="w-full h-full object-contain transform scale-110 drop-shadow-2xl relative z-10"
-                        />
-
-                        {/* FLOATING CARD 1 (Top Left) */}
-                        <div className="absolute top-[20%] left-[-50px] lg:left-[-20px] z-30 hidden lg:block animate-bounce-slow">
-                            <div className="bg-white/90 backdrop-blur-md p-4 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] w-64 transform -rotate-3 hover:rotate-0 transition duration-500 border border-white/50">
-                                <h3 className="text-lg font-bold mb-3 ml-1 text-gray-900">Collections</h3>
-                                <div className="bg-[#f2f2f2] rounded-2xl h-44 mb-4 overflow-hidden flex items-center justify-center relative shadow-inner">
-                                    <img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=400" alt="Chair" className="object-contain h-full w-full p-2" />
-                                </div>
-                                <div className="px-1 text-left">
-                                    <p className="font-bold text-base text-gray-900">Grey Fabric</p>
-                                    <p className="text-xs text-gray-500 uppercase tracking-wide">Armchair</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* FLOATING CARD 2 (Bottom Left) */}
-                        <div className="absolute bottom-[20%] left-[25%] z-20 hidden lg:block animate-bounce-slow" style={{ animationDelay: '2s' }}>
-                            <div className="bg-white p-3 rounded-2xl shadow-xl w-40 transform rotate-6 hover:rotate-0 transition duration-500 border border-gray-100">
-                                <div className="bg-[#E5DACE] rounded-xl h-24 mb-2 overflow-hidden flex items-center justify-center shadow-inner">
-                                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=300" alt="Chair" className="object-cover h-full w-full mix-blend-multiply opacity-90 p-1" />
-                                </div>
-                                <div className="px-1 text-left">
-                                    <p className="font-bold text-sm text-gray-900">Velvet Clay</p>
-                                    <p className="text-[10px] text-gray-500 uppercase">Armchair</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
+            <Hero />
 
             {/* 3. CURATED COLLECTIONS */}
             <section className="py-20 max-w-7xl mx-auto px-6">

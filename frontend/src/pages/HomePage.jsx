@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Search, Menu, ArrowRight, ChevronRight, ChevronLeft, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 
 const HomePage = () => {
@@ -38,10 +39,10 @@ const HomePage = () => {
 
                     {/* Actions */}
                     <div className="flex items-center space-x-4">
-                        <button className="hidden md:block text-sm font-medium text-gray-600 hover:text-black transition">Login</button>
-                        <button className="bg-black text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200">
+                        <Link to="/login" className="hidden md:block text-sm font-medium text-gray-600 hover:text-black transition">Login</Link>
+                        <Link to="/register" className="bg-black text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200">
                             Sign up
-                        </button>
+                        </Link>
                         <button className="md:hidden">
                             <Menu className="w-6 h-6 text-gray-900" />
                         </button>

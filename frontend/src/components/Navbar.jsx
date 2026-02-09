@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, Search, ShoppingCart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const Navbar = () => {
@@ -20,8 +21,8 @@ const Navbar = () => {
             {/* Links - Center (Minimalist Text) */}
             <div className="hidden md:flex items-center space-x-12 absolute left-1/2 transform -translate-x-1/2">
                 {navItems.map((item) => (
-                    <a 
-                        key={item.label} 
+                    <a
+                        key={item.label}
                         href={item.href}
                         className="relative text-sm font-medium text-gray-800 hover:text-black transition-colors duration-300 group"
                     >
@@ -45,10 +46,10 @@ const Navbar = () => {
                     <Menu className="w-6 h-6 text-gray-900" />
                 </button>
                 <div className="hidden md:flex items-center space-x-4 ml-2">
-                     <button className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Login</button>
-                     <button className="bg-black text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-300">
+                    <button className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Login</button>
+                    <button className="bg-black text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-300">
                         Sign up
-                     </button>
+                    </button>
                 </div>
             </div>
         </nav>

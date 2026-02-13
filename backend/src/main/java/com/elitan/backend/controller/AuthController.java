@@ -3,6 +3,7 @@ package com.elitan.backend.controller;
 import com.elitan.backend.dto.AuthResponse;
 import com.elitan.backend.dto.LoginRequest;
 import com.elitan.backend.dto.RegisterRequest;
+import com.elitan.backend.dto.SocialLoginRequest;
 import com.elitan.backend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,17 @@ public class AuthController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
             AuthResponse response = authService.login(request);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // POST /api/auth/social-login (Google / Facebook)
+    @PostMapping("/social-login")
+    public ResponseEntity<?> socialLogin(@RequestBody SocialLoginRequest request) {
+        try {
+            AuthResponse response = authService.socialLogin(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

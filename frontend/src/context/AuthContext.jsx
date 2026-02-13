@@ -19,9 +19,20 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    // Đăng nhập
+    // Đăng nhập thường
     const login = async (email, password) => {
         const data = await authService.login(email, password);
+        setUser({
+            email: data.email,
+            fullName: data.fullName,
+            role: data.role,
+        });
+        return data;
+    };
+
+    // Đăng nhập bằng Google/Facebook
+    const socialLogin = async (token, provider) => {
+        const data = await authService.socialLogin(token, provider);
         setUser({
             email: data.email,
             fullName: data.fullName,
@@ -47,6 +58,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         isAuthenticated: !!user,
         login,
+        socialLogin,
         register,
         logout,
     };

@@ -8,4 +8,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    // Tìm user theo nhà cung cấp social login
+    Optional<User> findByProviderAndProviderId(String provider, String providerId);
 }

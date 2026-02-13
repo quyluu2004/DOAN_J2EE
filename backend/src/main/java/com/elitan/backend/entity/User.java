@@ -20,7 +20,8 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    // Nullable vì user đăng nhập bằng Google/Facebook không có password
+    @Column(nullable = true)
     private String passwordHash;
 
     @Column(nullable = false)
@@ -29,4 +30,12 @@ public class User {
     @Builder.Default
     @Column(nullable = false)
     private String role = "USER"; // USER hoặc ADMIN
+
+    // Nhà cung cấp đăng nhập: LOCAL, GOOGLE, FACEBOOK
+    @Builder.Default
+    @Column(nullable = false)
+    private String provider = "LOCAL";
+
+    // ID từ nhà cung cấp (Google sub / Facebook id)
+    private String providerId;
 }

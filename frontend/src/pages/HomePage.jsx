@@ -3,10 +3,13 @@ import { ShoppingCart, Search, Menu, ArrowRight, ChevronRight, ChevronLeft, Plus
 import { Link, useNavigate } from 'react-router-dom';
 import Hero from '../components/Hero';
 import { useAuth } from '@/context/AuthContext';
+import { useCart } from '@/context/CartContext';
 
 const HomePage = () => {
     const [isScrolled, setIsScrolled] = useState(false);
+    const [products, setProducts] = useState([]);
     const { user, isAuthenticated, logout } = useAuth();
+    const { cart, openCart, addToCart } = useCart();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -14,8 +17,19 @@ const HomePage = () => {
             setIsScrolled(window.scrollY > 50);
         };
         window.addEventListener('scroll', handleScroll);
+
+        // Fetch products
+        fetch('/api/products')
+            .then(res => res.json())
+            .then(data => setProducts(data.slice(0, 4))) // Grab first 4 for best sellers
+            .catch(err => console.error(err));
+
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    const handleAddToCart = (productId) => {
+        addToCart(productId, 1);
+    };
 
     return (
         <div className="font-['Plus_Jakarta_Sans'] bg-[#F5F5F7] min-h-screen text-gray-900 selection:bg-black selection:text-white">
@@ -42,11 +56,24 @@ const HomePage = () => {
 
                     {/* Actions */}
                     <div className="flex items-center space-x-4">
+                        {/* Cart Icon */}
+                        <button onClick={openCart} className="relative p-2 text-gray-900 hover:text-black transition">
+                            <ShoppingCart className="w-5 h-5" />
+                            {cart?.totalItems > 0 && (
+                                <span className="absolute top-0 right-0 w-4 h-4 bg-black text-white text-[10px] font-bold rounded-full flex items-center justify-center translate-x-1 -translate-y-1">
+                                    {cart.totalItems}
+                                </span>
+                            )}
+                        </button>
+
                         {isAuthenticated ? (
                             <>
-                                <span className="hidden md:block text-sm font-medium text-gray-600">
+                                <span className="hidden md:block text-sm font-medium text-gray-600 ml-4">
                                     Xin chào, {user?.fullName?.split(' ')[0]}
                                 </span>
+                                <Link to="/orders" className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black transition">
+                                    Orders
+                                </Link>
                                 <button
                                     onClick={() => { logout(); navigate('/'); }}
                                     className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-red-600 transition"
@@ -57,7 +84,7 @@ const HomePage = () => {
                             </>
                         ) : (
                             <>
-                                <Link to="/login" className="hidden md:block text-sm font-medium text-gray-600 hover:text-black transition">Login</Link>
+                                <Link to="/login" className="hidden md:block text-sm font-medium text-gray-600 hover:text-black transition ml-4">Login</Link>
                                 <Link to="/register" className="bg-black text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200">
                                     Sign up
                                 </Link>
@@ -144,31 +171,33 @@ const HomePage = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {[
-                            { name: "Luna Lounge Chair", price: "$1,299", img: "https://plus.unsplash.com/premium_photo-1668073445170-c22ae6147172?q=80&w=500&auto=format&fit=crop" },
-                            { name: "Nordic Armchair", price: "$899", img: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=500" },
-                            { name: "Velvet Sofa", price: "$2,499", img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=500" },
-                            { name: "Minimalist Lamp", price: "$299", img: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&q=80&w=500" },
-                        ].map((product, idx) => (
-                            <div key={idx} className="group cursor-pointer">
-                                <div className="bg-[#F5F5F7] rounded-3xl p-8 mb-4 relative h-[350px] flex items-center justify-center">
-                                    <img
-                                        src={product.img}
-                                        alt={product.name}
-                                        className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500"
-                                    />
-                                    <button className="absolute bottom-4 right-4 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-black hover:bg-black hover:text-white transition-colors duration-300">
-                                        <Plus className="w-5 h-5" />
-                                    </button>
+                    {products.length === 0 ? (
+                        <div className="text-center text-gray-500 py-10">Loading products...</div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {products.map((product) => (
+                                <div key={product.id} className="group cursor-pointer">
+                                    <div className="bg-[#F5F5F7] rounded-3xl p-8 mb-4 relative h-[350px] flex items-center justify-center">
+                                        <img
+                                            src={product.imageUrl}
+                                            alt={product.name}
+                                            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500"
+                                        />
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleAddToCart(product.id); }}
+                                            className="absolute bottom-4 right-4 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-black hover:bg-black hover:text-white transition-colors duration-300"
+                                        >
+                                            <Plus className="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-lg">{product.name}</h3>
+                                        <p className="text-gray-500 font-medium">${product.price.toLocaleString()}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 className="font-bold text-lg">{product.name}</h3>
-                                    <p className="text-gray-500 font-medium">{product.price}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 

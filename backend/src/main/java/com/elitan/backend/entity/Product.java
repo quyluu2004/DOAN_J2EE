@@ -26,4 +26,12 @@ public class Product {
     private String imageUrl;
     private String category; // e.g., "Chair", "Sofa", "Lamp"
     private String description;
+
+    // New fields for variants and better cart display
+    private String color;
+    private String material;
+    private String dimensions; // L x W x H
+    @Builder.Default
+    private Integer stock = 10;
+    private String thumbnailUrl;
 }

@@ -37,6 +37,9 @@ public class SecurityConfig {
                         // Cho phép truy cập sản phẩm không cần đăng nhập
                         .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/collections/**").permitAll()
+                        // Yêu cầu đăng nhập cho Giỏ hàng và Đơn hàng
+                        .requestMatchers("/api/cart/**").authenticated()
+                        .requestMatchers("/api/orders/**").authenticated()
                         // Các endpoint khác cần xác thực (bao gồm /api/users/**)
                         .anyRequest().authenticated())
 

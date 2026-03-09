@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { resetPassword } from '@/services/authService'
-import { Lock, CheckCircle2, Loader2, Eye, EyeOff } from 'lucide-react'
+import { Lock, CheckCircle, Loader2, Eye, EyeOff } from 'lucide-react'
 
 const ResetPassword = () => {
     const [searchParams] = useSearchParams()
@@ -128,8 +128,8 @@ const ResetPassword = () => {
                                             <div
                                                 key={i}
                                                 className={`h-1 flex-1 rounded-full transition-all duration-300 ${newPassword.length >= (i + 1) * 3
-                                                        ? i < 2 ? 'bg-red-400' : i < 3 ? 'bg-yellow-400' : 'bg-emerald-400'
-                                                        : 'bg-white/10'
+                                                    ? i < 2 ? 'bg-red-400' : i < 3 ? 'bg-yellow-400' : 'bg-emerald-400'
+                                                    : 'bg-white/10'
                                                     }`}
                                             />
                                         ))}
@@ -168,7 +168,7 @@ const ResetPassword = () => {
                         <div className="absolute top-4 left-6 text-xs font-bold tracking-widest uppercase text-white/80">ÉLITAN</div>
 
                         <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center animate-in zoom-in duration-500">
-                            <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+                            <CheckCircle className="w-10 h-10 text-emerald-400" />
                         </div>
 
                         <h2 className="text-2xl font-serif tracking-tight mb-3">Password Reset!</h2>

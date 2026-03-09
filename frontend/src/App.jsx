@@ -3,13 +3,18 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
 import { Toaster } from '@/components/ui/sonner';
+import MiniCart from './components/MiniCart';
 import HomePage from './pages/HomePage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Profile from './pages/Profile';
+import Checkout from './pages/Checkout';
+import OrderHistory from './pages/OrderHistory';
+import OrderDetail from './pages/OrderDetail';
 import PageTransition from './components/PageTransition';
 
 // Lấy Google Client ID từ biến môi trường
@@ -25,6 +30,21 @@ function AnimatedRoutes() {
         <Route path="/" element={
           <PageTransition>
             <HomePage />
+          </PageTransition>
+        } />
+        <Route path="/checkout" element={
+          <PageTransition>
+            <Checkout />
+          </PageTransition>
+        } />
+        <Route path="/orders" element={
+          <PageTransition>
+            <OrderHistory />
+          </PageTransition>
+        } />
+        <Route path="/orders/:id" element={
+          <PageTransition>
+            <OrderDetail />
           </PageTransition>
         } />
         <Route path="/login" element={
@@ -62,8 +82,11 @@ function App() {
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <BrowserRouter>
         <AuthProvider>
-          <AnimatedRoutes />
-          <Toaster richColors position="top-right" />
+          <CartProvider>
+            <AnimatedRoutes />
+            <MiniCart />
+            <Toaster richColors position="top-right" />
+          </CartProvider>
         </AuthProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>

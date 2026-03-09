@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Link } from 'react-router-dom'
 import { forgotPassword } from '@/services/authService'
-import { Mail, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react'
+import { Mail, ArrowLeft, CheckCircle, Loader2 } from 'lucide-react'
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('')
@@ -120,7 +120,7 @@ const ForgotPassword = () => {
 
                         {/* Animated Success Icon */}
                         <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center animate-in zoom-in duration-500">
-                            <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+                            <CheckCircle className="w-10 h-10 text-emerald-400" />
                         </div>
 
                         <h2 className="text-2xl font-serif tracking-tight mb-3">Check Your Email</h2>

@@ -1,0 +1,73 @@
+package com.elitan.backend.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+
+@Service
+@RequiredArgsConstructor
+public class EmailService {
+
+    private final JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
+    // Gửi email reset password với HTML template đẹp
+    public void sendPasswordResetEmail(String to, String resetLink) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setSubject("ÉLITAN — Đặt lại mật khẩu");
+
+            String htmlContent = buildResetEmailHtml(resetLink);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Không thể gửi email: " + e.getMessage());
+        }
+    }
+
+    // Template HTML cho email reset password
+    private String buildResetEmailHtml(String resetLink) {
+        return """
+                <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #111827; color: #ffffff; padding: 40px;">
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <h1 style="font-size: 28px; font-weight: bold; letter-spacing: 8px; color: #ffffff; margin: 0;">ÉLITAN</h1>
+                        <p style="color: #9CA3AF; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; margin-top: 8px;">Luxury Furniture</p>
+                    </div>
+
+                    <div style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 32px; margin-bottom: 32px;">
+                        <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: #ffffff;">Đặt lại mật khẩu</h2>
+                        <p style="color: #D1D5DB; font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
+                            Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản ÉLITAN của bạn.
+                            Nhấn nút bên dưới để tạo mật khẩu mới. Link này sẽ hết hạn sau <strong>30 phút</strong>.
+                        </p>
+                        <div style="text-align: center; margin: 32px 0;">
+                            <a href="%s"
+                               style="display: inline-block; background-color: #ffffff; color: #111827; padding: 14px 40px; text-decoration: none; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; border-radius: 0;">
+                                ĐẶT LẠI MẬT KHẨU
+                            </a>
+                        </div>
+                        <p style="color: #6B7280; font-size: 12px; line-height: 1.6;">
+                            Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này. Mật khẩu của bạn sẽ không bị thay đổi.
+                        </p>
+                    </div>
+
+                    <div style="text-align: center; color: #4B5563; font-size: 11px; letter-spacing: 1px;">
+                        <p>© 2026 ÉLITAN. All rights reserved.</p>
+                    </div>
+                </div>
+                """
+                .formatted(resetLink);
+    }
+}

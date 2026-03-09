@@ -28,8 +28,9 @@ public class JwtService {
     // Tạo JWT token
     public String generateToken(String email, String role, String fullName) {
         return Jwts.builder()
+                .claim("role", role)
+                .claim("fullName", fullName)
                 .subject(email)
-                .claims(Map.of("role", role, "fullName", fullName))
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())

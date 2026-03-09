@@ -42,8 +42,8 @@ const Register = () => {
         setLoading(true)
         try {
             await register(fullName, email, password)
-            setSuccess('Đăng ký thành công! Đang chuyển sang trang đăng nhập...')
-            setTimeout(() => navigate('/login'), 1500)
+            setSuccess('Đăng ký thành công! Đang chuyển về trang chủ...')
+            setTimeout(() => navigate('/'), 1500)
         } catch (err) {
             setError(err.message || 'Đăng ký thất bại')
         } finally {
@@ -91,18 +91,14 @@ const Register = () => {
 
     // Facebook Login
     const handleFacebookLogin = () => {
-        console.log("--> CLICKED Facebook Login");
         setError('');
 
         if (!window.FB) {
-            console.error("--> window.FB NOT FOUND");
             setError('Facebook SDK chưa sẵn sàng. Vui lòng tải lại trang.');
             return;
         }
 
-        console.log("--> Calling FB.login now...");
         window.FB.login((response) => {
-            console.log("--> FB.login callback reached. Response:", response);
             if (response.authResponse) {
                 // Fix: Wrap async logic in IIFE
                 (async () => {
@@ -111,7 +107,6 @@ const Register = () => {
                         await socialLogin(response.authResponse.accessToken, 'FACEBOOK');
                         navigate('/');
                     } catch (err) {
-                        console.error("FB Login Error:", err);
                         setError(err.message || 'Đăng nhập bằng Facebook thất bại');
                     } finally {
                         setLoading(false);

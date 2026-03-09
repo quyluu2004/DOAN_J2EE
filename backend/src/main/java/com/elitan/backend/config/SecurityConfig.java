@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
@@ -31,12 +32,12 @@ public class SecurityConfig {
 
                 // Cấu hình quyền truy cập
                 .authorizeHttpRequests(auth -> auth
-                        // Cho phép truy cập tự do các endpoint auth
+                        // Cho phép truy cập tự do các endpoint auth (bao gồm forgot/reset password)
                         .requestMatchers("/api/auth/**").permitAll()
                         // Cho phép truy cập sản phẩm không cần đăng nhập
                         .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/collections/**").permitAll()
-                        // Các endpoint khác cần xác thực
+                        // Các endpoint khác cần xác thực (bao gồm /api/users/**)
                         .anyRequest().authenticated())
 
                 // Dùng JWT → Stateless (không tạo session)
@@ -52,5 +53,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // Bean RestTemplate để gọi API bên ngoài (Google, Facebook)
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

@@ -3,9 +3,13 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './context/AuthContext';
+import { Toaster } from '@/components/ui/sonner';
 import HomePage from './pages/HomePage';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import Profile from './pages/Profile';
 import PageTransition from './components/PageTransition';
 
 // Lấy Google Client ID từ biến môi trường
@@ -33,6 +37,21 @@ function AnimatedRoutes() {
             <Register />
           </PageTransition>
         } />
+        <Route path="/forgot-password" element={
+          <PageTransition>
+            <ForgotPassword />
+          </PageTransition>
+        } />
+        <Route path="/reset-password" element={
+          <PageTransition>
+            <ResetPassword />
+          </PageTransition>
+        } />
+        <Route path="/profile" element={
+          <PageTransition>
+            <Profile />
+          </PageTransition>
+        } />
       </Routes>
     </AnimatePresence>
   );
@@ -44,6 +63,7 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <AnimatedRoutes />
+          <Toaster richColors position="top-right" />
         </AuthProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>

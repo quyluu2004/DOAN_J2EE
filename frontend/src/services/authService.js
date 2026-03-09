@@ -2,7 +2,7 @@
 
 const API_URL = "/api/auth";
 
-// Đăng ký tài khoản
+// Đăng ký tài khoản (backend trả về token → auto-login)
 export const register = async (fullName, email, password) => {
     const response = await fetch(`${API_URL}/register`, {
         method: "POST",
@@ -14,6 +14,16 @@ export const register = async (fullName, email, password) => {
 
     if (!response.ok) {
         throw new Error(data.error || "Đăng ký thất bại");
+    }
+
+    // Lưu token và thông tin user vào localStorage (auto-login sau đăng ký)
+    if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify({
+            email: data.email,
+            fullName: data.fullName,
+            role: data.role,
+        }));
     }
 
     return data;
@@ -89,4 +99,38 @@ export const getCurrentUser = () => {
 // Kiểm tra đã đăng nhập chưa
 export const isAuthenticated = () => {
     return !!getToken();
+};
+
+// Quên mật khẩu — gửi email reset
+export const forgotPassword = async (email) => {
+    const response = await fetch(`${API_URL}/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error || "Gửi yêu cầu thất bại");
+    }
+
+    return data;
+};
+
+// Đặt lại mật khẩu với token
+export const resetPassword = async (token, newPassword) => {
+    const response = await fetch(`${API_URL}/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, newPassword }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error || "Đặt lại mật khẩu thất bại");
+    }
+
+    return data;
 };

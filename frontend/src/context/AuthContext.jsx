@@ -41,9 +41,16 @@ export const AuthProvider = ({ children }) => {
         return data;
     };
 
-    // Đăng ký
+    // Đăng ký (auto-login sau đăng ký vì backend trả về token)
     const register = async (fullName, email, password) => {
         const data = await authService.register(fullName, email, password);
+        if (data.token) {
+            setUser({
+                email: data.email,
+                fullName: data.fullName,
+                role: data.role,
+            });
+        }
         return data;
     };
 
@@ -51,6 +58,16 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         authService.logout();
         setUser(null);
+    };
+
+    // Cập nhật user state (dùng khi edit profile)
+    const updateUser = (userData) => {
+        setUser(prev => ({ ...prev, ...userData }));
+        // Cập nhật localStorage
+        const saved = authService.getCurrentUser();
+        if (saved) {
+            localStorage.setItem("user", JSON.stringify({ ...saved, ...userData }));
+        }
     };
 
     const value = {
@@ -61,6 +78,7 @@ export const AuthProvider = ({ children }) => {
         socialLogin,
         register,
         logout,
+        updateUser,
     };
 
     return (

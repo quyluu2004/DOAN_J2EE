@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Search, ShoppingCart, LogOut } from 'lucide-react';
+import { Menu, Search, ShoppingCart, LogOut, UserCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 
@@ -57,9 +57,13 @@ const Navbar = () => {
                 <div className="hidden md:flex items-center space-x-4 ml-2">
                     {isAuthenticated ? (
                         <>
-                            <span className="text-sm font-medium text-gray-700">
-                                Xin chào, {user?.fullName?.split(' ')[0]}
-                            </span>
+                            <Link
+                                to="/profile"
+                                className="flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-black transition-colors group"
+                            >
+                                <UserCircle className="w-4 h-4" />
+                                {user?.fullName?.split(' ')[0]}
+                            </Link>
                             <button
                                 onClick={handleLogout}
                                 className="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-red-600 transition-colors"

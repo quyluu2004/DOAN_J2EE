@@ -22,6 +22,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RestTemplate restTemplate; // Inject Bean thay vì tạo mới mỗi lần
 
     @Value("${google.client-id}")
     private String googleClientId;
@@ -50,7 +51,11 @@ public class AuthService {
 
         userRepository.save(user);
 
+        // Tạo JWT token cho user vừa đăng ký (auto-login sau đăng ký)
+        String token = jwtService.generateToken(user.getEmail(), user.getRole(), user.getFullName());
+
         return AuthResponse.builder()
+                .token(token)
                 .message("Đăng ký thành công!")
                 .email(user.getEmail())
                 .fullName(user.getFullName())
@@ -63,6 +68,12 @@ public class AuthService {
         // Tìm user theo email
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Email hoặc mật khẩu không đúng"));
+
+        // Kiểm tra user có password không (social login user không có password)
+        if (user.getPasswordHash() == null || user.getPasswordHash().isEmpty()) {
+            throw new RuntimeException("Tài khoản này đã đăng ký bằng " + user.getProvider()
+                    + ". Vui lòng đăng nhập bằng " + user.getProvider() + ".");
+        }
 
         // So sánh mật khẩu đã mã hóa
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
@@ -100,6 +111,12 @@ public class AuthService {
                 email = fbInfo.get("email");
                 fullName = fbInfo.get("name");
                 providerId = fbInfo.get("id");
+
+                // Kiểm tra nếu Facebook không trả email
+                if (email == null || email.isEmpty()) {
+                    throw new RuntimeException(
+                            "Tài khoản Facebook của bạn không có email. Vui lòng cập nhật email trên Facebook hoặc đăng ký bằng email.");
+                }
                 break;
             default:
                 throw new RuntimeException("Provider không hỗ trợ: " + provider);
@@ -113,14 +130,16 @@ public class AuthService {
             // User đã tồn tại → đăng nhập
             user = existingUser.get();
         } else {
-            // Kiểm tra email đã tồn tại với provider LOCAL chưa
+            // Kiểm tra email đã tồn tại chưa
             Optional<User> userByEmail = userRepository.findByEmail(email);
             if (userByEmail.isPresent()) {
-                // Email đã dùng với tài khoản thường → liên kết
+                // Email đã dùng → chỉ liên kết providerId, KHÔNG ghi đè provider
+                // Giữ nguyên provider gốc để user vẫn login bằng password được
                 user = userByEmail.get();
-                user.setProvider(provider);
-                user.setProviderId(providerId);
-                userRepository.save(user);
+                if (user.getProviderId() == null || user.getProviderId().isEmpty()) {
+                    user.setProviderId(providerId);
+                    userRepository.save(user);
+                }
             } else {
                 // Tạo user mới (auto-register)
                 user = User.builder()
@@ -150,7 +169,6 @@ public class AuthService {
     @SuppressWarnings("unchecked")
     private Map<String, String> verifyGoogleToken(String accessToken) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
             String url = "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + accessToken;
             Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 
@@ -171,7 +189,6 @@ public class AuthService {
     @SuppressWarnings("unchecked")
     private Map<String, String> verifyFacebookToken(String accessToken) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
             String url = "https://graph.facebook.com/me?fields=id,name,email&access_token=" + accessToken;
             Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 

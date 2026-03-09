@@ -38,4 +38,9 @@ public class User {
 
     // ID từ nhà cung cấp (Google sub / Facebook id)
     private String providerId;
+
+    // Thông tin profile mở rộng
+    private String phone;
+    private String address;
+    private String avatarUrl;
 }

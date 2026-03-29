@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { useGoogleLogin } from '@react-oauth/google'
 
+import { useLocalization } from '@/context/LocalizationContext'
+
 // Lấy Facebook App ID từ biến môi trường
 const FACEBOOK_APP_ID = import.meta.env.VITE_FACEBOOK_APP_ID;
 
@@ -16,6 +18,7 @@ const Login = () => {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const { login, socialLogin } = useAuth()
+    const { t } = useLocalization()
     const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
@@ -24,11 +27,11 @@ const Login = () => {
 
         // Validate phía Frontend
         if (!email || !password) {
-            setError('Vui lòng nhập đầy đủ email và mật khẩu')
+            setError(t('auth.error_fill'))
             return
         }
         if (!/\S+@\S+\.\S+/.test(email)) {
-            setError('Email không hợp lệ')
+            setError(t('auth.error_email'))
             return
         }
 
@@ -37,7 +40,7 @@ const Login = () => {
             await login(email, password)
             navigate('/') // Chuyển về trang chủ
         } catch (err) {
-            setError(err.message || 'Đăng nhập thất bại')
+            setError(err.message || t('auth.error_login_fail'))
         } finally {
             setLoading(false)
         }
@@ -60,12 +63,12 @@ const Login = () => {
                 await socialLogin(tokenResponse.access_token, 'GOOGLE')
                 navigate('/')
             } catch (err) {
-                setError(err.message || 'Đăng nhập bằng Google thất bại')
+                setError(err.message || t('auth.error_google_fail'))
             } finally {
                 setLoading(false)
             }
         },
-        onError: () => setError('Đăng nhập bằng Google thất bại'),
+        onError: () => setError(t('auth.error_google_fail')),
     })
 
     // Facebook SDK Loading
@@ -93,7 +96,7 @@ const Login = () => {
         setError('');
 
         if (!window.FB) {
-            setError('Facebook SDK chưa sẵn sàng. Vui lòng tải lại trang.');
+            setError(t('auth.error_facebook_sdk'));
             return;
         }
 
@@ -107,7 +110,7 @@ const Login = () => {
                         navigate('/');
                     } catch (err) {
                         console.error("FB Login Error:", err);
-                        setError(err.message || 'Đăng nhập bằng Facebook thất bại');
+                        setError(err.message || t('auth.error_facebook_fail'));
                     } finally {
                         setLoading(false);
                     }
@@ -135,10 +138,10 @@ const Login = () => {
                 <form onSubmit={handleSubmit}>
                     <CardHeader className="text-center space-y-2 pt-10 pb-6 relative">
                         <div className="absolute top-4 left-6 text-xs font-bold tracking-widest uppercase text-white/80">ÉLITAN</div>
-                        <Link to="/" className="absolute top-4 right-6 text-[10px] font-medium tracking-widest uppercase text-white/60 hover:text-white transition-colors">Back to Collection</Link>
+                        <Link to="/" className="absolute top-4 right-6 text-[10px] font-medium tracking-widest uppercase text-white/60 hover:text-white transition-colors">{t('product.gallery.back')}</Link>
                         <CardTitle className="text-4xl font-serif tracking-tight mt-6">ÉLITAN</CardTitle>
                         <CardDescription className="text-base text-gray-300">
-                            Log in to access your bespoke design services.
+                            {t('auth.login_subtitle')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6 px-8">
@@ -163,7 +166,7 @@ const Login = () => {
                                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                                 </svg>
-                                Sign in with Google
+                                {t('auth.google_login')}
                             </button>
                             <button
                                 type="button"
@@ -174,7 +177,7 @@ const Login = () => {
                                 <svg className="w-4 h-4" fill="#1877F2" viewBox="0 0 24 24">
                                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                                 </svg>
-                                Sign in with Facebook
+                                {t('auth.facebook_login')}
                             </button>
                         </div>
 
@@ -186,7 +189,7 @@ const Login = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="email" className="text-xs font-bold tracking-widest text-gray-400 uppercase">Email Address</Label>
+                            <Label htmlFor="email" className="text-xs font-bold tracking-widest text-gray-400 uppercase">{t('auth.email_label')}</Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -197,9 +200,9 @@ const Login = () => {
                         </div>
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
-                                <Label htmlFor="password" className="text-xs font-bold tracking-widest text-gray-400 uppercase">Password</Label>
+                                <Label htmlFor="password" className="text-xs font-bold tracking-widest text-gray-400 uppercase">{t('auth.password_label')}</Label>
                                 <Link to="/forgot-password" className="text-[10px] text-gray-400 hover:text-white transition-colors tracking-wider uppercase">
-                                    Forgot password?
+                                    {t('auth.forgot_password')}
                                 </Link>
                             </div>
                             <Input
@@ -217,12 +220,12 @@ const Login = () => {
                             disabled={loading}
                             className="w-full bg-black hover:bg-black/80 text-white text-xs font-bold tracking-widest uppercase py-6 rounded-none transition-all border border-transparent hover:border-white/20 disabled:opacity-50"
                         >
-                            {loading ? 'Đang xử lý...' : 'Sign In'}
+                            {loading ? t('auth.processing') : t('auth.login_btn')}
                         </Button>
                         <div className="text-xs text-gray-400 text-center">
-                            Don't have an account?{" "}
+                            {t('auth.no_account')}{" "}
                             <Link to="/register" className="text-white hover:underline font-bold transition-colors">
-                                Sign Up
+                                {t('auth.register_btn')}
                             </Link>
                         </div>
                         <div className="flex justify-between w-full text-[10px] text-gray-500 uppercase tracking-widest mt-4">

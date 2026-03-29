@@ -20,5 +20,6 @@ public class OrderRequest {
     @NotBlank(message = "Payment method is required (e.g., COD, VNPAY, STRIPE)")
     private String paymentMethod;
     
+    private String otpCode;
     private String note;
 }

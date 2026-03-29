@@ -70,22 +70,29 @@ const Lanyard = ({ children, ropeColor = "#1a1a1a", ropeWidth = 3, onModeChange 
 
     // --- Pointer Event Handlers ---
     const handlePointerDown = useCallback((e) => {
+        // Don't capture immediately - it blocks children's clicks and swipes
         startPos.current = { x: e.clientX, y: e.clientY };
         lastPos.current = { x: 0, y: 0 };
         lastTime.current = Date.now();
         velocity.current = { x: 0, y: 0 };
-
-        // Capture pointer so we never lose it
-        e.currentTarget.setPointerCapture(e.pointerId);
+        const pointerId = e.pointerId;
+        const target = e.currentTarget;
 
         // Start long-press timer
         pressTimer.current = setTimeout(() => {
+            // Activate lanyard mode
             isLanyardModeRef.current = true;
             setIsLanyardMode(true);
             isDraggingRef.current = true;
+            
+            // Now capture pointer to handle the rest of the drag reliably
+            try {
+                target.setPointerCapture(pointerId);
+            } catch (_) {}
+
             // Quick pulse feedback
             animate(cardY, 8, { duration: 0.08 }).then(() => animate(cardY, 0, { duration: 0.08 }));
-        }, 250);
+        }, 220); // responsiveness
     }, [cardY]);
 
     const handlePointerMove = useCallback((e) => {
@@ -171,15 +178,22 @@ const Lanyard = ({ children, ropeColor = "#1a1a1a", ropeWidth = 3, onModeChange 
 
     return (
         <div
-            ref={containerRef}
-            className="relative"
-            style={{ paddingTop: 80, touchAction: "none", minHeight: 420 }}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerUp}
+            className="relative flex flex-col items-center"
+            style={{ paddingTop: 80, minHeight: 420 }}
             onContextMenu={(e) => e.preventDefault()}
         >
+            {/* Dedicated Lanyard Handle (The "Pin") */}
+            <div 
+                className="absolute top-0 w-8 h-8 bg-gray-900 rounded-full cursor-grab active:cursor-grabbing z-50 flex items-center justify-center border-2 border-white/20 shadow-lg group"
+                style={{ touchAction: "none" }}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+            >
+                <div className="w-1.5 h-1.5 bg-white/40 rounded-full group-hover:bg-white transition-colors" />
+            </div>
+
             {/* Rope SVG */}
             <svg
                 className="absolute top-0 left-0 pointer-events-none"

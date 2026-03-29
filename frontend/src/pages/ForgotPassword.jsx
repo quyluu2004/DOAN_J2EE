@@ -6,8 +6,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Link } from 'react-router-dom'
 import { forgotPassword } from '@/services/authService'
 import { Mail, ArrowLeft, CheckCircle, Loader2 } from 'lucide-react'
+import { useLocalization } from '@/context/LocalizationContext'
 
 const ForgotPassword = () => {
+    const { t } = useLocalization()
     const [email, setEmail] = useState('')
     const [error, setError] = useState('')
     const [success, setSuccess] = useState(false)
@@ -18,11 +20,11 @@ const ForgotPassword = () => {
         setError('')
 
         if (!email) {
-            setError('Vui lòng nhập email')
+            setError(t('auth.error_fill'))
             return
         }
         if (!/\S+@\S+\.\S+/.test(email)) {
-            setError('Email không hợp lệ')
+            setError(t('auth.error_email'))
             return
         }
 
@@ -31,7 +33,7 @@ const ForgotPassword = () => {
             await forgotPassword(email)
             setSuccess(true)
         } catch (err) {
-            setError(err.message || 'Gửi yêu cầu thất bại')
+            setError(err.message || t('auth.forgot_fail'))
         } finally {
             setLoading(false)
         }
@@ -57,7 +59,7 @@ const ForgotPassword = () => {
                             <div className="absolute top-4 left-6 text-xs font-bold tracking-widest uppercase text-white/80">ÉLITAN</div>
                             <Link to="/login" className="absolute top-4 right-6 text-[10px] font-medium tracking-widest uppercase text-white/60 hover:text-white transition-colors flex items-center gap-1">
                                 <ArrowLeft className="w-3 h-3" />
-                                Back to Login
+                                {t('product.gallery.back')}
                             </Link>
 
                             <div className="pt-6">
@@ -65,10 +67,10 @@ const ForgotPassword = () => {
                                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
                                     <Mail className="w-7 h-7 text-white/80" />
                                 </div>
-                                <CardTitle className="text-3xl font-serif tracking-tight">Forgot Password</CardTitle>
+                                <CardTitle className="text-3xl font-serif tracking-tight">{t('auth.forgot_password')}</CardTitle>
                             </div>
                             <CardDescription className="text-sm text-gray-300 font-light px-4 leading-relaxed">
-                                Enter your email address and we'll send you a link to reset your password.
+                                {t('auth.forgot_desc')}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6 px-8">
@@ -80,7 +82,7 @@ const ForgotPassword = () => {
                             )}
 
                             <div className="space-y-2">
-                                <Label htmlFor="email" className="text-xs font-bold tracking-widest text-gray-400 uppercase">Email Address</Label>
+                                <Label htmlFor="email" className="text-xs font-bold tracking-widest text-gray-400 uppercase">{t('auth.email_label')}</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -100,10 +102,10 @@ const ForgotPassword = () => {
                                 {loading ? (
                                     <span className="flex items-center gap-2">
                                         <Loader2 className="w-4 h-4 animate-spin" />
-                                        Sending...
+                                        {t('auth.processing')}
                                     </span>
                                 ) : (
-                                    'Send Reset Link'
+                                    t('auth.send_reset_btn')
                                 )}
                             </Button>
                             <div className="flex justify-between w-full text-[10px] text-gray-500 uppercase tracking-widest mt-4">
@@ -123,14 +125,11 @@ const ForgotPassword = () => {
                             <CheckCircle className="w-10 h-10 text-emerald-400" />
                         </div>
 
-                        <h2 className="text-2xl font-serif tracking-tight mb-3">Check Your Email</h2>
-                        <p className="text-sm text-gray-400 leading-relaxed mb-2">
-                            We've sent a password reset link to
+                        <h2 className="text-2xl font-serif tracking-tight mb-3">{t('auth.forgot_success')}</h2>
+                        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+                            {t('auth.forgot_success_desc')}
                         </p>
                         <p className="text-white font-medium mb-6">{email}</p>
-                        <p className="text-[11px] text-gray-500 leading-relaxed mb-8">
-                            Didn't receive the email? Check your spam folder or try again with a different email address.
-                        </p>
 
                         <div className="space-y-3">
                             <Button
@@ -138,7 +137,7 @@ const ForgotPassword = () => {
                                 variant="outline"
                                 className="w-full bg-transparent border border-white/20 text-white text-xs font-bold tracking-widest uppercase py-5 rounded-none hover:bg-white/10 transition-all"
                             >
-                                Try Again
+                                {t('common.try_again')}
                             </Button>
                             <Link to="/login">
                                 <Button
@@ -146,7 +145,7 @@ const ForgotPassword = () => {
                                     className="w-full text-gray-400 text-xs tracking-wider hover:text-white transition-colors"
                                 >
                                     <ArrowLeft className="w-3 h-3 mr-2" />
-                                    Back to Login
+                                    {t('product.gallery.back')}
                                 </Button>
                             </Link>
                         </div>

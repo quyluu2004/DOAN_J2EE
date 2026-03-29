@@ -3,12 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Package, Truck, CheckCircle, ChevronLeft, MapPin, Search, Calendar, FileText } from 'lucide-react';
 import * as orderService from '../services/orderService';
 import { toast } from 'sonner';
+import { useLocalization } from '../context/LocalizationContext';
 
 const OrderDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { t, formatPrice, lang } = useLocalization();
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -16,7 +18,7 @@ const OrderDetail = () => {
                 const data = await orderService.getOrderDetails(id);
                 setOrder(data);
             } catch (err) {
-                toast.error(err.message || "Không thể tải chi tiết đơn hàng");
+                toast.error(err.message || t('orders.error_fetch_detail'));
                 navigate('/orders');
             } finally {
                 setLoading(false);
@@ -26,18 +28,18 @@ const OrderDetail = () => {
     }, [id, navigate]);
 
     const handleCancelOrder = async () => {
-        if (!window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) return;
+        if (!window.confirm(t('orders.cancel_confirm'))) return;
 
         try {
             const data = await orderService.cancelOrder(id);
             setOrder(data);
-            toast.success("Hủy đơn hàng thành công");
+            toast.success(t('orders.cancel_success'));
         } catch (err) {
-            toast.error(err.message || "Hủy đơn hàng thất bại");
+            toast.error(err.message || t('orders.cancel_fail'));
         }
     };
 
-    if (loading) return <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center">Loading...</div>;
+    if (loading) return <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center">{t('orders.loading_detail')}</div>;
     if (!order) return null;
 
     const timelineSteps = ['PENDING', 'CONFIRMED', 'PREPARING', 'SHIPPING', 'DELIVERED'];
@@ -50,18 +52,18 @@ const OrderDetail = () => {
 
                 {/* Back Link */}
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-black transition mb-8">
-                    <ChevronLeft size={16} /> Back to Orders
+                    <ChevronLeft size={16} /> {t('orders.back')}
                 </button>
 
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Order {order.trackingNumber}</h1>
-                        <p className="text-gray-500 mt-2">Placed on {new Date(order.createdAt).toLocaleDateString()}</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">{t('orders.title')} {order.trackingNumber}</h1>
+                        <p className="text-gray-500 mt-2">{t('orders.placed_on')} {new Date(order.createdAt).toLocaleDateString()}</p>
                     </div>
                     {/* Status Badge */}
                     <div className={`px-5 py-2 rounded-full text-sm font-bold font-mono tracking-wide border shadow-sm ${isCancelled ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-700 border-green-200'
                         }`}>
-                        {order.status}
+                        {t(`orders.status.${order.status}`)}
                     </div>
                 </div>
 
@@ -69,7 +71,7 @@ const OrderDetail = () => {
                     {/* Tracking Timeline */}
                     {!isCancelled && (
                         <div className="bg-white rounded-[2rem] p-8 md:p-12 border border-gray-100 shadow-sm relative overflow-hidden">
-                            <h2 className="text-lg font-bold text-gray-900 mb-8">Delivery Status</h2>
+                            <h2 className="text-lg font-bold text-gray-900 mb-8">{t('orders.delivery_status')}</h2>
 
                             <div className="relative">
                                 {/* Timeline line */}
@@ -82,11 +84,11 @@ const OrderDetail = () => {
                                 {/* Step nodes */}
                                 <div className="relative flex justify-between items-start">
                                     {[
-                                        { title: 'Order Placed', icon: FileText, delay: 0 },
-                                        { title: 'Confirmed', icon: CheckCircle, delay: 100 },
-                                        { title: 'Preparing', icon: Package, delay: 200 },
-                                        { title: 'Shipping', icon: Truck, delay: 300 },
-                                        { title: 'Delivered', icon: MapPin, delay: 400 },
+                                        { title: t('orders.timeline.placed'), icon: FileText, delay: 0 },
+                                        { title: t('orders.timeline.confirmed'), icon: CheckCircle, delay: 100 },
+                                        { title: t('orders.timeline.preparing'), icon: Package, delay: 200 },
+                                        { title: t('orders.timeline.shipping'), icon: Truck, delay: 300 },
+                                        { title: t('orders.timeline.delivered'), icon: MapPin, delay: 400 },
                                     ].map((step, idx) => {
                                         const isCompleted = currentStepIndex >= idx;
                                         const isActive = currentStepIndex === idx;
@@ -115,7 +117,7 @@ const OrderDetail = () => {
                         {/* Left: Items List */}
                         <div className="lg:col-span-2 space-y-6">
                             <div className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm">
-                                <h2 className="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Items in this order</h2>
+                                <h2 className="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">{t('orders.items_list')}</h2>
                                 <div className="space-y-6">
                                     {order.items.map(item => (
                                         <div key={item.id} className="flex gap-6 group">
@@ -132,8 +134,8 @@ const OrderDetail = () => {
                                                     </div>
                                                 </div>
                                                 <div className="flex justify-between items-end mt-4">
-                                                    <div className="text-sm text-gray-500">Qty: {item.quantity}  ×  ${item.priceAtPurchase.toLocaleString()}</div>
-                                                    <div className="font-semibold text-gray-900">${item.itemTotal.toLocaleString()}</div>
+                                                    <div className="text-sm text-gray-500">{t('orders.qty')}: {item.quantity}  ×  {formatPrice(item.priceAtPurchase)}</div>
+                                                    <div className="font-semibold text-gray-900">{formatPrice(item.itemTotal)}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -148,60 +150,60 @@ const OrderDetail = () => {
                                         onClick={handleCancelOrder}
                                         className="px-6 py-3 text-red-600 font-medium hover:bg-red-50 rounded-xl transition"
                                     >
-                                        Cancel Order
+                                        {t('orders.cancel_order')}
                                     </button>
                                 </div>
                             )}
                         </div>
 
-                        {/* Right: Summary & Info */}
+                         {/* Right: Summary & Info */}
                         <div className="space-y-6">
                             <div className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm relative overflow-hidden">
-                                <h2 className="text-lg font-bold text-gray-900 mb-6">Order Summary</h2>
+                                <h2 className="text-lg font-bold text-gray-900 mb-6">{t('orders.summary')}</h2>
 
                                 <div className="space-y-4 text-sm">
                                     <div className="flex justify-between text-gray-500">
-                                        <span>Subtotal</span>
-                                        <span className="text-gray-900">${(order.totalPrice - order.shippingFee).toLocaleString()}</span>
+                                        <span>{t('cart.subtotal')}</span>
+                                        <span className="text-gray-900">{formatPrice(order.totalPrice - order.shippingFee)}</span>
                                     </div>
                                     <div className="flex justify-between text-gray-500">
-                                        <span>Shipping ({order.shippingMethod === 'STANDARD' ? 'Standard' : 'White Glove'})</span>
-                                        <span className="text-gray-900">${order.shippingFee.toLocaleString()}</span>
+                                        <span>{t('checkout.shipping_fee')} ({order.shippingMethod === 'STANDARD' ? (lang === 'vi' ? 'Tiêu chuẩn' : 'Standard') : 'White Glove'})</span>
+                                        <span className="text-gray-900">{formatPrice(order.shippingFee)}</span>
                                     </div>
 
                                     {order.depositAmount > 0 && (
                                         <div className="flex justify-between text-yellow-600 pt-2 font-medium">
-                                            <span>Deposit Paid (30%)</span>
-                                            <span>${order.depositAmount.toLocaleString()}</span>
+                                            <span>{t('orders.deposit_paid')} (30%)</span>
+                                            <span>{formatPrice(order.depositAmount)}</span>
                                         </div>
                                     )}
 
                                     <div className="h-px bg-gray-100 my-4" />
 
                                     <div className="flex justify-between items-end">
-                                        <span className="font-semibold text-gray-900">Total</span>
-                                        <span className="text-2xl font-bold tracking-tight text-gray-900">${order.totalPrice.toLocaleString()}</span>
+                                        <span className="font-semibold text-gray-900">{t('checkout.total')}</span>
+                                        <span className="text-2xl font-bold tracking-tight text-gray-900">{formatPrice(order.totalPrice)}</span>
                                     </div>
 
                                     {order.depositAmount > 0 && (
                                         <div className="flex justify-between items-center bg-gray-50 p-3 rounded-lg mt-4">
-                                            <span className="text-xs text-gray-500 font-medium tracking-wide uppercase">Remaining Balance</span>
-                                            <span className="font-bold text-gray-900">${(order.totalPrice - order.depositAmount).toLocaleString()}</span>
+                                            <span className="text-xs text-gray-500 font-medium tracking-wide uppercase">{t('orders.remaining_balance')}</span>
+                                            <span className="font-bold text-gray-900">{formatPrice(order.totalPrice - order.depositAmount)}</span>
                                         </div>
                                     )}
                                 </div>
                             </div>
 
                             <div className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm">
-                                <h2 className="text-lg font-bold text-gray-900 mb-6">Shipping Details</h2>
+                                <h2 className="text-lg font-bold text-gray-900 mb-6">{t('orders.shipping_details')}</h2>
                                 <div className="space-y-4 text-sm text-gray-700">
                                     <div>
-                                        <p className="font-medium text-gray-900">Contact</p>
+                                        <p className="font-medium text-gray-900">{t('orders.contact')}</p>
                                         <p>{order.shippingName}</p>
                                         <p>{order.shippingPhone}</p>
                                     </div>
                                     <div>
-                                        <p className="font-medium text-gray-900">Address</p>
+                                        <p className="font-medium text-gray-900">{t('orders.address')}</p>
                                         <p className="leading-relaxed">{order.shippingAddress}</p>
                                     </div>
                                 </div>

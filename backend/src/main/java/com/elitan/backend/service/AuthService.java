@@ -6,7 +6,6 @@ import com.elitan.backend.dto.RegisterRequest;
 import com.elitan.backend.dto.SocialLoginRequest;
 import com.elitan.backend.entity.User;
 import com.elitan.backend.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,13 +15,22 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final RestTemplate restTemplate; // Inject Bean thay vì tạo mới mỗi lần
+
+    public AuthService(UserRepository userRepository, 
+                       PasswordEncoder passwordEncoder, 
+                       JwtService jwtService, 
+                       RestTemplate restTemplate) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.restTemplate = restTemplate;
+    }
 
     @Value("${google.client-id}")
     private String googleClientId;

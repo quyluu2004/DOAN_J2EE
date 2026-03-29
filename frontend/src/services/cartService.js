@@ -1,4 +1,3 @@
-import * as authService from './authService';
 
 const API_URL = "/api/cart";
 
@@ -25,11 +24,11 @@ export const getCart = async () => {
     return await response.json();
 };
 
-export const addToCart = async (productId, quantity = 1) => {
+export const addToCart = async (productId, variantId, quantity = 1) => {
     const response = await fetch(`${API_URL}/items`, {
         method: "POST",
         headers: getHeaders(),
-        body: JSON.stringify({ productId, quantity }),
+        body: JSON.stringify({ productId, variantId, quantity }),
     });
 
     if (!response.ok) {

@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ShoppingCart } from 'lucide-react';
 
+import { useLocalization } from '../context/LocalizationContext';
+
 const BestSellers = () => {
+    const { t, currency } = useLocalization();
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/products/bestsellers')
+        axios.get('/api/products/bestsellers')
             .then(res => setProducts(res.data))
             .catch(err => console.error(err));
     }, []);
@@ -22,7 +25,7 @@ const BestSellers = () => {
     return (
         <section className="py-20 px-6 md:px-12 bg-[#f9f9f9]">
             <div className="flex justify-between items-center mb-12">
-                <h3 className="text-sm font-bold tracking-widest uppercase">Best Sellers</h3>
+                <h3 className="text-sm font-bold tracking-widest uppercase">{t('home.best_sellers')}</h3>
                 <div className="flex space-x-2">
                     <button className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition">&lt;</button>
                     <button className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-black hover:text-white transition">&gt;</button>
@@ -44,8 +47,14 @@ const BestSellers = () => {
                         </div>
                         <h4 className="font-bold text-lg mb-1">{product.name}</h4>
                         <div className="flex justify-between items-center">
-                            <span className="text-gray-500 text-sm">${product.price.toLocaleString()}</span>
-                            <button className="text-xs font-bold uppercase border-b border-gray-300 hover:border-black transition pb-0.5">Add to Cart</button>
+                            <span className="text-gray-500 text-sm">
+                                {currency === 'VND' 
+                                    ? `${(product.price * 24000).toLocaleString()} ₫` 
+                                    : `$${product.price.toLocaleString()}`}
+                            </span>
+                            <button className="text-xs font-bold uppercase border-b border-gray-300 hover:border-black transition pb-0.5">
+                                {t('wishlist.add_to_bag')}
+                            </button>
                         </div>
                     </div>
                 ))}

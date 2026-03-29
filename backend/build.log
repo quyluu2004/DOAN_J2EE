@@ -1,0 +1,23 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< com.elitan:backend >-------------------------
+[INFO] Building backend 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] The POM for com.clarifai:clarifai-grpc:jar:10.10.0 is missing, no dependency information available
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.166 s
+[INFO] Finished at: 2026-03-27T02:18:08+07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal on project backend: Could not resolve dependencies for project com.elitan:backend:jar:0.0.1-SNAPSHOT
+[ERROR] dependency: com.clarifai:clarifai-grpc:jar:10.10.0 (compile)
+[ERROR] 	com.clarifai:clarifai-grpc:jar:10.10.0 was not found in https://repo.maven.apache.org/maven2 during a previous attempt. This failure was cached in the local repository and resolution is not reattempted until the update interval of central has elapsed or updates are forced
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/DependencyResolutionException

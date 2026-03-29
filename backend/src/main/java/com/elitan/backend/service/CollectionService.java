@@ -15,4 +15,21 @@ public class CollectionService {
     public List<Collection> getAllCollections() {
         return collectionRepository.findAll();
     }
+
+    public Collection createCollection(Collection collection) {
+        return collectionRepository.save(collection);
+    }
+
+    public Collection updateCollection(Long id, Collection collectionDetails) {
+        Collection collection = collectionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Collection not found"));
+        collection.setName(collectionDetails.getName());
+        collection.setImageUrl(collectionDetails.getImageUrl());
+        collection.setType(collectionDetails.getType());
+        return collectionRepository.save(collection);
+    }
+
+    public void deleteCollection(Long id) {
+        collectionRepository.deleteById(id);
+    }
 }

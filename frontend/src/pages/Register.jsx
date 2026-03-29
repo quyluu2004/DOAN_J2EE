@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { useGoogleLogin } from '@react-oauth/google'
 
+import { useLocalization } from '@/context/LocalizationContext'
+
 // Lấy Facebook App ID từ biến môi trường
 const FACEBOOK_APP_ID = import.meta.env.VITE_FACEBOOK_APP_ID;
 
@@ -18,6 +20,7 @@ const Register = () => {
     const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false)
     const { register, socialLogin } = useAuth()
+    const { t } = useLocalization()
     const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
@@ -27,25 +30,29 @@ const Register = () => {
 
         // Validate phía Frontend
         if (!fullName || !email || !password) {
-            setError('Vui lòng nhập đầy đủ thông tin')
+            setError(t('auth.error_fill'))
             return
         }
         if (!/\S+@\S+\.\S+/.test(email)) {
-            setError('Email không hợp lệ')
+            setError(t('auth.error_email'))
             return
         }
-        if (password.length < 6) {
-            setError('Mật khẩu phải có ít nhất 6 ký tự')
+        if (password.length < 8) {
+            setError(t('auth.error_password_length'))
+            return
+        }
+        if (!/(?=.*[A-Z])(?=.*[0-9])/.test(password)) {
+            setError(t('auth.error_password_pattern'))
             return
         }
 
         setLoading(true)
         try {
             await register(fullName, email, password)
-            setSuccess('Đăng ký thành công! Đang chuyển về trang chủ...')
+            setSuccess(t('auth.register_success'))
             setTimeout(() => navigate('/'), 1500)
         } catch (err) {
-            setError(err.message || 'Đăng ký thất bại')
+            setError(err.message || t('auth.register_fail'))
         } finally {
             setLoading(false)
         }
@@ -66,7 +73,7 @@ const Register = () => {
                 setLoading(false)
             }
         },
-        onError: () => setError('Đăng nhập bằng Google thất bại'),
+        onError: () => setError(t('auth.error_google_fail')),
     })
 
     // Facebook SDK Loading
@@ -94,7 +101,7 @@ const Register = () => {
         setError('');
 
         if (!window.FB) {
-            setError('Facebook SDK chưa sẵn sàng. Vui lòng tải lại trang.');
+            setError(t('auth.error_facebook_sdk'));
             return;
         }
 
@@ -107,7 +114,7 @@ const Register = () => {
                         await socialLogin(response.authResponse.accessToken, 'FACEBOOK');
                         navigate('/');
                     } catch (err) {
-                        setError(err.message || 'Đăng nhập bằng Facebook thất bại');
+                        setError(err.message || t('auth.error_facebook_fail'));
                     } finally {
                         setLoading(false);
                     }
@@ -135,14 +142,14 @@ const Register = () => {
                 <form onSubmit={handleSubmit}>
                     <CardHeader className="text-center space-y-2 pt-10 pb-6 relative">
                         <div className="absolute top-4 left-6 text-xs font-bold tracking-widest uppercase text-white/80">ÉLITAN</div>
-                        <Link to="/" className="absolute top-4 right-6 text-[10px] font-medium tracking-widest uppercase text-white/60 hover:text-white transition-colors">Back to Collection</Link>
+                        <Link to="/" className="absolute top-4 right-6 text-[10px] font-medium tracking-widest uppercase text-white/60 hover:text-white transition-colors">{t('product.gallery.back')}</Link>
 
                         <div className="pt-4">
-                            <span className="text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase">Membership</span>
-                            <CardTitle className="text-3xl font-serif tracking-wide mt-1 italic font-normal">Curating Your Lifestyle</CardTitle>
+                            <span className="text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase">{t('auth.membership_label')}</span>
+                            <CardTitle className="text-3xl font-serif tracking-wide mt-1 italic font-normal">{t('auth.register_title_alt')}</CardTitle>
                         </div>
                         <CardDescription className="text-sm text-gray-300 font-light px-8 leading-relaxed">
-                            Join our inner circle to access members-only collections and bespoke design services.
+                            {t('auth.register_subtitle')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-5 px-8">
@@ -173,7 +180,7 @@ const Register = () => {
                                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                                 </svg>
-                                Sign up with Google
+                                {t('auth.google_login')}
                             </button>
                             <button
                                 type="button"
@@ -184,7 +191,7 @@ const Register = () => {
                                 <svg className="w-4 h-4" fill="#1877F2" viewBox="0 0 24 24">
                                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                                 </svg>
-                                Sign up with Facebook
+                                {t('auth.facebook_login')}
                             </button>
                         </div>
 
@@ -196,7 +203,7 @@ const Register = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="name" className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Full Name</Label>
+                            <Label htmlFor="name" className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">{t('contact.field_name')}</Label>
                             <Input
                                 id="name"
                                 type="text"
@@ -206,7 +213,7 @@ const Register = () => {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="email" className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Email Address</Label>
+                            <Label htmlFor="email" className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">{t('auth.email_label')}</Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -217,8 +224,8 @@ const Register = () => {
                         </div>
                         <div className="space-y-2">
                             <div className="flex justify-between">
-                                <Label htmlFor="password" className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Password</Label>
-                                <span className="text-[9px] text-gray-500">Min 6 characters</span>
+                                <Label htmlFor="password" className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">{t('auth.password_label')}</Label>
+                                <span className="text-[9px] text-gray-500">{t('auth.password_hint')}</span>
                             </div>
                             <Input
                                 id="password"
@@ -230,7 +237,7 @@ const Register = () => {
                         </div>
                         <div className="flex items-center space-x-2 pt-2">
                             <input type="checkbox" id="updates" className="rounded border-gray-600 bg-transparent text-white focus:ring-0 w-3 h-3" />
-                            <Label htmlFor="updates" className="text-[10px] text-gray-400 font-light">Join the ÉLITAN inner circle for exclusive updates.</Label>
+                            <Label htmlFor="updates" className="text-[10px] text-gray-400 font-light">{t('auth.join_inner_circle')}</Label>
                         </div>
                     </CardContent>
                     <CardFooter className="flex flex-col space-y-6 px-8 pb-10">
@@ -239,12 +246,12 @@ const Register = () => {
                             disabled={loading}
                             className="w-full bg-black hover:bg-black/80 text-white text-[10px] font-bold tracking-[0.2em] uppercase py-6 rounded-none transition-all border border-transparent hover:border-white/20 disabled:opacity-50"
                         >
-                            {loading ? 'Đang xử lý...' : 'Create Account'}
+                            {loading ? t('auth.processing') : t('auth.register_btn')}
                         </Button>
                         <div className="text-[10px] text-gray-400 text-center font-light">
-                            Already a member?{" "}
+                            {t('auth.has_account')}{" "}
                             <Link to="/login" className="text-white hover:underline font-medium transition-colors border-b border-white pb-0.5">
-                                Sign In
+                                {t('auth.login_btn')}
                             </Link>
                         </div>
                         <div className="flex justify-between w-full text-[9px] text-gray-500 uppercase tracking-widest mt-2">

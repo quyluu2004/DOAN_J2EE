@@ -5,31 +5,49 @@ import heroChair from '../assets/chair-hero-bg.png';
 import Stack from './Stack';
 import Lanyard from './Lanyard';
 
-const Hero = () => {
+import { Link } from 'react-router-dom';
+import { useLocalization } from '../context/LocalizationContext';
+
+const Hero = ({ featuredProducts = [] }) => {
+    const { t } = useLocalization();
     // State to coordinate gestures between Stack (swipe) and Lanyard (drag)
     const [isLanyardMode, setIsLanyardMode] = useState(false);
 
-    // Data for the Stack cards - exactly matching original design
-    const stackCardsData = [
-        {
-            id: 1,
-            title: "Grey Fabric",
-            subtitle: "Armchair",
-            label: "Collections",
-            bgColor: "#f5f5f5",
-            img: heroChair,
+    // Dynamic colors for the cards
+    const cardColors = ["#f5f5f5", "#e3d1c2", "#f0f0f0"];
+
+    // Map featured products to stack cards data - limit to 3 as requested
+    const stackCardsData = featuredProducts.length > 0
+        ? featuredProducts.slice(0, 3).map((p, i) => ({
+            id: p.id,
+            productId: p.id,
+            title: p.name,
+            subtitle: p.category,
+            label: i === 0 ? t('home.new_arrival') : t('home.featured'),
+            bgColor: cardColors[i % cardColors.length],
+            img: p.imageUrl,
             imgStyle: "",
-        },
-        {
-            id: 2,
-            title: "Brown Fabric",
-            subtitle: "Armchair",
-            label: "New Arrival",
-            bgColor: "#e3d1c2",
-            img: heroChair,
-            imgStyle: "brightness-[0.7] sepia-[0.6] hue-rotate-[-15deg] saturate-[0.8]",
-        },
-    ];
+        }))
+        : [
+            {
+                id: 1,
+                title: "Grey Fabric",
+                subtitle: "Armchair",
+                label: t('nav.home'),
+                bgColor: "#f5f5f5",
+                img: heroChair,
+                imgStyle: "",
+            },
+            {
+                id: 2,
+                title: "Brown Fabric",
+                subtitle: "Armchair",
+                label: t('home.new_arrival'),
+                bgColor: "#e3d1c2",
+                img: heroChair,
+                imgStyle: "brightness-[0.7] sepia-[0.6] hue-rotate-[-15deg] saturate-[0.8]",
+            },
+        ];
 
     // Custom card renderer - EXACT original card design from Hero
     const renderProductCard = (card, index) => (
@@ -78,18 +96,18 @@ const Hero = () => {
 
                 {/* Main Text Content - Centered */}
                 <div className="flex flex-col items-center text-center mt-[-50px] relative z-20">
-                    <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tight text-black mb-2 leading-none font-serif">
-                        ÉLITAN.
-                    </h1>
-                    <h2 className="text-4xl md:text-5xl lg:text-7xl font-medium text-black mb-6 tracking-wide">
-                        Experience Luxury...
+                    <h2 className="text-[10px] font-bold uppercase tracking-[0.5em] text-[#703225] mb-6 animate-pulse">
+                        {t('home.hero_sub')}
                     </h2>
-                    <p className="text-gray-700 text-lg md:text-xl max-w-xl mb-10 font-normal leading-relaxed">
-                        Experience luxury: interiors more loving headings and feunting cons.
+                    <h1 className="text-6xl md:text-8xl lg:text-[9rem] font-serif leading-[0.85] tracking-[-0.04em] text-[#221a0c] mb-12 uppercase text-center max-w-4xl">
+                        {t('home.hero_title')}
+                    </h1>
+                    <p className="text-[#86736f] text-sm md:text-base max-w-lg mb-12 font-medium leading-relaxed uppercase tracking-widest">
+                        {t('home.hero_desc')}
                     </p>
-                    <button className="bg-black text-white px-12 py-4 rounded-full text-lg font-medium hover:bg-gray-800 transition-all duration-300 shadow-xl hover:scale-105 cursor-pointer">
-                        Shop now
-                    </button>
+                    <Link to="/shop" className="bg-[#221a0c] hover:bg-[#703225] text-white px-12 py-5 rounded-sm text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-700 shadow-2xl hover:scale-105 inline-block">
+                        {t('home.hero_cta')}
+                    </Link>
                 </div>
 
                 {/* Lanyard + Stack Cards - Left Side */}

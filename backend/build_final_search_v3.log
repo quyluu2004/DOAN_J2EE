@@ -1,0 +1,27 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< com.elitan:backend >-------------------------
+[INFO] Building backend 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ backend ---
+[INFO] Deleting C:\DOAN_J2EE\etalian website\backend\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ backend ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ backend ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 78 source files with javac [debug parameters release 17] to target\classes
+[INFO] /C:/DOAN_J2EE/etalian website/backend/src/main/java/com/elitan/backend/service/ClarifaiService.java: Some input files use or override a deprecated API.
+[INFO] /C:/DOAN_J2EE/etalian website/backend/src/main/java/com/elitan/backend/service/ClarifaiService.java: Recompile with -Xlint:deprecation for details.
+[INFO] /C:/DOAN_J2EE/etalian website/backend/src/main/java/com/elitan/backend/service/AdminService.java: C:\DOAN_J2EE\etalian website\backend\src\main\java\com\elitan\backend\service\AdminService.java uses unchecked or unsafe operations.
+[INFO] /C:/DOAN_J2EE/etalian website/backend/src/main/java/com/elitan/backend/service/AdminService.java: Recompile with -Xlint:unchecked for details.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  8.038 s
+[INFO] Finished at: 2026-03-27T02:31:18+07:00
+[INFO] ------------------------------------------------------------------------

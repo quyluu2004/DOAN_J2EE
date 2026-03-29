@@ -2,9 +2,11 @@ import React from 'react';
 import { useCart } from '../context/CartContext';
 import { X, Minus, Plus, Trash2, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useLocalization } from '../context/LocalizationContext';
 
 const MiniCart = () => {
     const { cart, isCartOpen, closeCart, updateQuantity, removeItem, loading } = useCart();
+    const { t, formatPrice, lang } = useLocalization();
     const navigate = useNavigate();
 
     if (!isCartOpen) return null;
@@ -27,8 +29,10 @@ const MiniCart = () => {
                 {/* Header */}
                 <div className="flex items-start justify-between px-8 py-6 border-b border-gray-100">
                     <div>
-                        <h2 className="text-[28px] font-serif tracking-tight text-gray-900 leading-none mb-2">Your Selection</h2>
-                        <p className="text-[10px] font-bold tracking-[0.15em] text-gray-400 uppercase">Luxury Pieces Curated For You</p>
+                        <h2 className="text-[28px] font-serif tracking-tight text-gray-900 leading-none mb-2">{t('cart.title')}</h2>
+                        <p className="text-[10px] font-bold tracking-[0.15em] text-gray-400 uppercase">
+                            {t('cart.mini.sub')}
+                        </p>
                     </div>
                     <button
                         onClick={closeCart}
@@ -48,14 +52,14 @@ const MiniCart = () => {
                                 </svg>
                             </div>
                             <div>
-                                <p className="text-gray-900 font-medium font-serif text-lg">Your selection is empty</p>
-                                <p className="text-gray-500 text-sm mt-1">Start adding some items to your cart!</p>
+                                <p className="text-gray-900 font-medium font-serif text-lg">{t('cart.empty')}</p>
+                                <p className="text-gray-500 text-sm mt-1">{t('cart.mini.empty_desc')}</p>
                             </div>
                             <button
                                 onClick={closeCart}
                                 className="mt-4 px-8 py-3 bg-black text-white text-xs font-bold tracking-widest uppercase hover:bg-gray-900 transition-colors"
                             >
-                                Continue Shopping
+                                {t('cart.mini.continue')}
                             </button>
                         </div>
                     ) : (
@@ -78,7 +82,7 @@ const MiniCart = () => {
                                                 <div className="flex justify-between items-start gap-2 mb-1">
                                                     <h3 className="text-base font-serif font-medium text-gray-900 line-clamp-2 leading-tight">{item.name}</h3>
                                                     <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-                                                        ${item.price.toLocaleString()}
+                                                        {formatPrice(item.price)}
                                                     </p>
                                                 </div>
 
@@ -86,12 +90,12 @@ const MiniCart = () => {
                                                 <div className="flex flex-col gap-0.5 mt-2">
                                                     {item.color && (
                                                         <div className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
-                                                            COLOR: <span className="text-gray-600 font-medium">{item.color}</span>
+                                                            {t('shop.palette')}: <span className="text-gray-600 font-medium">{item.color}</span>
                                                         </div>
                                                     )}
                                                     {item.material && (
                                                         <div className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
-                                                            MATERIAL: <span className="text-gray-600 font-medium">{item.material}</span>
+                                                            {t('shop.material')}: <span className="text-gray-600 font-medium">{item.material}</span>
                                                         </div>
                                                     )}
                                                     {item.dimensions && (
@@ -130,7 +134,7 @@ const MiniCart = () => {
                                                     className="text-[10px] font-bold uppercase tracking-widest text-[#E63946] hover:text-red-700 transition-colors"
                                                     disabled={loading}
                                                 >
-                                                    Remove
+                                                    {t('cart.mini.remove')}
                                                 </button>
                                             </div>
                                         </div>
@@ -149,7 +153,7 @@ const MiniCart = () => {
                                 <p className="text-sm text-gray-600 mb-4">Complete the look with professional room styling.</p>
                                 <button className="w-full bg-[#1E40AF] hover:bg-[#1e3a8a] text-white py-3 px-4 rounded-xl text-xs font-bold tracking-widest uppercase transition-colors flex items-center justify-center gap-2">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                                    Add Entire 3D Room Studio
+                                    {t('cart.mini.studio_cta')}
                                 </button>
                             </div>
                         </div>
@@ -161,17 +165,17 @@ const MiniCart = () => {
                     <div className="border-t border-gray-100 p-8 pt-6 bg-white shrink-0">
                         <div className="space-y-3 mb-6">
                             <div className="flex justify-between text-sm text-gray-500">
-                                <span>Subtotal</span>
-                                <span className="font-semibold text-gray-900">${cart.subTotal?.toLocaleString()}</span>
+                                <span>{t('cart.subtotal')}</span>
+                                <span className="font-semibold text-gray-900">{formatPrice(cart.subTotal || 0)}</span>
                             </div>
                             <div className="flex justify-between text-sm text-gray-500">
-                                <span>Shipping</span>
-                                <span className="text-[#1E40AF] italic font-medium">Included</span>
+                                <span>{t('cart.shipping')}</span>
+                                <span className="text-[#1E40AF] italic font-medium">{t('cart.mini.included')}</span>
                             </div>
                             <div className="flex justify-between items-end pt-4 mt-2 border-t border-gray-100">
-                                <span className="text-base font-bold text-gray-900">Total</span>
+                                <span className="text-base font-bold text-gray-900">{t('cart.total')}</span>
                                 <span className="text-2xl font-serif font-bold text-gray-900">
-                                    ${cart.subTotal?.toLocaleString()}
+                                    {formatPrice(cart.subTotal || 0)}
                                 </span>
                             </div>
                         </div>
@@ -180,13 +184,13 @@ const MiniCart = () => {
                             onClick={handleCheckout}
                             className="w-full h-14 bg-[#0A0A0B] text-white flex items-center justify-center px-6 hover:bg-black transition-colors"
                         >
-                            <span className="font-bold tracking-widest text-xs uppercase text-center w-full">Proceed to Checkout</span>
+                            <span className="font-bold tracking-widest text-xs uppercase text-center w-full">{t('cart.checkout')}</span>
                         </button>
 
                         <div className="flex items-center justify-center gap-2 mt-4 text-[#1E40AF]">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path><path d="m9 12 2 2 4-4"></path></svg>
                             <p className="text-[9px] font-bold tracking-widest uppercase">
-                                White-Glove Delivery Guaranteed
+                                {t('cart.mini.delivery_guarantee')}
                             </p>
                         </div>
                     </div>

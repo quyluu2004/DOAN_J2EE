@@ -16,12 +16,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+    }
+
     // Lấy thông tin profile từ email (JWT)
     public UserProfileResponse getProfile(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
 
         return UserProfileResponse.builder()
+                .id(user.getId())
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .phone(user.getPhone())
@@ -81,5 +87,35 @@ public class UserService {
         // Cập nhật mật khẩu mới
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+    }
+
+    public java.util.List<UserProfileResponse> getAllUsers() {
+        return userRepository.findAll().stream().map(user -> UserProfileResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .phone(user.getPhone())
+                .address(user.getAddress())
+                .avatarUrl(user.getAvatarUrl())
+                .provider(user.getProvider())
+                .role(user.getRole())
+                .build()).collect(java.util.stream.Collectors.toList());
+    }
+
+    public UserProfileResponse updateUserRole(Long userId, String role) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        user.setRole(role);
+        userRepository.save(user);
+        return UserProfileResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .phone(user.getPhone())
+                .address(user.getAddress())
+                .avatarUrl(user.getAvatarUrl())
+                .provider(user.getProvider())
+                .role(user.getRole())
+                .build();
     }
 }

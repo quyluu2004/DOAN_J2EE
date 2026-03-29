@@ -24,8 +24,8 @@ public class OrderDetail {
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @JoinColumn(name = "variant_id", nullable = true) // Optional: variant might be deleted later
+    private ProductVariant variant;
 
     // Snapshot data at the time of purchase in case product details change
     private String productName;

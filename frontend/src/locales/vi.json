@@ -1,0 +1,435 @@
+{
+  "nav": {
+    "home": "Trang chủ",
+    "shop": "Cửa hàng",
+    "about": "Giới thiệu",
+    "contact": "Liên hệ",
+    "logout": "Đăng xuất",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "profile": "Hồ sơ",
+    "wishlist": "Yêu thích",
+    "orders": "Đơn hàng",
+    "welcome": "Xin chào",
+    "search_by_image": "Tìm kiếm bằng hình ảnh"
+  },
+  "shop": {
+    "title": "Bộ sưu tập",
+    "search": "Tìm kiếm sản phẩm",
+    "price_range": "Khoảng giá",
+    "category": "Danh mục",
+    "material": "Chất liệu",
+    "palette": "Màu sắc",
+    "clear_all": "Xóa bộ lọc",
+    "items_found": "sản phẩm hiện có",
+    "sort": "Sắp xếp",
+    "categories": {
+      "all": "Tất cả",
+      "living_room": "Phòng khách",
+      "dining": "Phòng ăn",
+      "bedroom": "Phòng ngủ",
+      "office": "Văn phòng",
+      "decor": "Trang trí"
+    },
+    "materials": {
+      "wood": "Gỗ",
+      "metal": "Kim loại",
+      "leather": "Da",
+      "fabric": "Vải",
+      "glass": "Kính",
+      "stone": "Đá"
+    },
+    "colors": {
+      "natural": "Tự nhiên",
+      "black": "Đen",
+      "white": "Trắng",
+      "cognac": "Màu rượu vang",
+      "grey": "Xám",
+      "green": "Xanh lá"
+    }
+  },
+  "product": {
+    "acquire": "Mua ngay",
+    "quantity": "Số lượng",
+    "specifications": "Thông số kỹ thuật",
+    "reviews": "Đánh giá từ khách hàng",
+    "warranty": "Bảo hành tiêu chuẩn",
+    "delivery": "Giao hàng tận nơi",
+    "returns": "Đổi trả 30 ngày",
+    "provenance": "Nguồn gốc",
+    "handcrafted": "Chế tác thủ công tại Tuscany",
+    "materials": "Vật liệu",
+    "gallery": {
+      "back": "Quay lại bộ sưu tập",
+      "interactive": "Chế độ xem tương tác"
+    },
+    "finishes": "Các loại hoàn thiện",
+    "trust": {
+      "warranty": "Bảo hành chính hãng",
+      "delivery": "Giao hàng tận nơi",
+      "returns": "30 ngày đổi trả"
+    },
+    "specs": {
+      "title": "Thông số kỹ thuật",
+      "dimensions": "Kích thước",
+      "materials": "Vật liệu",
+      "provenance": "Nguồn gốc",
+      "provenance_val": "Chế tác thủ công tại Tuscany"
+    },
+    "reviews_narrative": {
+      "title": "Thảo luận công khai",
+      "subtitle": "Trải nghiệm của khách hàng với sản phẩm {{name}}.",
+      "score": "Điểm tổng hợp / {{count}} Lượt đánh giá",
+      "empty": "Chưa có đánh giá nào cho sản phẩm này."
+    },
+    "review_form": {
+      "title": "Ghi lại trải nghiệm của bạn.",
+      "desc_auth": "Góc nhìn của bạn là một phần thiết yếu trong quá trình thiết kế của chúng tôi.",
+      "desc_no_auth": "Vui lòng đăng nhập để đóng góp ý kiến.",
+      "intensity": "Mức độ hài lòng",
+      "narrative": "Nội dung",
+      "placeholder": "Chia sẻ cảm nghĩ của bạn...",
+      "submit": "Lưu đánh giá",
+      "authenticate": "Đăng nhập"
+    }
+  },
+  "common": {
+    "currency": "Tiền tệ",
+    "language": "Ngôn ngữ",
+    "try_again": "Thử lại",
+    "en": "Tiếng Anh",
+    "vi": "Tiếng Việt"
+  },
+  "home": {
+    "hero_sub": "Nghệ thuật sống",
+    "hero_title": "Sống trong kiệt tác",
+    "hero_desc": "Khám phá bộ sưu tập nội thất cao cấp mang phong cách Ý, nơi mỗi thiết kế là một tác phẩm nghệ thuật.",
+    "hero_cta": "Khám phá BST",
+    "curated_title": "BỘ SƯU TẬP TUYỂN CHỌN",
+    "curated": {
+      "living_room": "PHÒNG KHÁCH",
+      "dining": "PHÒNG ĂN",
+      "bedroom": "PHÒNG NGỦ",
+      "explore": "KHÁM PHÁ",
+      "view_all": "Xem tất cả bộ sưu tập"
+    },
+    "best_sellers": "SẢN PHẨM BÁN CHẠY",
+    "featured": "NỔI BẬT",
+    "new_arrival": "MỚI VỀ",
+    "studio": {
+      "sub": "Trải nghiệm 3D Studio",
+      "title": "HÌNH DUNG NGÔI NHÀ MƠ ƯỚC. TRONG KHÔNG GIAN 3D.",
+      "desc": "Trải nghiệm không gian nội thất sang trọng trước khi mua. Tùy chỉnh màu sắc, chất liệu và bố cục trong studio 3D thời gian thực của chúng tôi.",
+      "cta": "THỬ NGHIỆM 3D STUDIO NGAY"
+    }
+  },
+  "cart": {
+    "title": "Giỏ hàng của bạn",
+    "subtotal": "Tổng cộng",
+    "checkout": "Thanh toán",
+    "empty": "Giỏ hàng đang trống",
+    "items": "món đồ",
+    "mini": {
+      "sub": "Nội thất cao cấp dành riêng cho bạn",
+      "empty_desc": "Hãy bắt đầu thêm sản phẩm vào bộ sưu tập của bạn!",
+      "continue": "Tiếp tục mua sắm",
+      "remove": "Xóa",
+      "studio_desc": "Hoàn thiện không gian với phong cách chuyên nghiệp.",
+      "studio_cta": "Thêm toàn bộ 3D Room Studio",
+      "delivery_guarantee": "Cam kết giao hàng tận nơi cao cấp"
+    }
+  },
+  "checkout": {
+    "title": "Thanh toán",
+    "contact_shipping": "Thông tin liên hệ & Giao hàng",
+    "delivery_method": "Phương thức giao hàng",
+    "review_verify": "Kiểm tra & Xác thực",
+    "place_order": "Đặt hàng ngay",
+    "secure_checkout": "Thanh toán bảo mật",
+    "shipping_fee": "Phí vận chuyển",
+    "total": "Tổng thanh toán",
+    "deposit": "Tiền đặt cọc 30%",
+    "deposit_desc": "Thanh toán 30% ngay bây giờ. Phần còn lại thanh toán khi nhận hàng.",
+    "empty_cart": "Giỏ hàng của bạn đang trống",
+    "continue_shopping": "Tiếp tục mua sắm",
+    "edit": "Chỉnh sửa",
+    "fields": {
+      "name": "Họ và tên",
+      "phone": "Số điện thoại",
+      "address": "Địa chỉ chi tiết",
+      "name_place": "Nhập họ và tên của bạn",
+      "address_place": "Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố"
+    },
+    "delivery": {
+      "standard": "Giao hàng tiêu chuẩn",
+      "standard_desc": "3-5 ngày làm việc. Giao tại cửa.",
+      "white_glove": "Giao hàng cao cấp White Glove",
+      "white_glove_desc": "Hẹn giờ giao, lắp đặt và dọn dẹp mặt bằng.",
+      "free": "Miễn phí"
+    },
+    "payment": {
+      "cod": "Thanh toán khi nhận hàng",
+      "vnpay": "VNPay / Visa",
+      "deposit_opt": "Thanh toán cọc 30% trước",
+      "balance_desc": "Phần còn lại thanh toán khi nhận hàng."
+    },
+    "otp": {
+      "title": "Yêu cầu xác thực Email",
+      "desc": "Để bảo mật đơn hàng cao cấp, chúng tôi sẽ gửi mã OTP đến email: {{email}}",
+      "sending": "Đang gửi...",
+      "send_cta": "Gửi mã OTP qua Email",
+      "placeholder": "Nhập mã 6 chữ số",
+      "no_code": "Không nhận được mã?",
+      "resend_in": "Gửi lại sau {{s}} giây",
+      "resend_now": "Gửi lại ngay",
+      "processing": "Đang xử lý...",
+      "secure_tx": "Giao dịch được mã hóa an toàn"
+    },
+    "summary": {
+      "title": "Tóm tắt đơn hàng"
+    }
+  },
+  "wishlist": {
+    "title": "Sản phẩm yêu thích",
+    "sub": "Những kiệt tác mà bạn đã phải lòng.",
+    "empty": "Bộ sưu tập của bạn đang trống.",
+    "cta": "Đi khám phá ngay",
+    "add_to_bag": "Thêm vào giỏ",
+    "remove_tooltip": "Xóa khỏi mục yêu thích",
+    "errors": {
+      "load": "Không thể tải danh sách yêu thích",
+      "remove": "Xóa thất bại",
+      "generic": "Có lỗi xảy ra"
+    },
+    "success": {
+      "remove": "Đã xóa khỏi danh sách yêu thích",
+      "add_cart": "Đã thêm {{name}} vào giỏ hàng"
+    }
+  },
+  "profile": {
+    "overview": "Tổng quan",
+    "my_orders": "Đơn hàng của tôi",
+    "settings": "Cài đặt",
+    "member_since": "Thành viên từ năm {{year}}",
+    "badge": "THÀNH VIÊN ELITAN",
+    "stats": {
+      "active": "Đang xử lý",
+      "total": "Tổng đơn hàng",
+      "zalo": "Trạng thái Zalo",
+      "zalo_verified": "Đã xác thực Zalo",
+      "otp_verified": "Đã xác thực qua OTP"
+    },
+    "recent": "Đơn hàng gần đây",
+    "no_orders": "Chưa có đơn hàng. Khám phá bộ sưu tập ngay.",
+    "tracking": "Theo dõi đơn hàng",
+    "status_label": "Trạng thái",
+    "amount": "Tổng tiền",
+    "track_cta": "Theo dõi vận chuyển",
+    "contact_showroom": "Liên hệ Showroom",
+    "ready_to_curate": "Sẵn sàng làm mới không gian của bạn?",
+    "edit_profile": "Sửa hồ sơ",
+    "edit_profile_desc": "Cập nhật thông tin cá nhân và địa chỉ giao hàng.",
+    "email_label": "Địa chỉ Email",
+    "delivery_address": "Địa chỉ giao hàng mặc định",
+    "success_update": "Cập nhật hồ sơ thành công",
+    "save_changes": "Lưu thay đổi",
+    "cancel": "Hủy bỏ",
+    "security": {
+      "title": "Bảo mật",
+      "desc": "Để bảo vệ bạn, mọi đơn hàng đều yêu cầu xác thực Zalo OTP qua điện thoại: {{phone}}",
+      "change_password": "Đổi mật khẩu"
+    },
+    "concierge": {
+      "title": "Dịch vụ Elitan Concierge",
+      "desc": "Cần hỗ trợ về nội thất? Các chuyên gia tư vấn thiết kế riêng luôn sẵn sàng giúp bạn.",
+      "cta": "Yêu cầu tư vấn"
+    }
+  },
+  "about": {
+    "story_badge": "Câu chuyện của chúng tôi",
+    "title": "Nghệ thuật sống phong cách Ý",
+    "desc_hero": "Trong hơn ba thập kỷ, Élitan đã đồng hành cùng những món đồ nội thất Ý tinh xảo nhất — kết hợp tay nghề thủ công vùng Tuscany với thiết kế đương đại để tạo ra những sản phẩm định nghĩa không gian và khơi nguồn cảm hứng sống.",
+    "stats": {
+      "founded": "Năm thành lập",
+      "artisans": "Nghệ nhân",
+      "countries": "Quốc gia",
+      "crafted": "Sản phẩm đã chế tác"
+    },
+    "interactive": {
+      "badge": "Trải nghiệm tương tác",
+      "title": "Khám phá kiệt tác đặc trưng",
+      "controls": "Kéo để xoay • Cuộn để chuyển đổi"
+    },
+    "features": {
+      "leather": "Da Ý cao cấp",
+      "tufted": "Chần tay thủ công",
+      "hardwood": "Gỗ cứng nguyên khối",
+      "artisan": "Chế tác nghệ nhân"
+    },
+    "signature": {
+      "badge": "Tương tác 3D",
+      "title": "Bàn Firenze",
+      "desc": "Trải nghiệm mẫu bàn đặc trưng của chúng tôi ở định dạng 3D đầy đủ. Kéo để xoay và khám phá mọi chi tiết — từ chân bàn gỗ óc chó tiện tay đến viền mạ vàng 24K và bình đất nung nghệ thuật.",
+      "loading": "Đang tải phối cảnh 3D..."
+    },
+    "heritage": {
+      "badge": "Di sản",
+      "title": "Ra đời tại trái tim vùng Tuscany",
+      "desc1": "Xưởng chế tác của chúng tôi tại Florence là nơi ra đời của những món đồ nội thất phi thường từ năm 1987. Mỗi sản phẩm đều bắt đầu từ một bản phác thảo, dưới bàn tay của những bậc thầy nghệ nhân được truyền nghề qua nhiều thế hệ.",
+      "desc2": "Từ những ngọn đồi nhấp nhô của vùng nông thôn Tuscan đến những không gian nội thất đẳng cấp nhất thế giới, các thiết kế của chúng tôi mang theo sự ấm áp, sang trọng và tâm hồn của phong cách sống Ý."
+    },
+    "pillars": {
+      "badge": "Trụ cột của chúng tôi",
+      "title": "Giá trị cốt lõi",
+      "craft": {
+        "title": "Tay nghề bậc thầy",
+        "desc": "Mỗi sản phẩm đều được chế tác thủ công bởi các nghệ nhân vùng Tuscany với kinh nghiệm truyền đời."
+      },
+      "sustainable": {
+        "title": "Sự sang trọng bền vững",
+        "desc": "Nguyên liệu có nguồn gốc đạo đức và quy trình sản xuất thân thiện với môi trường trong từng bước."
+      },
+      "timeless": {
+        "title": "Thiết kế vượt thời gian",
+        "desc": "Nơi di sản Ý gặp gỡ chủ nghĩa tối giản đương đại cho vẻ đẹp trường tồn."
+      },
+      "passion": {
+        "title": "Đam mê chi tiết",
+        "desc": "Mọi mối nối, đường kim mũi chỉ và lớp hoàn thiện đều được hoàn thiện với sự tận tâm tuyệt đối."
+      }
+    },
+    "cta": {
+      "title": "Bắt đầu câu chuyện của bạn với chúng tôi",
+      "desc": "Ghé thăm showroom của chúng tôi hoặc khám phá bộ sưu tập trực tuyến.",
+      "explore": "Khám phá bộ sưu tập",
+      "contact": "Liên hệ với chúng tôi"
+    }
+  },
+  "orders": {
+    "title": "Lịch sử đơn hàng",
+    "subtitle": "Theo dõi và quản lý các giao dịch mua sắm nội thất nghệ nhân của bạn.",
+    "artisan_piece": "Sản phẩm nghệ nhân",
+    "placed_on": "Đặt vào ngày",
+    "details": "Xem chi tiết",
+    "track": "Theo dõi đơn hàng",
+    "no_orders": "Chưa có đơn hàng nào",
+    "start_shopping": "Bắt đầu mua sắm",
+    "back": "Quay lại đơn hàng",
+    "delivery_status": "Trạng thái giao hàng",
+    "items_list": "Sản phẩm trong đơn hàng này",
+    "remaining": "Số dư còn lại",
+    "summary": "Tóm tắt đơn hàng",
+    "deposit_paid": "Tiền cọc đã thanh toán",
+    "remaining_balance": "Số dư còn lại",
+    "shipping_details": "Thông tin giao hàng",
+    "contact": "Liên hệ",
+    "address": "Địa chỉ",
+    "qty": "SL",
+    "cancel_order": "Hủy đơn hàng",
+    "cancel_confirm": "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+    "cancel_success": "Hủy đơn hàng thành công",
+    "cancel_fail": "Hủy đơn hàng thất bại",
+    "loading_detail": "Đang tải chi tiết đơn hàng...",
+    "loading": "Đang tải đơn hàng...",
+    "no_orders_desc": "Bạn chưa có đơn hàng nào. Hãy khám phá BST của chúng tôi.",
+    "timeline": {
+      "placed": "Đã đặt hàng",
+      "confirmed": "Đã xác nhận",
+      "preparing": "Đang chuẩn bị",
+      "shipping": "Đang giao",
+      "delivered": "Đã giao"
+    },
+    "status": {
+      "PENDING": "Chờ xử lý",
+      "CONFIRMED": "Đã xác nhận",
+      "PREPARING": "Đang chuẩn bị",
+      "SHIPPING": "Đang giao hàng",
+      "DELIVERED": "Đã giao hàng",
+      "CANCELLED": "Đã hủy"
+    }
+  },
+  "contact": {
+    "hero_badge": "Liên hệ",
+    "hero_title": "Cùng nhau kiến tạo",
+    "hero_desc": "Cho dù bạn đang tìm kiếm một đơn đặt hàng riêng, quan hệ đối tác thương mại hay chỉ đơn giản là muốn ghé thăm showroom của chúng tôi tại Milan — chúng tôi rất mong nhận được phản hồi từ bạn.",
+    "label_showroom": "Phòng trưng bày",
+    "label_phone": "Điện thoại",
+    "label_email": "Email",
+    "label_hours": "Giờ mở cửa",
+    "form_badge": "Gửi tin nhắn",
+    "form_title": "Chúng tôi luôn lắng nghe bạn",
+    "field_name": "Họ và tên",
+    "field_email": "Địa chỉ Email",
+    "field_subject": "Chủ đề",
+    "field_message": "Lời nhắn",
+    "placeholder_name": "Tên của bạn",
+    "placeholder_email": "email@cua-ban.com",
+    "placeholder_subject": "Đặt hàng riêng, Yêu cầu thương mại...",
+    "placeholder_message": "Hãy cho chúng tôi biết chúng tôi có thể giúp gì...",
+    "send_btn": "Gửi tin nhắn",
+    "success": "Tin nhắn của bạn đã được gửi. Chúng tôi sẽ phản hồi trong vòng 24 giờ.",
+    "error_fill": "Vui lòng điền đầy đủ các trường bắt buộc.",
+    "banner_title": "Bạn muốn xem thêm?",
+    "banner_desc": "Khám phá bộ sưu tập đầy đủ các đồ nội thất Ý được chế tác thủ công của chúng tôi.",
+    "banner_cta": "Xem bộ sưu tập"
+  },
+  "auth": {
+    "login_title": "Chào mừng trở lại",
+    "login_subtitle": "Đăng nhập để quản lý bộ sưu tập của bạn.",
+    "register_title": "Gia nhập di sản",
+    "register_subtitle": "Tạo tài khoản để bắt đầu hành trình nghệ nhân của bạn.",
+    "forgot_password": "Quên mật khẩu?",
+    "forgot_desc": "Nhập email của bạn để nhận liên kết đặt lại mật khẩu.",
+    "reset_password": "Đặt lại mật khẩu",
+    "reset_desc": "Nhập mật khẩu mới của bạn bên dưới.",
+    "email_label": "Địa chỉ Email",
+    "password_label": "Mật khẩu",
+    "confirm_password": "Xác nhận mật khẩu",
+    "login_btn": "Đăng nhập",
+    "register_btn": "Tạo tài khoản",
+    "send_reset_btn": "Gửi liên kết",
+    "update_password_btn": "Cập nhật mật khẩu",
+    "forgot_success": "Kiểm tra Email",
+    "forgot_success_desc": "Chúng tôi đã gửi một liên kết đặt lại mật khẩu đến địa chỉ email của bạn.",
+    "forgot_fail": "Gửi liên kết thất bại.",
+    "reset_success": "Đặt lại mật khẩu thành công!",
+    "reset_fail": "Đặt lại mật khẩu thất bại.",
+    "no_account": "Chưa có tài khoản?",
+    "has_account": "Đã có tài khoản?",
+    "terms": "Bằng cách đăng ký, bạn đồng ý với Điều khoản Dịch vụ và Chính sách Bảo mật của chúng tôi.",
+    "google_login": "Đăng nhập với Google",
+    "facebook_login": "Đăng nhập với Facebook",
+    "processing": "Đang xử lý...",
+    "membership_label": "Hội viên",
+    "register_title_alt": "Kiến tạo phong cách sống",
+    "password_hint": "Tối thiểu 8 ký tự, 1 hoa, 1 số",
+    "join_inner_circle": "Tham gia cộng đồng ÉLITAN để nhận các cập nhật độc quyền.",
+    "error_fill": "Vui lòng điền đầy đủ các thông tin.",
+    "error_email": "Địa chỉ email không hợp lệ.",
+    "error_password_length": "Mật khẩu phải có ít nhất 8 ký tự.",
+    "error_password_pattern": "Mật khẩu phải chứa ít nhất 1 chữ hoa và 1 chữ số.",
+    "error_password_mismatch": "Mật khẩu xác nhận không khớp.",
+    "register_success": "Đăng ký thành công! Đang chuyển về trang chủ...",
+    "register_fail": "Đăng ký thất bại.",
+    "error_login_fail": "Đăng nhập thất bại.",
+    "error_google_fail": "Đăng nhập bằng Google thất bại.",
+    "error_facebook_fail": "Đăng nhập bằng Facebook thất bại.",
+    "error_facebook_sdk": "Facebook SDK chưa sẵn sàng. Vui lòng tải lại trang."
+  },
+  "footer": {
+    "newsletter": "Bản tin",
+    "newsletter_desc": "Đăng ký nhận bản tin, lời khuyên và cập nhật mới nhất.",
+    "placeholder": "Địa chỉ Email",
+    "signup": "Đăng ký",
+    "shop": "Cửa hàng",
+    "about": "Về chúng tôi",
+    "help": "Trợ giúp",
+    "rights": "Bản quyền đã được bảo lưu.",
+    "links": {
+      "furnitures": "Nội thất",
+      "pricing": "Bảng giá",
+      "notifications": "Thông báo",
+      "blog": "Blog"
+    }
+  }
+}

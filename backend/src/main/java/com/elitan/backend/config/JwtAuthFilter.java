@@ -16,10 +16,13 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+
+    public JwtAuthFilter(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
 
     @Override
     protected void doFilterInternal(

@@ -2,10 +2,26 @@ const API_URL = "/api/orders";
 
 const getHeaders = () => {
     const token = localStorage.getItem("token");
-    return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+    const headers = {
+        "Content-Type": "application/json"
     };
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+    return headers;
+};
+
+export const sendOtp = async (phone) => {
+    const response = await fetch(`${API_URL}/send-otp`, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ phone }),
+    });
+
+    if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Gửi mã OTP thất bại");
+    }
 };
 
 export const createOrder = async (orderData) => {

@@ -6,8 +6,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { resetPassword } from '@/services/authService'
 import { Lock, CheckCircle, Loader2, Eye, EyeOff } from 'lucide-react'
+import { useLocalization } from '@/context/LocalizationContext'
 
 const ResetPassword = () => {
+    const { t } = useLocalization()
     const [searchParams] = useSearchParams()
     const token = searchParams.get('token')
     const navigate = useNavigate()
@@ -24,19 +26,19 @@ const ResetPassword = () => {
         setError('')
 
         if (!newPassword || !confirmPassword) {
-            setError('Vui lòng nhập đầy đủ')
+            setError(t('auth.error_fill'))
             return
         }
-        if (newPassword.length < 6) {
-            setError('Mật khẩu phải có ít nhất 6 ký tự')
+        if (newPassword.length < 8) {
+            setError(t('auth.error_password_length'))
             return
         }
         if (newPassword !== confirmPassword) {
-            setError('Mật khẩu xác nhận không khớp')
+            setError(t('auth.error_password_mismatch'))
             return
         }
         if (!token) {
-            setError('Token không hợp lệ. Vui lòng yêu cầu đặt lại mật khẩu lần nữa.')
+            setError(t('auth.reset_token_invalid'))
             return
         }
 
@@ -46,7 +48,7 @@ const ResetPassword = () => {
             setSuccess(true)
             setTimeout(() => navigate('/login'), 3000)
         } catch (err) {
-            setError(err.message || 'Đặt lại mật khẩu thất bại')
+            setError(err.message || t('auth.reset_fail'))
         } finally {
             setLoading(false)
         }
@@ -76,10 +78,10 @@ const ResetPassword = () => {
                                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
                                     <Lock className="w-7 h-7 text-white/80" />
                                 </div>
-                                <CardTitle className="text-3xl font-serif tracking-tight">New Password</CardTitle>
+                                <CardTitle className="text-3xl font-serif tracking-tight">{t('auth.reset_password')}</CardTitle>
                             </div>
                             <CardDescription className="text-sm text-gray-300 font-light px-4 leading-relaxed">
-                                Create a new password for your ÉLITAN account.
+                                {t('auth.reset_desc')}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6 px-8">
@@ -91,7 +93,7 @@ const ResetPassword = () => {
                             )}
 
                             <div className="space-y-2">
-                                <Label htmlFor="newPassword" className="text-xs font-bold tracking-widest text-gray-400 uppercase">New Password</Label>
+                                <Label htmlFor="newPassword" className="text-xs font-bold tracking-widest text-gray-400 uppercase">{t('auth.new_password')}</Label>
                                 <div className="relative">
                                     <Input
                                         id="newPassword"
@@ -110,7 +112,7 @@ const ResetPassword = () => {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="confirmPassword" className="text-xs font-bold tracking-widest text-gray-400 uppercase">Confirm Password</Label>
+                                <Label htmlFor="confirmPassword" className="text-xs font-bold tracking-widest text-gray-400 uppercase">{t('auth.confirm_password')}</Label>
                                 <Input
                                     id="confirmPassword"
                                     type={showPassword ? "text" : "password"}
@@ -135,7 +137,7 @@ const ResetPassword = () => {
                                         ))}
                                     </div>
                                     <p className="text-[10px] text-gray-500">
-                                        {newPassword.length < 6 ? 'Too short' : newPassword.length < 9 ? 'Fair' : newPassword.length < 12 ? 'Good' : 'Strong'}
+                                        {newPassword.length < 8 ? t('auth.password_strength.too_short') : newPassword.length < 10 ? t('auth.password_strength.fair') : newPassword.length < 12 ? t('auth.password_strength.good') : t('auth.password_strength.strong')}
                                     </p>
                                 </div>
                             )}
@@ -149,10 +151,10 @@ const ResetPassword = () => {
                                 {loading ? (
                                     <span className="flex items-center gap-2">
                                         <Loader2 className="w-4 h-4 animate-spin" />
-                                        Resetting...
+                                        {t('auth.processing')}
                                     </span>
                                 ) : (
-                                    'Reset Password'
+                                    t('auth.reset_password')
                                 )}
                             </Button>
                             <div className="flex justify-between w-full text-[10px] text-gray-500 uppercase tracking-widest mt-4">
@@ -171,9 +173,9 @@ const ResetPassword = () => {
                             <CheckCircle className="w-10 h-10 text-emerald-400" />
                         </div>
 
-                        <h2 className="text-2xl font-serif tracking-tight mb-3">Password Reset!</h2>
+                        <h2 className="text-2xl font-serif tracking-tight mb-3">{t('auth.reset_success')}</h2>
                         <p className="text-sm text-gray-400 leading-relaxed mb-6">
-                            Your password has been successfully reset. Redirecting to login...
+                            {t('auth.reset_success_desc')}
                         </p>
 
                         {/* Animated progress bar */}
@@ -183,7 +185,7 @@ const ResetPassword = () => {
 
                         <Link to="/login">
                             <Button className="w-full bg-black hover:bg-black/80 text-white text-xs font-bold tracking-widest uppercase py-5 rounded-none transition-all border border-transparent hover:border-white/20">
-                                Go to Login
+                                {t('auth.login_btn')}
                             </Button>
                         </Link>
 

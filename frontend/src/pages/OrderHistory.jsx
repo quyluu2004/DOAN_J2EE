@@ -3,10 +3,12 @@ import { Package, Truck, ChevronRight, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import * as orderService from '../services/orderService';
 import { toast } from 'sonner';
+import { useLocalization } from '../context/LocalizationContext';
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { t, formatPrice, lang } = useLocalization();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,7 +17,7 @@ const OrderHistory = () => {
                 const data = await orderService.getMyOrders();
                 setOrders(data);
             } catch (err) {
-                toast.error(err.message || "Không thể tải danh sách đơn hàng");
+                toast.error(err.message || t('orders.error_fetch'));
             } finally {
                 setLoading(false);
             }
@@ -43,22 +45,22 @@ const OrderHistory = () => {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Order History</h1>
-                        <p className="text-gray-500 mt-2">View and track your previous purchases</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">{t('orders.title')}</h1>
+                        <p className="text-gray-500 mt-2">{t('orders.subtitle')}</p>
                     </div>
                 </div>
 
                 {loading ? (
-                    <div className="text-center py-20 text-gray-500">Loading orders...</div>
+                    <div className="text-center py-20 text-gray-500">{t('orders.loading')}</div>
                 ) : orders.length === 0 ? (
                     <div className="bg-white rounded-[2rem] p-12 text-center shadow-sm border border-gray-100">
                         <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                             <Package size={32} className="text-gray-400" />
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900 mb-2">No orders yet</h2>
-                        <p className="text-gray-500 mb-8 max-w-sm mx-auto">You haven't placed any orders. Start exploring our collections to find something you'll love.</p>
+                        <h2 className="text-xl font-bold text-gray-900 mb-2">{t('orders.no_orders')}</h2>
+                        <p className="text-gray-500 mb-8 max-w-sm mx-auto">{t('orders.no_orders_desc')}</p>
                         <button onClick={() => navigate('/')} className="px-8 py-3 bg-black text-white rounded-full font-medium hover:bg-gray-900 transition shadow-lg">
-                            Start Shopping
+                            {t('orders.start_shopping')}
                         </button>
                     </div>
                 ) : (
@@ -72,12 +74,12 @@ const OrderHistory = () => {
                                         <div className="flex items-center gap-4">
                                             <h3 className="text-lg font-bold text-gray-900">{order.trackingNumber}</h3>
                                             <span className={`px-3 py-1 rounded-full text-xs font-bold font-mono tracking-wide border ${getStatusStyle(order.status)}`}>
-                                                {order.status}
+                                                {t(`orders.status.${order.status}`)}
                                             </span>
                                         </div>
                                         <div className="text-sm text-gray-500 space-y-1">
-                                            <p>Placed on {new Date(order.createdAt).toLocaleDateString()}</p>
-                                            <p>{order.items.length} items • ${order.totalPrice.toLocaleString()}</p>
+                                            <p>{t('orders.placed_on')} {new Date(order.createdAt).toLocaleDateString()}</p>
+                                            <p>{order.items.length} {t('cart.items')} • {formatPrice(order.totalPrice)}</p>
                                         </div>
 
                                         {/* Thumbnails */}
@@ -101,13 +103,13 @@ const OrderHistory = () => {
                                             onClick={() => navigate(`/orders/${order.id}`)}
                                             className="w-full md:w-40 px-6 py-3 bg-black text-white text-sm font-medium rounded-xl hover:bg-gray-900 transition flex items-center justify-center gap-2"
                                         >
-                                            View Details <ChevronRight size={16} />
+                                            {t('orders.details')} <ChevronRight size={16} />
                                         </button>
                                         <button
                                             onClick={() => navigate(`/orders/${order.id}`)}
                                             className="w-full md:w-40 px-6 py-3 bg-white text-black text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition"
                                         >
-                                            Track Order
+                                            {t('orders.track')}
                                         </button>
                                     </div>
 

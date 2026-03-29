@@ -15,6 +15,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -29,19 +30,41 @@ public class SecurityConfig {
 
                 // Tắt CSRF vì dùng JWT (stateless)
                 .csrf(csrf -> csrf.disable())
-
-                // Cấu hình quyền truy cập
                 .authorizeHttpRequests(auth -> auth
-                        // Cho phép truy cập tự do các endpoint auth (bao gồm forgot/reset password)
+                        // 1. PUBLIC ACCESS
                         .requestMatchers("/api/auth/**").permitAll()
-                        // Cho phép truy cập sản phẩm không cần đăng nhập
-                        .requestMatchers("/api/products/**").permitAll()
-                        .requestMatchers("/api/collections/**").permitAll()
-                        // Yêu cầu đăng nhập cho Giỏ hàng và Đơn hàng
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/search-by-image", "/api/products/sync-clarifai").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/collections", "/api/collections/**").permitAll()
+                        .requestMatchers("/uploads", "/uploads/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/orders/send-otp", "/api/orders/verify-otp").permitAll()
+
+                        // 2. ADMIN ACCESS (Must come before broader .authenticated() rules)
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+                        
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/collections/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/collections/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/collections/**").hasRole("ADMIN")
+                        
+                        .requestMatchers("/api/materials", "/api/materials/**").hasRole("ADMIN")
+                        .requestMatchers("/api/colors", "/api/colors/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users/all", "/api/users/*/role").hasRole("ADMIN")
+                        .requestMatchers("/api/orders/all", "/api/orders/*/status").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/upload").hasRole("ADMIN")
+                        .requestMatchers("/api/products/import-file", "/api/products/import-status/**").hasRole("ADMIN")
+
+                        // 3. AUTHENTICATED ACCESS
                         .requestMatchers("/api/cart/**").authenticated()
+                        .requestMatchers("/api/wishlist/**").authenticated()
                         .requestMatchers("/api/orders/**").authenticated()
-                        // Các endpoint khác cần xác thực (bao gồm /api/users/**)
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/users/profile").authenticated()
+
+                        // 4. CATCH ALL
+                        .anyRequest().authenticated()
+                )
 
                 // Dùng JWT → Stateless (không tạo session)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

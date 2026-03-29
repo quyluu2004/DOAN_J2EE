@@ -4,26 +4,26 @@
  * Preserves original card rounded corner styling
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 
 const Stack = ({
-    randomRotation = false,
-    sensitivity = 200,
-    cardDimensions = { width: 260, height: 340 },
     cardsData = [],
+    cardDimensions = { width: 200, height: 300 },
+    randomRotation = true,
+    sensitivity = 100,
     animationConfig = { stiffness: 260, damping: 20 },
     renderCard,
     dragEnabled = true, // New prop to control drag capability
 }) => {
-    const [cards, setCards] = useState(
-        cardsData.length > 0
-            ? cardsData
-            : [
-                { id: 1, img: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400" },
-                { id: 2, img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400" },
-            ]
-    );
+    const [cards, setCards] = useState(cardsData);
+
+    // Sync state when props change (crucial for dynamic data)
+    useEffect(() => {
+        if (cardsData && cardsData.length > 0) {
+            setCards(cardsData);
+        }
+    }, [cardsData]);
 
     const sendToBack = (id) => {
         setCards((prev) => {
@@ -88,28 +88,33 @@ function CardItem({
     const rotateX = useTransform(y, [-100, 100], [8, -8]);
     const rotateY = useTransform(x, [-100, 100], [-8, 8]);
 
-    const handleDragEnd = () => {
-        if (Math.abs(x.get()) > sensitivity || Math.abs(y.get()) > sensitivity) {
-            sendToBack(card.id);
-        }
-    };
-
     const isTop = index === cards.length - 1;
 
     return (
         <motion.div
-            className={`absolute rounded-[2rem] overflow-hidden bg-white ${dragEnabled && isTop ? "cursor-grab active:cursor-grabbing" : "cursor-default"
-                }`}
+            key={card.id}
+            onTap={() => {
+                if (isTop && card.productId) {
+                    window.location.href = `/products/${card.productId}`;
+                }
+            }}
             style={{
                 width: cardDimensions.width,
                 height: cardDimensions.height,
                 x,
                 y,
-                rotateX: isTop ? rotateX : 0,
-                rotateY: isTop ? rotateY : 0,
                 rotate: `${randomRotate}deg`,
                 zIndex: index,
-                boxShadow: "0 20px 50px rgba(0,0,0,0.1)",
+                cursor: dragEnabled && isTop ? "grab" : "default",
+            }}
+            className="absolute rounded-[2rem] overflow-hidden bg-white shadow-xl"
+            drag={dragEnabled && isTop ? "x" : false}
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.6}
+            onDragEnd={(e, info) => {
+                if (Math.abs(info.offset.x) > sensitivity) {
+                    sendToBack(card.id);
+                }
             }}
             initial={{
                 scale: 1 - index * 0.05,
@@ -119,10 +124,6 @@ function CardItem({
                 scale: 1 - index * 0.05,
                 y: index * -12,
             }}
-            drag={dragEnabled && isTop}
-            dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
-            dragElastic={0.6}
-            onDragEnd={handleDragEnd}
             transition={{
                 type: "spring",
                 stiffness: animationConfig.stiffness,

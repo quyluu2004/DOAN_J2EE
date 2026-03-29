@@ -35,7 +35,7 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    const addToCart = async (productId, quantity = 1) => {
+    const addToCart = async (productId, variantId, quantity = 1) => {
         if (!isAuthenticated) {
             // Có thể redirect user đến trang login hoặc hiện thông báo
             alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
@@ -44,7 +44,7 @@ export const CartProvider = ({ children }) => {
 
         try {
             setLoading(true);
-            const data = await cartService.addToCart(productId, quantity);
+            const data = await cartService.addToCart(productId, variantId, quantity);
             setCart(data);
             setIsCartOpen(true); // Tự động mở drawer sau khi thêm
             setError(null);

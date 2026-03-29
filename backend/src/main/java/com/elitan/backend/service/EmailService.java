@@ -10,13 +10,39 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 @Service
-@RequiredArgsConstructor
 public class EmailService {
 
     private final JavaMailSender mailSender;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
+
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
+    // Hàm tạo mã OTP 6 số
+    public String generateOTP() {
+        java.util.Random random = new java.util.Random();
+        int otp = 100000 + random.nextInt(900000); 
+        return String.valueOf(otp);
+    }
+
+    // Hàm gửi email chứa mã OTP
+    public void sendOtpEmail(String toEmail, String otpCode) {
+        try {
+            org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
+            message.setFrom(fromEmail); // Lấy từ application.properties
+            message.setTo(toEmail);
+            message.setSubject("Mã xác thực — ÉLITAN");
+            message.setText("Chào bạn,\n\nMã OTP xác nhận của bạn là: " + otpCode 
+                          + "\n\nMã này có hiệu lực trong 5 phút. Vui lòng không chia sẻ mã này cho bất kỳ ai.");
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage());
+        }
+    }
 
     // Gửi email reset password với HTML template đẹp
     public void sendPasswordResetEmail(String to, String resetLink) {

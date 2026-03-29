@@ -14,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "https://localhost:5173")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -57,5 +58,18 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
+    }
+
+    // --- Admin Endpoints ---
+    @GetMapping("/all")
+    public ResponseEntity<java.util.List<UserProfileResponse>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @PutMapping("/{userId}/role")
+    public ResponseEntity<UserProfileResponse> updateUserRole(
+            @PathVariable Long userId,
+            @RequestBody Map<String, String> request) {
+        return ResponseEntity.ok(userService.updateUserRole(userId, request.get("role")));
     }
 }

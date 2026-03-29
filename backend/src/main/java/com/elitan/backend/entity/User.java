@@ -43,4 +43,7 @@ public class User {
     private String phone;
     private String address;
     private String avatarUrl;
+
+    @Builder.Default
+    private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
 }

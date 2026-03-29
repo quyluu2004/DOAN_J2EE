@@ -8,6 +8,8 @@ import com.elitan.backend.repository.CartItemRepository;
 import com.elitan.backend.repository.CartRepository;
 import com.elitan.backend.repository.OrderDetailRepository;
 import com.elitan.backend.repository.OrderRepository;
+import com.elitan.backend.repository.ProductRepository;
+import com.elitan.backend.repository.ProductVariantRepository;
 import com.elitan.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -27,6 +28,32 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final ProductVariantRepository variantRepository;
+    private final OTPService otpService;
+
+    public OrderService(OrderRepository orderRepository,
+                        OrderDetailRepository orderDetailRepository,
+                        CartRepository cartRepository,
+                        CartItemRepository cartItemRepository,
+                        UserRepository userRepository,
+                        ProductRepository productRepository,
+                        ProductVariantRepository variantRepository,
+                        OTPService otpService) {
+        this.orderRepository = orderRepository;
+        this.orderDetailRepository = orderDetailRepository;
+        this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
+        this.userRepository = userRepository;
+        this.productRepository = productRepository;
+        this.variantRepository = variantRepository;
+        this.otpService = otpService;
+    }
+
+    // Trigger OTP sending to Zalo/Phone
+    public void sendCheckoutOTP(String userEmail, String phone) {
+        otpService.generateOTP(phone);
+    }
 
     // Đặt hàng từ giỏ (Checkout)
     @Transactional
@@ -42,9 +69,22 @@ public class OrderService {
             throw new RuntimeException("Giỏ hàng trống, không thể đặt hàng");
         }
 
+        // VERIFY OTP (Sent to Email)
+        if (request.getOtpCode() == null || !otpService.verifyOTP(userEmail, request.getOtpCode())) {
+            throw new RuntimeException("Mã xác thực OTP không chính xác hoặc đã hết hạn");
+        }
+
+        // Check Inventory & Calculate totals
+        for (CartItem item : cartItems) {
+            Integer stock = item.getVariant().getStock();
+            if (stock == null || stock < item.getQuantity()) {
+                throw new RuntimeException("Sản phẩm " + item.getVariant().getProduct().getName() + " (" + item.getVariant().getColor() + ") không đủ số lượng trong kho");
+            }
+        }
+
         // Tính tổng tiền
         BigDecimal subTotal = cartItems.stream()
-                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .map(item -> item.getVariant().getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // Tính phí ship (ví dụ: STANDARD free cho đơn > $500, WHITE_GLOVE = $150)
@@ -86,21 +126,31 @@ public class OrderService {
 
         // Tạo OrderDetail (Snapshot product data)
         List<OrderDetail> orderDetails = cartItems.stream().map(item -> {
-            Product p = item.getProduct();
+            Product p = item.getVariant().getProduct();
+            ProductVariant v = item.getVariant();
             return OrderDetail.builder()
                     .order(savedOrder)
-                    .product(p)
+                    .variant(v)
                     .productName(p.getName())
-                    .productImage(p.getImageUrl())
+                    .productImage(v.getImageUrl() != null ? v.getImageUrl() : p.getImageUrl())
                     .priceAtPurchase(p.getPrice())
                     .quantity(item.getQuantity())
-                    .color(p.getColor())
+                    .color(v.getColor())
                     .material(p.getMaterial())
                     .dimensions(p.getDimensions())
                     .build();
         }).collect(Collectors.toList());
 
         orderDetailRepository.saveAll(orderDetails);
+
+        // DECREMENT STOCK
+        for (CartItem item : cartItems) {
+            ProductVariant v = item.getVariant();
+            Integer currentStock = v.getStock();
+            if (currentStock == null) currentStock = 0;
+            v.setStock(currentStock - item.getQuantity());
+            variantRepository.save(v);
+        }
 
         // Xóa giỏ hàng
         cartItemRepository.deleteByCartId(cart.getId());
@@ -156,6 +206,9 @@ public class OrderService {
             throw new RuntimeException("Chỉ có thể hủy đơn hàng đang ở trạng thái chờ xác nhận");
         }
 
+        if (!"CANCELLED".equals(order.getStatus())) {
+            restockInventory(order);
+        }
         order.setStatus("CANCELLED");
         orderRepository.save(order);
 
@@ -163,11 +216,46 @@ public class OrderService {
         return mapToOrderResponse(order, details);
     }
 
+    // Lấy tất cả đơn hàng (cho Admin)
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getAllOrders() {
+        return orderRepository.findAll().stream().map(order -> {
+            List<OrderDetail> details = orderDetailRepository.findByOrderId(order.getId());
+            return mapToOrderResponse(order, details);
+        }).collect(Collectors.toList());
+    }
+
+    // Cập nhật trạng thái đơn hàng (cho Admin)
+    @Transactional
+    public OrderResponse updateOrderStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+        if ("CANCELLED".equals(status) && !"CANCELLED".equals(order.getStatus())) {
+            restockInventory(order);
+        }
+        order.setStatus(status);
+        orderRepository.save(order);
+        List<OrderDetail> details = orderDetailRepository.findByOrderId(order.getId());
+        return mapToOrderResponse(order, details);
+    }
+
+    private void restockInventory(Order order) {
+        List<OrderDetail> details = orderDetailRepository.findByOrderId(order.getId());
+        for (OrderDetail detail : details) {
+            ProductVariant v = detail.getVariant();
+            if (v != null) {
+                v.setStock(v.getStock() + detail.getQuantity());
+                variantRepository.save(v);
+            }
+        }
+    }
+
     // Mapper
     private OrderResponse mapToOrderResponse(Order order, List<OrderDetail> details) {
         List<OrderDetailResponse> items = details.stream().map(d -> OrderDetailResponse.builder()
                 .id(d.getId())
-                .productId(d.getProduct().getId())
+                .productId(d.getVariant() != null ? d.getVariant().getProduct().getId() : null)
+                .variantId(d.getVariant() != null ? d.getVariant().getId() : null)
                 .productName(d.getProductName())
                 .productImage(d.getProductImage())
                 .color(d.getColor())

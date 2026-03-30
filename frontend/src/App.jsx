@@ -25,6 +25,7 @@ import Wishlist from './pages/Wishlist';
 import ProtectedRoute from './components/ProtectedRoute';
 import RoomDesigner from './pages/RoomDesigner';
 import MyDesigns from './pages/MyDesigns';
+import MomoReturn from './pages/MomoReturn';
 
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -125,6 +126,8 @@ function AnimatedRoutes() {
             <MyDesigns />
           </PageTransition>
         } />
+        {/* MoMo Payment Return - NEW */}
+        <Route path="/payment/momo-return" element={<MomoReturn />} />
 
         {/* Admin Routes */}
         <Route element={<ProtectedRoute adminOnly={true} />}>

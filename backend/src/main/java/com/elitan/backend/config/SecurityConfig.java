@@ -38,6 +38,8 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/collections", "/api/collections/**").permitAll()
                         .requestMatchers("/uploads", "/uploads/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/orders/send-otp", "/api/orders/verify-otp").permitAll()
+                        // MoMo IPN webhook - MoMo server gọi về, không có JWT token
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/payment/momo/ipn").permitAll()
 
                         // 2. ADMIN ACCESS (Must come before broader .authenticated() rules)
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasRole("ADMIN")

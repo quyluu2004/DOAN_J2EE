@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, ShieldCheck, MapPin, Truck, CreditCard, CheckCircle, Mail } from 'lucide-react';
+import { ChevronRight, ShieldCheck, MapPin, Truck, CreditCard, CheckCircle, Mail, Wallet } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Separator } from '../components/ui/separator';
@@ -9,12 +9,14 @@ import * as orderService from '../services/orderService';
 import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
 import { useLocalization } from '../context/LocalizationContext';
+import { useMomoPayment } from '../hooks/useMomoPayment';
 
 const Checkout = () => {
     const { user } = useAuth();
     const { cart, clearCartLocal, fetchCart } = useCart();
     const { t, formatPrice, lang } = useLocalization();
     const navigate = useNavigate();
+    const { payWithMomo, isLoading: momoLoading } = useMomoPayment();
 
     const [activeStep, setActiveStep] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -82,9 +84,24 @@ const Checkout = () => {
             const orderData = { ...formData };
             const res = await orderService.createOrder(orderData);
 
+            // Nếu phương thức thanh toán là MoMo, redirect sang MoMo
+            if (formData.paymentMethod === 'MOMO') {
+                clearCartLocal();
+                // Tính số tiền VND (total * tỉ giá, hoặc dùng giá trị mock cho sandbox)
+                // Sandbox MoMo yêu cầu amount tối thiểu 1000 VND
+                const amountInVND = Math.max(Math.round(total * 23000), 1000);
+                await payWithMomo({
+                    orderId: res.id,
+                    amount: amountInVND,
+                    orderInfo: `Thanh toán đơn hàng #${res.trackingNumber}`,
+                });
+                // payWithMomo sẽ tự redirect, không cần navigate
+                return;
+            }
+
             toast.success(t('checkout.success'));
             clearCartLocal();
-            navigate(`/orders/${res.id}`); // Redirect to order details
+            navigate(`/orders/${res.id}`);
         } catch (err) {
             toast.error(err.message || t('checkout.errors.generic'));
         } finally {
@@ -250,7 +267,7 @@ const Checkout = () => {
                                         <div className="space-y-4">
                                             <p className="text-sm text-gray-500">{t('checkout.payment_desc')}</p>
                                             
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                                 <label className={`block relative p-4 rounded-2xl border-2 cursor-pointer transition-all ${formData.paymentMethod === 'COD' ? 'border-black bg-gray-50/50' : 'border-gray-100'}`}>
                                                     <input type="radio" name="paymentMethod" value="COD" checked={formData.paymentMethod === 'COD'} onChange={handleInputChange} className="sr-only" />
                                                     <div className="flex items-center gap-3">
@@ -264,6 +281,19 @@ const Checkout = () => {
                                                         <CreditCard size={16} />
                                                         <span className="font-semibold text-sm">{t('checkout.payment.vnpay')}</span>
                                                     </div>
+                                                </label>
+                                                {/* MoMo Payment Option - NEW */}
+                                                <label className={`block relative p-4 rounded-2xl border-2 cursor-pointer transition-all ${formData.paymentMethod === 'MOMO' ? 'border-[#ae2070] bg-pink-50/50' : 'border-gray-100 hover:border-pink-200'}`}>
+                                                    <input type="radio" name="paymentMethod" value="MOMO" checked={formData.paymentMethod === 'MOMO'} onChange={handleInputChange} className="sr-only" />
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 ${formData.paymentMethod === 'MOMO' ? 'bg-[#ae2070]' : 'bg-gray-200'}`}>
+                                                            <Wallet size={11} className="text-white" />
+                                                        </div>
+                                                        <span className={`font-semibold text-sm ${formData.paymentMethod === 'MOMO' ? 'text-[#ae2070]' : ''}`}>MoMo</span>
+                                                    </div>
+                                                    {formData.paymentMethod === 'MOMO' && (
+                                                        <p className="text-[10px] text-[#ae2070] mt-1 pl-8">Ví điện tử MoMo (Sandbox)</p>
+                                                    )}
                                                 </label>
                                             </div>
 
@@ -322,10 +352,18 @@ const Checkout = () => {
                                                     </div>
                                                     <Button 
                                                         onClick={handlePlaceOrder} 
-                                                        disabled={loading || formData.otpCode.length < 6}
-                                                        className="w-full bg-black hover:bg-gray-900 text-white font-bold h-14 text-lg shadow-xl"
+                                                        disabled={loading || momoLoading || formData.otpCode.length < 6}
+                                                        className={`w-full font-bold h-14 text-lg shadow-xl transition-all ${
+                                                            formData.paymentMethod === 'MOMO'
+                                                                ? 'bg-[#ae2070] hover:bg-[#8f1a5c] text-white'
+                                                                : 'bg-black hover:bg-gray-900 text-white'
+                                                        }`}
                                                     >
-                                                        {loading ? t('common.loading') : `${t('checkout.place_order')} — ${formatPrice(formData.note === 'DEPOSIT_30' ? total * 0.3 : total)}`}
+                                                        {(loading || momoLoading) ? t('common.loading') : (
+                                                            formData.paymentMethod === 'MOMO'
+                                                                ? `Thanh toán MoMo — ${formatPrice(formData.note === 'DEPOSIT_30' ? total * 0.3 : total)}`
+                                                                : `${t('checkout.place_order')} — ${formatPrice(formData.note === 'DEPOSIT_30' ? total * 0.3 : total)}`
+                                                        )}
                                                     </Button>
                                                 </div>
                                             )}

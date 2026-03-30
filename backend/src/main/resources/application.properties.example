@@ -4,16 +4,24 @@ spring.application.name=elitan-backend
 # Lưu ý: Kiểm tra kỹ từng chữ trong dòng url này, không được thừa dấu cách
 spring.datasource.url=jdbc:mysql://avnadmin:password@mysql-url:port/defaultdb?ssl-mode=REQUIRED
 spring.datasource.username=avnadmin
-spring.datasource.password=YOUR_DB_PASSWORD_HERE
+spring.datasource.password=123123
 
 # --- CẤU HÌNH KHÁC ---
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 
 # --- JWT CONFIG ---
-jwt.secret=YOUR_JWT_SECRET_KEY_HERE
+jwt.secret=Y9a4f2c8d3b7a1e5f2g8h4j9k2m5n7p8q1r4s6t8u9v2w4x6y1z3a5b7c9d0e1f2
 jwt.expiration=86400000
 
 # --- SOCIAL LOGIN ---
 google.client-id=YOUR_GOOGLE_CLIENT_ID_HERE
 facebook.app-id=YOUR_FACEBOOK_APP_ID_HERE
+
+# MoMo Sandbox
+momo.partner-code=MOMOIQA420180417
+momo.access-key=F8BBA842ECF85
+momo.secret-key=K951B6PE1waDMi640xX08PD3vg6EkVlz
+momo.endpoint=https://test-payment.momo.vn/v2/gateway/api/create
+momo.return-url=http://localhost:8080/api/orders/momo/callback
+momo.ipn-url=http://YOUR_NGROK_URL/api/orders/momo/ipn

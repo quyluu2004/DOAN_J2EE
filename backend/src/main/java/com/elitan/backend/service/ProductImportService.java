@@ -203,7 +203,7 @@ public class ProductImportService {
             try { stock = Integer.parseInt(stockStr.replace(".0", "")); } catch (NumberFormatException ignored) {}
         }
 
-        return Product.builder()
+        Product p = Product.builder()
                 .name(name)
                 .category(category)
                 .price(price)
@@ -214,6 +214,20 @@ public class ProductImportService {
                 .dimensions(safeTrim(row, 7))
                 .imageUrl(safeTrim(row, 8))
                 .build();
+                
+        com.elitan.backend.entity.ProductVariant v = com.elitan.backend.entity.ProductVariant.builder()
+                .product(p)
+                .color(p.getColor() != null ? p.getColor() : "Default")
+                .stock(p.getStock())
+                .imageUrl(p.getImageUrl())
+                .build();
+                
+        if (p.getVariants() == null) {
+            p.setVariants(new ArrayList<>());
+        }
+        p.getVariants().add(v);
+        
+        return p;
     }
 
     private String safeTrim(String[] arr, int index) {

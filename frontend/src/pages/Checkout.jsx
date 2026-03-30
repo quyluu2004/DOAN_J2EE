@@ -387,7 +387,7 @@ const Checkout = () => {
                                 <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
 
                                 <h2 className="text-xl font-semibold mb-8 tracking-tight flex items-center justify-between">
-                                    {t('checkout.summary')}
+                                    {t('checkout.summary.title')}
                                     <span className="text-sm font-medium text-gray-400 bg-white/10 px-3 py-1 rounded-full">{cart.totalItems} {t('cart.items')}</span>
                                 </h2>
 

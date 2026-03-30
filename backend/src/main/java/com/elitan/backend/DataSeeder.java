@@ -58,7 +58,7 @@ public class DataSeeder implements CommandLineRunner {
                         seedProducts();
                 }
                 
-                // Fix existing null stocks and ratings
+                // Fix existing null stocks and ratings and missing variants
                 java.util.List<com.elitan.backend.entity.Product> allProducts = productRepository.findAll();
                 for (int i = 0; i < allProducts.size(); i++) {
                         com.elitan.backend.entity.Product p = allProducts.get(i);
@@ -74,6 +74,22 @@ public class DataSeeder implements CommandLineRunner {
                                 else p.setAverageRating(3.5 + (Math.random() * 1.0));
                                 changed = true;
                         }
+                        
+                        // Auto-create default variant if none exists
+                        if (p.getVariants() == null || p.getVariants().isEmpty()) {
+                                com.elitan.backend.entity.ProductVariant v = com.elitan.backend.entity.ProductVariant.builder()
+                                                .product(p)
+                                                .color(p.getColor() != null ? p.getColor() : "Default")
+                                                .stock(p.getStock() != null ? p.getStock() : 10)
+                                                .imageUrl(p.getImageUrl())
+                                                .build();
+                                if (p.getVariants() == null) {
+                                        p.setVariants(new java.util.ArrayList<>());
+                                }
+                                p.getVariants().add(v);
+                                changed = true;
+                        }
+
                         if (changed) productRepository.save(p);
                 }
 

@@ -29,6 +29,7 @@ import MyDesigns from './pages/MyDesigns';
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
+import Admin3DModels from './pages/admin/Admin3DModels';
 import AdminCollections from './pages/admin/AdminCollections';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminUsers from './pages/admin/AdminUsers';
@@ -131,6 +132,7 @@ function AnimatedRoutes() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="products" element={<AdminProducts />} />
+            <Route path="3d-models" element={<Admin3DModels />} />
             <Route path="collections" element={<AdminCollections />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="users" element={<AdminUsers />} />

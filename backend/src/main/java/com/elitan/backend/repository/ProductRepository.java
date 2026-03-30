@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, org.springframework.data.jpa.repository.JpaSpecificationExecutor<Product> {
     List<Product> findByCategory(String category);
+    java.util.Optional<Product> findByGlbUrl(String glbUrl);
+    java.util.Optional<Product> findByGlbName(String glbName);
 
     @org.springframework.data.jpa.repository.Query("SELECT p FROM Product p WHERE " +
            "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +

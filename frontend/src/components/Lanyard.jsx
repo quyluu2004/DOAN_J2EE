@@ -17,7 +17,7 @@ const Lanyard = ({ children, ropeColor = "#1a1a1a", ropeWidth = 3, onModeChange 
     const pressTimer = useRef(null);
     const startPos = useRef({ x: 0, y: 0 });
     const lastPos = useRef({ x: 0, y: 0 });
-    const lastTime = useRef(Date.now());
+    const lastTime = useRef(0);
     const velocity = useRef({ x: 0, y: 0 });
 
     // Card position
@@ -88,7 +88,7 @@ const Lanyard = ({ children, ropeColor = "#1a1a1a", ropeWidth = 3, onModeChange 
             // Now capture pointer to handle the rest of the drag reliably
             try {
                 target.setPointerCapture(pointerId);
-            } catch (_) {}
+            } catch (err) {}
 
             // Quick pulse feedback
             animate(cardY, 8, { duration: 0.08 }).then(() => animate(cardY, 0, { duration: 0.08 }));
@@ -136,7 +136,7 @@ const Lanyard = ({ children, ropeColor = "#1a1a1a", ropeWidth = 3, onModeChange 
         // Release pointer capture
         try {
             e.currentTarget.releasePointerCapture(e.pointerId);
-        } catch (_) { }
+        } catch (err) { }
 
         // Bounce back if we were dragging
         if (isLanyardModeRef.current && isDraggingRef.current) {

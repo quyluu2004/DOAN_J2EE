@@ -4,7 +4,7 @@
  * Preserves original card rounded corner styling
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 
 const Stack = ({
@@ -35,6 +35,14 @@ const Stack = ({
         });
     };
 
+    const rotations = useMemo(() => {
+        const rot = {};
+        cardsData.forEach(card => {
+            rot[card.id] = randomRotation ? Math.random() * 10 - 5 : 0;
+        });
+        return rot;
+    }, [cardsData, randomRotation]);
+
     return (
         <div
             className="relative"
@@ -45,9 +53,7 @@ const Stack = ({
             }}
         >
             {cards.map((card, index) => {
-                const randomRotate = randomRotation
-                    ? Math.random() * 10 - 5
-                    : 0;
+                const randomRotate = rotations[card.id] || 0;
 
                 return (
                     <CardItem

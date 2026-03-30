@@ -1,0 +1,128 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< com.elitan:backend >-------------------------
+[INFO] Building backend 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ backend ---
+[INFO] Deleting D:\DO_AN_CT_5\DOAN_J2EE\backend\target
+[INFO] 
+[INFO] >>> spring-boot:3.4.3:run (default-cli) > test-compile @ backend >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ backend ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ backend ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 90 source files with javac [debug parameters release 17] to target\classes
+[INFO] /D:/DO_AN_CT_5/DOAN_J2EE/backend/src/main/java/com/elitan/backend/service/ProductCacheService.java: D:\DO_AN_CT_5\DOAN_J2EE\backend\src\main\java\com\elitan\backend\service\ProductCacheService.java uses or overrides a deprecated API.
+[INFO] /D:/DO_AN_CT_5/DOAN_J2EE/backend/src/main/java/com/elitan/backend/service/ProductCacheService.java: Recompile with -Xlint:deprecation for details.
+[INFO] /D:/DO_AN_CT_5/DOAN_J2EE/backend/src/main/java/com/elitan/backend/service/AdminService.java: D:\DO_AN_CT_5\DOAN_J2EE\backend\src\main\java\com\elitan\backend\service\AdminService.java uses unchecked or unsafe operations.
+[INFO] /D:/DO_AN_CT_5/DOAN_J2EE/backend/src/main/java/com/elitan/backend/service/AdminService.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ backend ---
+[INFO] Copying 0 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ backend ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 17] to target\test-classes
+[INFO] 
+[INFO] <<< spring-boot:3.4.3:run (default-cli) < test-compile @ backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.4.3:run (default-cli) @ backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2026-03-30T16:09:08.891+07:00  INFO 8912 --- [elitan-backend] [           main] com.elitan.backend.BackendApplication    : Starting BackendApplication using Java 17.0.18 with PID 8912 (D:\DO_AN_CT_5\DOAN_J2EE\backend\target\classes started by Admin in D:\DO_AN_CT_5\DOAN_J2EE\backend)
+2026-03-30T16:09:08.894+07:00  INFO 8912 --- [elitan-backend] [           main] com.elitan.backend.BackendApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-03-30T16:09:09.730+07:00  INFO 8912 --- [elitan-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-03-30T16:09:09.732+07:00  INFO 8912 --- [elitan-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-30T16:09:09.944+07:00  INFO 8912 --- [elitan-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 203 ms. Found 15 JPA repository interfaces.
+2026-03-30T16:09:10.001+07:00  INFO 8912 --- [elitan-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-03-30T16:09:10.004+07:00  INFO 8912 --- [elitan-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-03-30T16:09:10.036+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.CartItemRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.040+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.CartRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.046+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.CollectionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.047+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.ColorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.047+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.ImportHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.048+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.MaterialRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.048+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.OrderDetailRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.048+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.OrderRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.049+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.PasswordResetTokenRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.050+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.ProductRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.050+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.ProductVariantRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.051+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.ReviewRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.051+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.RoomDesignRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.051+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.052+07:00  INFO 8912 --- [elitan-backend] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.elitan.backend.repository.WishlistRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-03-30T16:09:10.052+07:00  INFO 8912 --- [elitan-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 30 ms. Found 0 Redis repository interfaces.
+2026-03-30T16:09:11.052+07:00  INFO 8912 --- [elitan-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-03-30T16:09:11.065+07:00  INFO 8912 --- [elitan-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-30T16:09:11.066+07:00  INFO 8912 --- [elitan-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2026-03-30T16:09:11.135+07:00  INFO 8912 --- [elitan-backend] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-30T16:09:11.136+07:00  INFO 8912 --- [elitan-backend] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2193 ms
+2026-03-30T16:09:11.322+07:00  INFO 8912 --- [elitan-backend] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-30T16:09:11.372+07:00  INFO 8912 --- [elitan-backend] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2026-03-30T16:09:11.403+07:00  INFO 8912 --- [elitan-backend] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-30T16:09:11.709+07:00  INFO 8912 --- [elitan-backend] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-30T16:09:11.740+07:00  INFO 8912 --- [elitan-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-30T16:09:11.910+07:00  INFO 8912 --- [elitan-backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@31880efa
+2026-03-30T16:09:11.912+07:00  INFO 8912 --- [elitan-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-30T16:09:11.992+07:00  INFO 8912 --- [elitan-backend] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.4.3
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-03-30T16:09:13.292+07:00  INFO 8912 --- [elitan-backend] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-30T16:09:13.426+07:00  INFO 8912 --- [elitan-backend] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-30T16:09:13.734+07:00  INFO 8912 --- [elitan-backend] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-30T16:09:15.365+07:00  WARN 8912 --- [elitan-backend] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'orderController' defined in file [D:\DO_AN_CT_5\DOAN_J2EE\backend\target\classes\com\elitan\backend\controller\OrderController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'orderService' defined in file [D:\DO_AN_CT_5\DOAN_J2EE\backend\target\classes\com\elitan\backend\service\OrderService.class]: Unsatisfied dependency expressed through constructor parameter 7: Error creating bean with name 'OTPService' defined in file [D:\DO_AN_CT_5\DOAN_J2EE\backend\target\classes\com\elitan\backend\service\OTPService.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'org.springframework.mail.javamail.JavaMailSender' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2026-03-30T16:09:15.366+07:00  INFO 8912 --- [elitan-backend] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-30T16:09:15.368+07:00  INFO 8912 --- [elitan-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-30T16:09:15.374+07:00  INFO 8912 --- [elitan-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-30T16:09:15.377+07:00  INFO 8912 --- [elitan-backend] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-03-30T16:09:15.388+07:00  INFO 8912 --- [elitan-backend] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-03-30T16:09:15.416+07:00 ERROR 8912 --- [elitan-backend] [           main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 0 of constructor in com.elitan.backend.service.OTPService required a bean of type 'org.springframework.mail.javamail.JavaMailSender' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'org.springframework.mail.javamail.JavaMailSender' in your configuration.
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  17.600 s
+[INFO] Finished at: 2026-03-30T16:09:15+07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.4.3:run (default-cli) on project backend: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

@@ -17,7 +17,7 @@ public class ProductService {
     }
 
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return productRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
     }
 
     public org.springframework.data.domain.Page<Product> searchProducts(
@@ -75,6 +75,8 @@ public class ProductService {
         product.setDimensions(productDetails.getDimensions());
         product.setStock(productDetails.getStock());
         product.setThumbnailUrl(productDetails.getThumbnailUrl());
+        product.setGlbUrl(productDetails.getGlbUrl());
+        product.setGlbName(productDetails.getGlbName());
         
         // Update variants
         if (productDetails.getVariants() != null) {

@@ -7,7 +7,7 @@ import {
   User, Package, Settings, Heart, LogOut, 
   MapPin, Phone, Mail, Calendar, CheckCircle2, 
   Clock, Truck, ChevronRight, ShieldCheck, 
-  MessageCircle, Camera, Edit2
+  MessageCircle, Camera, Edit2, RotateCw, Gem
 } from 'lucide-react';
 import { 
   Tabs, TabsContent, TabsList, TabsTrigger 

@@ -42,6 +42,9 @@ public class Product {
 
     // 3D Model URL (Cloudinary)
     private String glbUrl;
+    
+    // Tên mô hình 3D (từ file Excel)
+    private String glbName;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Builder.Default

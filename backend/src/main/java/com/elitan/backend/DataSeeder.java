@@ -17,26 +17,14 @@ public class DataSeeder implements CommandLineRunner {
         private final CollectionRepository collectionRepository;
         private final com.elitan.backend.repository.ColorRepository colorRepository;
         private final com.elitan.backend.repository.MaterialRepository materialRepository;
-        private final com.elitan.backend.repository.ReviewRepository reviewRepository;
-        private final com.elitan.backend.repository.WishlistRepository wishlistRepository;
-        private final com.elitan.backend.repository.CartItemRepository cartItemRepository;
-        private final com.elitan.backend.repository.OrderDetailRepository orderDetailRepository;
 
         public DataSeeder(ProductRepository productRepository, CollectionRepository collectionRepository, 
                           com.elitan.backend.repository.ColorRepository colorRepository,
-                          com.elitan.backend.repository.MaterialRepository materialRepository,
-                          com.elitan.backend.repository.ReviewRepository reviewRepository,
-                          com.elitan.backend.repository.WishlistRepository wishlistRepository,
-                          com.elitan.backend.repository.CartItemRepository cartItemRepository,
-                          com.elitan.backend.repository.OrderDetailRepository orderDetailRepository) {
+                          com.elitan.backend.repository.MaterialRepository materialRepository) {
                 this.productRepository = productRepository;
                 this.collectionRepository = collectionRepository;
                 this.colorRepository = colorRepository;
                 this.materialRepository = materialRepository;
-                this.reviewRepository = reviewRepository;
-                this.wishlistRepository = wishlistRepository;
-                this.cartItemRepository = cartItemRepository;
-                this.orderDetailRepository = orderDetailRepository;
         }
 
         @Override
@@ -48,15 +36,12 @@ public class DataSeeder implements CommandLineRunner {
                         seedMaterials();
                 }
                 
-                // Re-seed if count is small or categories are old
-                if (productRepository.count() < 4 || productRepository.findByCategory("Chair").size() > 0) {
-                        reviewRepository.deleteAll();
-                        wishlistRepository.deleteAll();
-                        cartItemRepository.deleteAll();
-                        orderDetailRepository.deleteAll();
-                        productRepository.deleteAll();
+                // Không seed sản phẩm nữa để kho luôn trống cho user tự nhập
+                /*
+                if (productRepository.count() == 0) {
                         seedProducts();
                 }
+                */
                 
                 // Fix existing null stocks and ratings
                 java.util.List<com.elitan.backend.entity.Product> allProducts = productRepository.findAll();

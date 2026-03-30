@@ -27,6 +27,7 @@ export default function AdminProducts() {
   const [isImporting, setIsImporting] = useState(false);
   const importInputRef = useRef(null);
   
+  const [lang, setLang] = useState('vi'); // Default to Vietnamese
   const [formData, setFormData] = useState({
     name: '', category: '', price: '', stock: '', imageUrl: '', additionalImages: [], glbUrl: '', description: '', color: '', material: '', dimensions: '',
     variants: []
@@ -34,7 +35,7 @@ export default function AdminProducts() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('/api/products');
+      const res = await axios.get(`/api/products?_t=${new Date().getTime()}`);
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -242,6 +243,8 @@ export default function AdminProducts() {
     }
   }, []);
 
+
+
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     setIsDragging(false);
@@ -267,31 +270,41 @@ export default function AdminProducts() {
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="text-[#775a19] text-xs tracking-[0.3em] font-semibold uppercase mb-4"
           >
-            Inventory
+            {lang === 'vi' ? 'Kho Hàng' : 'Inventory'}
           </motion.p>
           <h1 className="text-5xl font-serif tracking-wide text-[#121212]">
-            <SplitText text="Product Catalog" />
+            <SplitText text={lang === 'vi' ? 'Quản Lý Sản Phẩm' : 'Product Catalog'} />
           </h1>
         </div>
         <div className="flex items-center space-x-4">
           <motion.button 
+            whileHover={{ scale: 1.05 }}
+            onClick={() => setLang(lang === 'en' ? 'vi' : 'en')}
+            className="flex items-center justify-center w-12 h-12 border border-[#e2e2e2] bg-[#f9f9f9] text-[#131313] hover:border-[#131313] transition-colors"
+            title="Đổi ngôn ngữ | Switch Language"
+          >
+            <span className="font-bold text-xs">{lang === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
+          </motion.button>
+
+
+          <motion.button 
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setShowImport(!showImport)}
-            className="flex items-center space-x-3 border border-[#775a19] text-[#775a19] px-6 py-4 rounded-none hover:bg-[#775a19] hover:text-white transition-colors relative overflow-hidden group"
+            onClick={() => { setShowImport(!showImport); }}
+            className="flex items-center space-x-3 border border-[#775a19] text-[#775a19] px-4 py-4 rounded-none hover:bg-[#775a19] hover:text-white transition-colors relative"
           >
             <Upload className="w-4 h-4" />
-            <span className="font-semibold text-xs tracking-widest uppercase">Import Excel</span>
+            <span className="font-semibold text-[0.65rem] tracking-widest uppercase">{lang === 'vi' ? 'Nhập Data (.xlsx)' : 'Import Data'}</span>
           </motion.button>
+          
           <motion.button 
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => handleOpenModal()}
-            className="flex items-center space-x-3 bg-[#131313] text-white px-8 py-4 rounded-none hover:bg-[#353534] transition-colors relative overflow-hidden group"
+            className="flex items-center space-x-3 bg-[#131313] text-white px-6 py-4 rounded-none hover:bg-[#353534] transition-colors relative"
           >
-            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
             <Plus className="w-4 h-4" />
-            <span className="font-semibold text-xs tracking-widest uppercase">New Product</span>
+            <span className="font-semibold text-[0.65rem] tracking-widest uppercase">{lang === 'vi' ? 'Thêm Sản Phẩm' : 'New Product'}</span>
           </motion.button>
         </div>
       </div>
@@ -372,6 +385,8 @@ export default function AdminProducts() {
           </motion.div>
         )}
       </AnimatePresence>
+
+
 
       {/* Grid Layout */}
       {loading ? (

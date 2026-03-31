@@ -36,10 +36,10 @@ public class OrderController {
                 return ResponseEntity.status(401).body(java.util.Map.of("error", "Vui lòng đăng nhập để nhận mã OTP"));
             }
             String email = getUserEmail(authentication);
-            
+
             // Gửi OTP tới email của user và dùng email làm key để verify sau này
-            orderService.sendCheckoutOTP(email, email); 
-            
+            orderService.sendCheckoutOTP(email, email);
+
             return ResponseEntity.ok(java.util.Map.of("message", "Mã OTP đã được gửi tới " + email));
         } catch (Exception e) {
             log.error("Error sending OTP: ", e);
@@ -75,6 +75,15 @@ public class OrderController {
             Authentication authentication,
             @PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.cancelOrder(getUserEmail(authentication), orderId));
+    }
+
+    // Xóa cứng đơn hàng (dùng khi hủy ngang MoMo để làm sạch DB)
+    @DeleteMapping("/{orderId}/hard-delete")
+    public ResponseEntity<java.util.Map<String, String>> hardDeleteOrder(
+            Authentication authentication,
+            @PathVariable Long orderId) {
+        orderService.hardDeleteUnpaidOrder(getUserEmail(authentication), orderId);
+        return ResponseEntity.ok(java.util.Map.of("message", "Đã xóa vĩnh viễn đơn hàng hợp lệ"));
     }
 
     // --- Admin Endpoints ---

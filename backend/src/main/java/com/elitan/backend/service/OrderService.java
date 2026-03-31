@@ -33,13 +33,13 @@ public class OrderService {
     private final OTPService otpService;
 
     public OrderService(OrderRepository orderRepository,
-                        OrderDetailRepository orderDetailRepository,
-                        CartRepository cartRepository,
-                        CartItemRepository cartItemRepository,
-                        UserRepository userRepository,
-                        ProductRepository productRepository,
-                        ProductVariantRepository variantRepository,
-                        OTPService otpService) {
+            OrderDetailRepository orderDetailRepository,
+            CartRepository cartRepository,
+            CartItemRepository cartItemRepository,
+            UserRepository userRepository,
+            ProductRepository productRepository,
+            ProductVariantRepository variantRepository,
+            OTPService otpService) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.cartRepository = cartRepository;
@@ -78,7 +78,8 @@ public class OrderService {
         for (CartItem item : cartItems) {
             Integer stock = item.getVariant().getStock();
             if (stock == null || stock < item.getQuantity()) {
-                throw new RuntimeException("Sản phẩm " + item.getVariant().getProduct().getName() + " (" + item.getVariant().getColor() + ") không đủ số lượng trong kho");
+                throw new RuntimeException("Sản phẩm " + item.getVariant().getProduct().getName() + " ("
+                        + item.getVariant().getColor() + ") không đủ số lượng trong kho");
             }
         }
 
@@ -147,7 +148,8 @@ public class OrderService {
         for (CartItem item : cartItems) {
             ProductVariant v = item.getVariant();
             Integer currentStock = v.getStock();
-            if (currentStock == null) currentStock = 0;
+            if (currentStock == null)
+                currentStock = 0;
             v.setStock(currentStock - item.getQuantity());
             variantRepository.save(v);
         }
@@ -214,6 +216,27 @@ public class OrderService {
 
         List<OrderDetail> details = orderDetailRepository.findByOrderId(order.getId());
         return mapToOrderResponse(order, details);
+    }
+
+    // Xóa cứng đơn hàng (làm sạch DB hoàn toàn, hoàn kho)
+    @Transactional
+    public void hardDeleteUnpaidOrder(String userEmail, Long orderId) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Không có quyền truy cập");
+        }
+
+        if (!"PENDING".equals(order.getStatus())) {
+            throw new RuntimeException("Chỉ có thể xóa vĩnh viễn đơn hàng chờ xử lý");
+        }
+
+        restockInventory(order);
+        orderRepository.delete(order);
     }
 
     // Lấy tất cả đơn hàng (cho Admin)

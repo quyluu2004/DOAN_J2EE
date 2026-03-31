@@ -53,7 +53,7 @@ public class MomoService {
         try {
             // 1. Tạo requestId và orderId cho MoMo
             String requestId = partnerCode + System.currentTimeMillis();
-            String momoOrderId = requestId; // MoMo yêu cầu orderId = requestId lần đầu
+            String momoOrderId = paymentRequest.getOrderId() + "_" + System.currentTimeMillis();
 
             String amount = String.valueOf(paymentRequest.getAmount());
             String orderInfo = paymentRequest.getOrderInfo() != null

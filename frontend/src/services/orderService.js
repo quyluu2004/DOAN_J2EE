@@ -78,3 +78,16 @@ export const cancelOrder = async (orderId) => {
 
     return await response.json();
 };
+
+export const hardDeleteOrder = async (orderId) => {
+    const response = await fetch(`${API_URL}/${orderId}/hard-delete`, {
+        method: "DELETE",
+        headers: getHeaders(),
+    });
+
+    if (!response.ok) {
+        throw new Error("Xóa cứng đơn hàng thất bại");
+    }
+
+    return await response.json();
+};

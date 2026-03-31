@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://localhost:8443';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 /**
  * Custom hook để xử lý thanh toán qua MoMo.

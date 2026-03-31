@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import * as orderService from '../services/orderService';
+import { useCart } from '../context/CartContext';
 
 /**
  * Trang kết quả thanh toán MoMo.
@@ -13,23 +15,42 @@ export default function MomoReturn() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [status, setStatus] = useState('loading');
+  const { clearCartLocal } = useCart();
 
   useEffect(() => {
-    // MoMo gắn các params sau vào URL khi redirect về:
     const resultCode = searchParams.get('resultCode');
-    const orderId = searchParams.get('orderId');
-    const amount = searchParams.get('amount');
-    const message = searchParams.get('message');
+    const momoOrderId = searchParams.get('orderId');
+    console.log('MoMo return params:', { resultCode, momoOrderId });
 
-    console.log('MoMo return params:', { resultCode, orderId, amount, message });
+    const processReturn = async () => {
+      if (resultCode === '0') {
+        // 1. THANH TOÁN THÀNH CÔNG -> TẠO ĐƠN HÀNG VÀO LÚC NÀY
+        const savedOrderStr = localStorage.getItem('pendingMomoOrder');
+        if (savedOrderStr) {
+          localStorage.removeItem('pendingMomoOrder'); // Xóa ngay để chống StrictMode double-call
+          try {
+            const orderData = JSON.parse(savedOrderStr);
+            await orderService.createOrder(orderData);
+            try { clearCartLocal(); } catch (e) {}
+            setStatus('success');
+          } catch (err) {
+            console.error("Lỗi khi lưu đơn hàng sau thanh toán MoMo:", err);
+            // Xảy ra nếu lỗi backend (đã trả tiền nhưng server sập/hết hàng)
+            setStatus('failed'); 
+          }
+        } else {
+          // Trường hợp F5 lại trang success
+          setStatus('success');
+        }
+      } else {
+        // 2. THANH TOÁN THẤT BẠI HOẶC BỊ HỦY -> KHÔNG LÀM GÌ, DB KHÔNG CÓ RÁC
+        setStatus('failed');
+        localStorage.removeItem('pendingMomoOrder');
+      }
+    };
 
-    // resultCode = "0" là thành công
-    if (resultCode === '0') {
-      setStatus('success');
-    } else {
-      setStatus('failed');
-    }
-  }, [searchParams]);
+    processReturn();
+  }, [searchParams, clearCartLocal]);
 
   // Auto redirect về trang đơn hàng sau 5s nếu thành công
   useEffect(() => {

@@ -5,7 +5,7 @@ import { getWishlist, toggleWishlist } from '../services/wishlistService';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import * as reviewService from '../services/reviewService';
-import { Plus, Minus, MoveLeft, ShoppingBag, Star, Send, Heart, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
+import { Plus, Minus, MoveLeft, ShoppingBag, Star, Send, Heart, ShieldCheck, Truck, RotateCcw, Crown } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocalization } from '../context/LocalizationContext';
@@ -260,6 +260,15 @@ export default function ProductDetail() {
               >
                 {formatPrice(product.price)}
               </motion.div>
+              {/* VIP Exclusive Badge */}
+              {product.vipOnly && (
+                <div className="flex items-center gap-2 pt-3">
+                  <div className="flex items-center gap-1.5 bg-gradient-to-r from-[#c8a35a] to-[#e8c968] px-4 py-1.5 rounded-full">
+                    <Crown size={14} className="text-[#221a0c]" />
+                    <span className="text-[10px] font-black text-[#221a0c] uppercase tracking-wider">VIP Exclusive</span>
+                  </div>
+                </div>
+              )}
             </header>
 
             <div className="space-y-6">
@@ -306,18 +315,23 @@ export default function ProductDetail() {
                </div>
                
                 <motion.button 
-                 whileHover={selectedVariant?.stock > 0 ? { y: -5, boxShadow: "0 20px 40px rgba(112,50,37,0.15)" } : {}}
-                 whileTap={selectedVariant?.stock > 0 ? { scale: 0.98 } : {}}
-                 onClick={handleAddToCart}
+                 whileHover={(selectedVariant?.stock > 0 && !(product.vipOnly && !user?.vip)) ? { y: -5, boxShadow: "0 20px 40px rgba(112,50,37,0.15)" } : {}}
+                 whileTap={(selectedVariant?.stock > 0 && !(product.vipOnly && !user?.vip)) ? { scale: 0.98 } : {}}
+                 onClick={product.vipOnly && !user?.vip ? () => navigate('/wallet') : handleAddToCart}
                  disabled={!selectedVariant || selectedVariant.stock <= 0}
                  className={`flex-1 rounded-sm h-16 uppercase tracking-[0.2em] text-[10px] font-black transition-all duration-700 flex justify-center items-center gap-4 px-8 ${
-                    !selectedVariant || selectedVariant.stock <= 0 
+                    product.vipOnly && !user?.vip
+                    ? 'bg-gradient-to-r from-[#c8a35a] to-[#e8c968] text-[#221a0c] cursor-pointer'
+                    : !selectedVariant || selectedVariant.stock <= 0 
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                     : 'bg-[#221a0c] hover:bg-[#703225] text-white'
                  }`}
                >
-                 <ShoppingBag size={15} strokeWidth={2.5} />
-                 {selectedVariant?.stock > 0 ? t('product.acquire') : t('product.stock.outofstock') || 'Out of stock'}
+                 {product.vipOnly && !user?.vip ? (
+                   <><Crown size={15} strokeWidth={2.5} /> Upgrade to VIP to make purchases.</>
+                 ) : (
+                   <><ShoppingBag size={15} strokeWidth={2.5} /> {selectedVariant?.stock > 0 ? t('product.acquire') : t('product.stock.outofstock') || 'Out of stock'}</>
+                 )}
                </motion.button>
                
                <button 

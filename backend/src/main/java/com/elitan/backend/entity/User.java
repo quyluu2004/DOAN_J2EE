@@ -45,5 +45,17 @@ public class User {
     private String avatarUrl;
 
     @Builder.Default
+    private Boolean vip = false;
+    private java.time.LocalDateTime vipExpiresAt;
+
+    public Boolean getVip() {
+        return vip != null && vip;
+    }
+
+    public boolean isVip() {
+        return vip != null && vip;
+    }
+
+    @Builder.Default
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
 }

@@ -12,5 +12,7 @@ public class AuthResponse {
     private String email;
     private String fullName;
     private String role;
+    private Boolean vip;
+    private java.time.LocalDateTime vipExpiresAt;
     private String message;
 }

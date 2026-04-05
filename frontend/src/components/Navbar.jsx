@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Search, Menu, LogOut, Heart, Globe, ChevronDown, Check } from 'lucide-react';
+import { ShoppingCart, Search, Menu, LogOut, Heart, Globe, ChevronDown, Check, Wallet, ShieldCheck, Crown } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
@@ -157,8 +157,14 @@ const Navbar = () => {
 
                     {isAuthenticated ? (
                         <>
-                            <span className="hidden md:block text-sm font-medium text-gray-600 ml-4">
+                            <span className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-600 ml-4">
                                 {t('nav.welcome')}, {user?.fullName?.split(' ')[0]}
+                                {user?.vip && (
+                                    <span className="flex items-center gap-1 bg-gradient-to-r from-[#c8a35a] to-[#e8c968] px-2 py-0.5 rounded-full shadow-sm">
+                                        <Crown size={10} className="text-[#221a0c]" strokeWidth={3} />
+                                        <span className="text-[9px] font-black text-[#221a0c] tracking-tight uppercase">VIP</span>
+                                    </span>
+                                )}
                             </span>
                             <Link to="/wishlist" className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black transition">
                                 <Heart className="w-4 h-4" />
@@ -167,6 +173,16 @@ const Navbar = () => {
                             <Link to="/orders" className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black transition">
                                 {t('nav.orders')}
                             </Link>
+                            <Link to="/wallet" className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black transition">
+                                <Wallet className="w-4 h-4" />
+                                {t('wallet')}
+                            </Link>
+                            {user?.role === 'ADMIN' && (
+                                <Link to="/admin" className="flex items-center gap-1 text-sm font-bold text-red-600 hover:text-red-800 transition">
+                                    <ShieldCheck className="w-4 h-4" />
+                                    Admin
+                                </Link>
+                            )}
                             <button
                                 onClick={() => { logout(); navigate('/'); }}
                                 className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-red-600 transition"

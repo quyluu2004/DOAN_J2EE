@@ -61,6 +61,22 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    @GetMapping("/setup-test-vip")
+    public ResponseEntity<String> setupTestVip() {
+        List<Product> products = productService.getAllProducts();
+        if (products.size() > 0) {
+            Product p1 = products.get(0);
+            p1.setVipOnly(true);
+            productService.updateProduct(p1.getId(), p1);
+        }
+        if (products.size() > 1) {
+            Product p2 = products.get(1);
+            p2.setVipOnly(true);
+            productService.updateProduct(p2.getId(), p2);
+        }
+        return ResponseEntity.ok("Thành công! Đã set sản phẩm 1 và 2 thành đồ VIP.");
+    }
+
     @GetMapping("/search")
     public ResponseEntity<org.springframework.data.domain.Page<Product>> searchProducts(
             @RequestParam(required = false) String name,

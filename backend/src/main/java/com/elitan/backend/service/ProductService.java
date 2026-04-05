@@ -75,6 +75,7 @@ public class ProductService {
         product.setDimensions(productDetails.getDimensions());
         product.setStock(productDetails.getStock());
         product.setThumbnailUrl(productDetails.getThumbnailUrl());
+        product.setVipOnly(productDetails.isVipOnly());
         
         // Update variants
         if (productDetails.getVariants() != null) {
@@ -99,3 +100,4 @@ public class ProductService {
         }
     }
 }
+

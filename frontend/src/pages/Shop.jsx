@@ -372,6 +372,13 @@ export default function Shop() {
                               <Heart size={16} fill={wishlistIds.includes(product.id) ? "currentColor" : "none"} />
                            </button>
 
+                           {/* VIP Badge */}
+                           {product.vipOnly && (
+                             <div className="absolute top-4 left-4 z-30 flex items-center gap-1.5 bg-gradient-to-r from-[#c8a35a] to-[#e8c968] px-3 py-1 rounded-full shadow-lg">
+                               <span className="text-[9px] font-black text-[#221a0c] uppercase tracking-wider">VIP</span>
+                             </div>
+                           )}
+
                            {/* Highlight Add to Cart */}
                            <button 
                              onClick={(e) => handleAddToCart(e, product)}

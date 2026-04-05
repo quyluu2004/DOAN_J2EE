@@ -31,6 +31,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final ProductVariantRepository variantRepository;
     private final OTPService otpService;
+    private final WalletService walletService;
 
     public OrderService(OrderRepository orderRepository,
             OrderDetailRepository orderDetailRepository,
@@ -39,7 +40,8 @@ public class OrderService {
             UserRepository userRepository,
             ProductRepository productRepository,
             ProductVariantRepository variantRepository,
-            OTPService otpService) {
+            OTPService otpService,
+            WalletService walletService) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.cartRepository = cartRepository;
@@ -48,6 +50,7 @@ public class OrderService {
         this.productRepository = productRepository;
         this.variantRepository = variantRepository;
         this.otpService = otpService;
+        this.walletService = walletService;
     }
 
     // Trigger OTP sending to Zalo/Phone
@@ -74,11 +77,19 @@ public class OrderService {
             throw new RuntimeException("Mã xác thực OTP không chính xác hoặc đã hết hạn");
         }
 
+        // Check VIP-only products
+        for (CartItem item : cartItems) {
+            Product p = item.getVariant().getProduct();
+            if (p.isVipOnly() && !user.isVip()) {
+                throw new RuntimeException("Product \"" + p.getName() + "\" Exclusive for VIP members! Please upgrade to VIP to purchase.");
+            }
+        }
+
         // Check Inventory & Calculate totals
         for (CartItem item : cartItems) {
             Integer stock = item.getVariant().getStock();
             if (stock == null || stock < item.getQuantity()) {
-                throw new RuntimeException("Sản phẩm " + item.getVariant().getProduct().getName() + " ("
+                throw new RuntimeException("Product " + item.getVariant().getProduct().getName() + " ("
                         + item.getVariant().getColor() + ") không đủ số lượng trong kho");
             }
         }
@@ -124,6 +135,12 @@ public class OrderService {
                 .build();
 
         Order savedOrder = orderRepository.save(order);
+
+        // Thanh toán bằng ví
+        if ("WALLET".equals(request.getPaymentMethod())) {
+            BigDecimal payAmount = depositAmount.compareTo(BigDecimal.ZERO) > 0 ? depositAmount : totalPrice;
+            walletService.pay(userEmail, payAmount, "Thanh toán đơn hàng " + trackingNumber);
+        }
 
         // Tạo OrderDetail (Snapshot product data)
         List<OrderDetail> orderDetails = cartItems.stream().map(item -> {
@@ -210,6 +227,12 @@ public class OrderService {
 
         if (!"CANCELLED".equals(order.getStatus())) {
             restockInventory(order);
+            // Hoàn tiền vào ví nếu thanh toán bằng WALLET
+            if ("WALLET".equals(order.getPaymentMethod())) {
+                BigDecimal refundAmount = order.getDepositAmount() != null && order.getDepositAmount().compareTo(BigDecimal.ZERO) > 0
+                        ? order.getDepositAmount() : order.getTotalPrice();
+                walletService.refund(userEmail, refundAmount, "Hoàn tiền đơn hàng " + order.getTrackingNumber());
+            }
         }
         order.setStatus("CANCELLED");
         orderRepository.save(order);

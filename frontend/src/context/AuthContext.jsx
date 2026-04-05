@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import * as authService from "../services/authService";
+import * as userService from "../services/userService";
 
 // Tạo Context
 const AuthContext = createContext(null);
@@ -11,12 +12,17 @@ export const AuthProvider = ({ children }) => {
 
     // Khôi phục trạng thái đăng nhập từ localStorage khi load app
     useEffect(() => {
-        const savedUser = authService.getCurrentUser();
-        const token = authService.getToken();
-        if (savedUser && token) {
-            setUser(savedUser);
-        }
-        setLoading(false);
+        const initAuth = async () => {
+            const savedUser = authService.getCurrentUser();
+            const token = authService.getToken();
+            if (savedUser && token) {
+                setUser(savedUser);
+                // Đồng bộ lại profile để cập nhật VIP status mới nhất
+                await refreshProfile();
+            }
+            setLoading(false);
+        };
+        initAuth();
     }, []);
 
     // Đăng nhập thường
@@ -26,6 +32,8 @@ export const AuthProvider = ({ children }) => {
             email: data.email,
             fullName: data.fullName,
             role: data.role,
+            vip: data.vip,
+            vipExpiresAt: data.vipExpiresAt,
         });
         return data;
     };
@@ -37,6 +45,8 @@ export const AuthProvider = ({ children }) => {
             email: data.email,
             fullName: data.fullName,
             role: data.role,
+            vip: data.vip,
+            vipExpiresAt: data.vipExpiresAt,
         });
         return data;
     };
@@ -49,6 +59,8 @@ export const AuthProvider = ({ children }) => {
                 email: data.email,
                 fullName: data.fullName,
                 role: data.role,
+                vip: data.vip,
+                vipExpiresAt: data.vipExpiresAt,
             });
         }
         return data;
@@ -66,7 +78,25 @@ export const AuthProvider = ({ children }) => {
         // Cập nhật localStorage
         const saved = authService.getCurrentUser();
         if (saved) {
-            localStorage.setItem("user", JSON.stringify({ ...saved, ...userData }));
+            const newUser = { ...saved, ...userData };
+            localStorage.setItem("user", JSON.stringify(newUser));
+        }
+    };
+
+    // Lấy dữ liệu profile mới nhất từ server
+    const refreshProfile = async () => {
+        try {
+            const data = await userService.getProfile();
+            updateUser({
+                vip: data.vip,
+                vipExpiresAt: data.vipExpiresAt,
+                role: data.role,
+                fullName: data.fullName,
+                avatarUrl: data.avatarUrl
+            });
+            return data;
+        } catch (error) {
+            console.error("Failed to refresh profile:", error);
         }
     };
 
@@ -79,6 +109,7 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         updateUser,
+        refreshProfile,
     };
 
     return (

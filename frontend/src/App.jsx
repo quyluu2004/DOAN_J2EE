@@ -26,6 +26,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import RoomDesigner from './pages/RoomDesigner';
 import MyDesigns from './pages/MyDesigns';
 import MomoReturn from './pages/MomoReturn';
+import WalletPage from './pages/WalletPage';
+import WalletTopUpReturn from './pages/WalletTopUpReturn';
+import WalletTopUp from './pages/WalletTopUp';
 
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -128,6 +131,18 @@ function AnimatedRoutes() {
         } />
         {/* MoMo Payment Return - NEW */}
         <Route path="/payment/momo-return" element={<MomoReturn />} />
+        {/* Wallet Routes */}
+        <Route path="/wallet" element={
+          <PageTransition>
+            <WalletPage />
+          </PageTransition>
+        } />
+        <Route path="/wallet/topup" element={
+          <PageTransition>
+            <WalletTopUp />
+          </PageTransition>
+        } />
+        <Route path="/wallet/topup-return" element={<WalletTopUpReturn />} />
 
         {/* Admin Routes */}
         <Route element={<ProtectedRoute adminOnly={true} />}>

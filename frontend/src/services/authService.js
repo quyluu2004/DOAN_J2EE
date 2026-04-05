@@ -23,6 +23,8 @@ export const register = async (fullName, email, password) => {
             email: data.email,
             fullName: data.fullName,
             role: data.role,
+            vip: data.vip,
+            vipExpiresAt: data.vipExpiresAt,
         }));
     }
 
@@ -49,6 +51,8 @@ export const login = async (email, password) => {
         email: data.email,
         fullName: data.fullName,
         role: data.role,
+        vip: data.vip,
+        vipExpiresAt: data.vipExpiresAt,
     }));
 
     return data;
@@ -74,6 +78,8 @@ export const socialLogin = async (token, provider) => {
         email: data.email,
         fullName: data.fullName,
         role: data.role,
+        vip: data.vip,
+        vipExpiresAt: data.vipExpiresAt,
     }));
 
     return data;

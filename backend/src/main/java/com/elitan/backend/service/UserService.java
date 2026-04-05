@@ -35,6 +35,8 @@ public class UserService {
                 .avatarUrl(user.getAvatarUrl())
                 .provider(user.getProvider())
                 .role(user.getRole())
+                .vip(user.getVip())
+                .vipExpiresAt(user.getVipExpiresAt())
                 .build();
     }
 
@@ -66,6 +68,8 @@ public class UserService {
                 .avatarUrl(user.getAvatarUrl())
                 .provider(user.getProvider())
                 .role(user.getRole())
+                .vip(user.getVip())
+                .vipExpiresAt(user.getVipExpiresAt())
                 .build();
     }
 
@@ -99,6 +103,8 @@ public class UserService {
                 .avatarUrl(user.getAvatarUrl())
                 .provider(user.getProvider())
                 .role(user.getRole())
+                .vip(user.getVip())
+                .vipExpiresAt(user.getVipExpiresAt())
                 .build()).collect(java.util.stream.Collectors.toList());
     }
 
@@ -116,6 +122,8 @@ public class UserService {
                 .avatarUrl(user.getAvatarUrl())
                 .provider(user.getProvider())
                 .role(user.getRole())
+                .vip(user.getVip())
+                .vipExpiresAt(user.getVipExpiresAt())
                 .build();
     }
 }

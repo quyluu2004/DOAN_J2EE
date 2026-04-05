@@ -59,7 +59,7 @@ public class MomoService {
             String orderInfo = paymentRequest.getOrderInfo() != null
                     ? paymentRequest.getOrderInfo()
                     : "Thanh toán đơn hàng #" + paymentRequest.getOrderId();
-            String requestType = "captureWallet";
+            String requestType = "payWithMethod";
             String extraData = "";
 
             // 2. Tạo rawSignature đúng thứ tự ABC theo tài liệu MoMo
@@ -209,5 +209,87 @@ public class MomoService {
                 + "&responseTime=" + ipnData.get("responseTime")
                 + "&resultCode=" + ipnData.get("resultCode")
                 + "&transId=" + ipnData.get("transId");
+    }
+
+    // ===== Tạo payment MoMo cho nạp ví =====
+    public MomoPaymentResponse createWalletTopUpPayment(String userEmail, long amountVND) {
+        try {
+            String requestId = partnerCode + System.currentTimeMillis();
+            String momoOrderId = "TOPUP_" + System.currentTimeMillis();
+            String amount = String.valueOf(amountVND);
+            String orderInfo = "Nạp ví Élitan - " + amountVND + " VND";
+            String requestType = "payWithMethod";
+            String extraData = "WALLET_TOPUP:" + userEmail;
+
+            // redirectUrl cho wallet top-up trỏ về trang khác
+            String walletRedirectUrl = redirectUrl.replace("/payment/momo-return", "/wallet/topup-return");
+
+            String rawSignature = "accessKey=" + accessKey
+                    + "&amount=" + amount
+                    + "&extraData=" + extraData
+                    + "&ipnUrl=" + ipnUrl
+                    + "&orderId=" + momoOrderId
+                    + "&orderInfo=" + orderInfo
+                    + "&partnerCode=" + partnerCode
+                    + "&redirectUrl=" + walletRedirectUrl
+                    + "&requestId=" + requestId
+                    + "&requestType=" + requestType;
+
+            String signature = signHmacSHA256(rawSignature, secretKey);
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("partnerCode", partnerCode);
+            body.put("accessKey", accessKey);
+            body.put("requestId", requestId);
+            body.put("amount", amount);
+            body.put("orderId", momoOrderId);
+            body.put("orderInfo", orderInfo);
+            body.put("redirectUrl", walletRedirectUrl);
+            body.put("ipnUrl", ipnUrl);
+            body.put("extraData", extraData);
+            body.put("requestType", requestType);
+            body.put("signature", signature);
+            body.put("lang", "vi");
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> momoResponse = restTemplate.postForObject(momoEndpoint, entity, Map.class);
+
+            if (momoResponse == null) {
+                return MomoPaymentResponse.builder()
+                        .success(false)
+                        .message("Không nhận được phản hồi từ MoMo")
+                        .build();
+            }
+
+            Integer resultCode = momoResponse.get("resultCode") != null
+                    ? (Integer) momoResponse.get("resultCode") : null;
+            String payUrl = (String) momoResponse.get("payUrl");
+
+            if (resultCode != null && resultCode == 0) {
+                return MomoPaymentResponse.builder()
+                        .success(true)
+                        .payUrl(payUrl)
+                        .orderId(momoOrderId)
+                        .resultCode(resultCode)
+                        .message("Tạo link nạp ví MoMo thành công")
+                        .build();
+            } else {
+                return MomoPaymentResponse.builder()
+                        .success(false)
+                        .resultCode(resultCode)
+                        .message("MoMo từ chối: " + momoResponse.get("message"))
+                        .build();
+            }
+        } catch (Exception e) {
+            log.error("Lỗi tạo MoMo wallet topup: ", e);
+            return MomoPaymentResponse.builder()
+                    .success(false)
+                    .message("Lỗi hệ thống: " + e.getMessage())
+                    .build();
+        }
     }
 }

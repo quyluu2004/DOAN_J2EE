@@ -7,7 +7,7 @@ import {
   User, Package, Settings, Heart, LogOut, 
   MapPin, Phone, Mail, Calendar, CheckCircle2, 
   Clock, Truck, ChevronRight, ShieldCheck, 
-  MessageCircle, Camera, Edit2, Gem, RotateCw
+  MessageCircle, Camera, Edit2, Gem, RotateCw, Crown, Wallet
 } from 'lucide-react';
 import { 
   Tabs, TabsContent, TabsList, TabsTrigger 
@@ -125,10 +125,38 @@ export default function Profile() {
                 <span className="flex items-center gap-1.5"><Mail size={14} className="text-[#c8a35a]" /> {user.email}</span>
                 <span className="flex items-center gap-1.5"><Calendar size={14} className="text-[#c8a35a]" /> {t('profile.member_since').replace('{{year}}', '2024')}</span>
                 <Badge className="bg-[#c8a35a] hover:bg-[#b08e4d] text-[#221a0c] font-bold">{t('profile.badge')}</Badge>
+                {profile?.vip && (
+                  <Badge className="bg-gradient-to-r from-[#c8a35a] to-[#e8c968] text-[#221a0c] font-black flex items-center gap-1">
+                    <Crown size={12} /> VIP Member
+                  </Badge>
+                )}
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
+              <Button variant="outline" className="border-[#c8a35a]/50 text-[#c8a35a] hover:bg-[#c8a35a]/10" onClick={() => window.location.href='/wallet'}>
+                <Wallet size={16} className="mr-2" />               
+                  {t('wallet')}
+              </Button>
+              {user?.role !== 'ADMIN' && (
+                <Button 
+                  variant="outline" 
+                  className="border-red-500/80 text-red-400 hover:bg-red-500/20 font-bold" 
+                  onClick={async () => {
+                    const token = localStorage.getItem('token');
+                    try {
+                      const res = await fetch('/api/users/make-me-admin', { headers: { 'Authorization': `Bearer ${token}` } });
+                      const data = await res.json();
+                      toast.success(data.message || 'Thành công');
+                      setTimeout(() => window.location.reload(), 3000);
+                    } catch (e) {
+                      toast.error('Lỗi khi nâng cấp');
+                    }
+                  }}
+                >
+                  [DEV] Lên quyền Admin
+                </Button>
+              )}
               <Button variant="outline" className="border-[#fff8f3]/20 text-white hover:bg-white/10" onClick={logout}>
                 <LogOut size={16} className="mr-2" />
                 {t('nav.logout')}

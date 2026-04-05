@@ -60,7 +60,21 @@ public class UserController {
         }
     }
 
-    // --- Admin Endpoints ---
+    // --- Admin & Dev Endpoints ---
+    @GetMapping("/make-me-admin")
+    public ResponseEntity<?> makeMeAdmin(Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "Báº¡n cáº§n Ä‘Äƒng nháº­p trÆ°á»›c."));
+        }
+        try {
+            com.elitan.backend.entity.User user = userService.findByEmail(authentication.getName());
+            userService.updateUserRole(user.getId(), "ADMIN");
+            return ResponseEntity.ok(Map.of("message", "ThÃ nh cÃ´ng: Báº¡n Ä‘Ã£ Ä‘Æ°á»£c thÄƒng cáº¥p lÃªn ADMIN. Vui lÃ²ng F5 (táº£i láº¡i) hoáº·c Ä‘Äƒng xuáº¥t vÃ  Ä‘Äƒng nháº­p láº¡i Ä‘á»ƒ hiá»ƒn thá»‹ nÃºt Admin."));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @GetMapping("/all")
     public ResponseEntity<java.util.List<UserProfileResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());

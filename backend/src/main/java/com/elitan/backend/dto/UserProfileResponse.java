@@ -18,4 +18,6 @@ public class UserProfileResponse {
     private String avatarUrl;
     private String provider;
     private String role;
+    private Boolean vip;
+    private java.time.LocalDateTime vipExpiresAt;
 }

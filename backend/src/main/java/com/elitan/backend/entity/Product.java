@@ -43,6 +43,18 @@ public class Product {
     // 3D Model URL (Cloudinary)
     private String glbUrl;
 
+    @Builder.Default
+    @com.fasterxml.jackson.annotation.JsonProperty("vipOnly")
+    private Boolean vipOnly = false;
+
+    public Boolean getVipOnly() {
+        return vipOnly != null && vipOnly;
+    }
+
+    public boolean isVipOnly() {
+        return vipOnly != null && vipOnly;
+    }
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Builder.Default
     private List<ProductVariant> variants = new ArrayList<>();

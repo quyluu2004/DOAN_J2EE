@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
 import { useLocalization } from '../context/LocalizationContext';
 import { useMomoPayment } from '../hooks/useMomoPayment';
+import * as walletServiceApi from '../services/walletService';
 
 const Checkout = () => {
     const { user } = useAuth();
@@ -30,6 +31,16 @@ const Checkout = () => {
     });
     const [otpSent, setOtpSent] = useState(false);
     const [otpCountdown, setOtpCountdown] = useState(0);
+    const [walletBalance, setWalletBalance] = useState(null);
+
+    // Fetch wallet balance once on mount
+    React.useEffect(() => {
+        if (user) {
+            walletServiceApi.getWallet()
+                .then(w => setWalletBalance(w.balance))
+                .catch(() => setWalletBalance(null));
+        }
+    }, [user]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -275,12 +286,20 @@ const Checkout = () => {
                                                         <span className="font-semibold text-sm">{t('checkout.payment.cod')}</span>
                                                     </div>
                                                 </label>
-                                                <label className={`block relative p-4 rounded-2xl border-2 cursor-pointer transition-all ${formData.paymentMethod === 'VNPAY' ? 'border-black bg-gray-50/50' : 'border-gray-100 hover:border-gray-200'}`}>
-                                                    <input type="radio" name="paymentMethod" value="VNPAY" checked={formData.paymentMethod === 'VNPAY'} onChange={handleInputChange} className="sr-only" />
+                                                <label className={`block relative p-4 rounded-2xl border-2 cursor-pointer transition-all ${formData.paymentMethod === 'WALLET' ? 'border-black bg-gray-50/50' : 'border-gray-100 hover:border-gray-200'}`}>
+                                                    <input type="radio" name="paymentMethod" value="WALLET" checked={formData.paymentMethod === 'WALLET'} onChange={handleInputChange} className="sr-only" />
                                                     <div className="flex items-center gap-3">
-                                                        <CreditCard size={16} />
-                                                        <span className="font-semibold text-sm">{t('checkout.payment.vnpay')}</span>
+                                                        <Wallet size={16} />
+                                                        <div>
+                                                            <span className="font-semibold text-sm">
+                                                                {t('checkout.payment.wallet')}
+                                                            </span>
+                                                            {walletBalance !== null && (
+                                                                <p className="text-xs text-gray-500 mt-0.5">Số dư: ${walletBalance?.toFixed(2)}</p>
+                                                            )}
+                                                        </div>
                                                     </div>
+                                                    {formData.paymentMethod === 'WALLET' && <div className="absolute top-4 right-4 text-black"><CheckCircle size={20} /></div>}
                                                 </label>
                                                 
                                                 {/* MoMo Instant Button as 3rd Grid Element */}

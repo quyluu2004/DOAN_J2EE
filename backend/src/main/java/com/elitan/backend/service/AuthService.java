@@ -68,6 +68,8 @@ public class AuthService {
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .role(user.getRole())
+                .vip(user.getVip())
+                .vipExpiresAt(user.getVipExpiresAt())
                 .build();
     }
 
@@ -96,6 +98,8 @@ public class AuthService {
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .role(user.getRole())
+                .vip(user.getVip())
+                .vipExpiresAt(user.getVipExpiresAt())
                 .message("Đăng nhập thành công!")
                 .build();
     }
@@ -169,6 +173,8 @@ public class AuthService {
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .role(user.getRole())
+                .vip(user.getVip())
+                .vipExpiresAt(user.getVipExpiresAt())
                 .message("Đăng nhập bằng " + provider + " thành công!")
                 .build();
     }

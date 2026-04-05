@@ -62,6 +62,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/cart/**").authenticated()
                         .requestMatchers("/api/wishlist/**").authenticated()
                         .requestMatchers("/api/orders/**").authenticated()
+                        .requestMatchers("/api/wallet/**").authenticated()
                         .requestMatchers("/api/users/profile").authenticated()
 
                         // 4. CATCH ALL

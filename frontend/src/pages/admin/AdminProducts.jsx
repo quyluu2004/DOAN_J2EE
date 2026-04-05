@@ -29,7 +29,7 @@ export default function AdminProducts() {
   
   const [formData, setFormData] = useState({
     name: '', category: '', price: '', stock: '', imageUrl: '', additionalImages: [], glbUrl: '', description: '', color: '', material: '', dimensions: '',
-    variants: []
+    variants: [], vipOnly: false
   });
 
   const fetchProducts = async () => {
@@ -81,7 +81,7 @@ export default function AdminProducts() {
       setEditProduct(null);
       setFormData({ 
         name: '', category: '', price: '', stock: '', imageUrl: '', additionalImages: [], glbUrl: '', description: '', color: '', material: '', dimensions: '',
-        variants: []
+        variants: [], vipOnly: false
       });
     }
     setGlbFile(null);
@@ -412,6 +412,12 @@ export default function AdminProducts() {
                   <div className={`absolute top-4 left-4 backdrop-blur-md px-3 py-1 text-[0.65rem] tracking-widest uppercase font-semibold ${product.stock > 0 ? 'bg-white/20 text-white border border-white/20' : 'bg-red-500/80 text-white border border-red-500/50'}`}>
                     {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
                   </div>
+                  {/* VIP Badge */}
+                  {product.vipOnly && (
+                    <div className="absolute top-4 right-4 backdrop-blur-md px-3 py-1 text-[0.65rem] tracking-widest uppercase font-semibold bg-gradient-to-r from-[#c8a35a] to-[#e8c968] text-[#221a0c] border border-[#c8a35a]/50 rounded-sm">
+                      VIP
+                    </div>
+                  )}
                 </div>
                 
                 <div className="p-6 flex flex-col flex-grow justify-between bg-white z-10">
@@ -524,6 +530,13 @@ export default function AdminProducts() {
                       <div className="group pt-2">
                         <label className="block text-[0.65rem] font-semibold tracking-[0.2em] text-[#777777] uppercase mb-2 group-focus-within:text-[#131313] transition-colors">Dimensions</label>
                         <input name="dimensions" value={formData.dimensions || ''} onChange={handleChange} className="w-full bg-transparent border-b border-[#e2e2e2] focus:border-[#131313] outline-none py-3 text-sm transition-all focus:bg-[#f9f9f9] px-3" placeholder="e.g., 80x120x75 cm" />
+                      </div>
+                      {/* VIP Only Toggle */}
+                      <div className="pt-4 flex items-center gap-3">
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <input type="checkbox" checked={formData.vipOnly || false} onChange={(e) => setFormData(prev => ({ ...prev, vipOnly: e.target.checked }))} className="w-5 h-5 accent-[#c8a35a] cursor-pointer" />
+                          <span className="text-[0.65rem] font-semibold tracking-[0.15em] text-[#777777] uppercase group-hover:text-[#131313] transition-colors">VIP Exclusive Product</span>
+                        </label>
                       </div>
                     </div>
                     {/* Right Column */}

@@ -1,0 +1,27 @@
+# Render.com deployment config
+services:
+  - type: web
+    name: elitan
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: FACEBOOK_APP_ID
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: DISCORD_BOT_TOKEN
+        sync: false
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod

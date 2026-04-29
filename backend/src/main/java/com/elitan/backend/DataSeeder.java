@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 @Component
+@org.springframework.context.annotation.Profile("dev") // Chỉ chạy khi spring.profiles.active=dev
 public class DataSeeder implements CommandLineRunner {
 
         private final ProductRepository productRepository;
@@ -90,47 +91,57 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         private void seedProducts() {
-                productRepository.saveAll(Arrays.asList(
-                                Product.builder()
-                                                .name("Luna Lounge Chair")
-                                                .price(new BigDecimal("1299"))
-                                                .imageUrl("https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1000&auto=format&fit=crop")
-                                                .category("Living Room")
-                                                .description("Elegant lounge chair")
-                                                .color("Natural")
-                                                .material("Wood")
-                                                .stock(10)
-                                                .build(),
-                                Product.builder()
-                                                .name("Modern Sofa")
-                                                .price(new BigDecimal("2299"))
-                                                .imageUrl("https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1000&auto=format&fit=crop")
-                                                .category("Living Room")
-                                                .description("Comfortable grey fabric sofa")
-                                                .color("Grey")
-                                                .material("Fabric")
-                                                .stock(5)
-                                                .build(),
-                                Product.builder()
-                                                .name("Dining Table")
-                                                .price(new BigDecimal("1899"))
-                                                .imageUrl("https://images.unsplash.com/photo-1579725942955-4d8377f8c66a?q=80&w=1000&auto=format&fit=crop")
-                                                .category("Dining")
-                                                .description("Solid wood dining table")
-                                                .color("Natural")
-                                                .material("Wood")
-                                                .stock(8)
-                                                .build(),
-                                Product.builder()
-                                                .name("Velvet Armchair")
-                                                .price(new BigDecimal("899"))
-                                                .imageUrl("https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=1000&auto=format&fit=crop")
-                                                .category("Living Room")
-                                                .description("Green velvet armchair")
-                                                .color("Green")
-                                                .material("Fabric")
-                                                .stock(12)
-                                                .build()));
+                Product loungeChair = Product.builder()
+                                .name("Luna Lounge Chair")
+                                .price(new BigDecimal("1299"))
+                                .imageUrl("https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1000&auto=format&fit=crop")
+                                .category("Living Room")
+                                .description("Elegant lounge chair")
+                                .color("Natural")
+                                .material("Wood")
+                                .stock(10)
+                                .build();
+
+                Product sofa = Product.builder()
+                                .name("Modern Sofa")
+                                .price(new BigDecimal("2299"))
+                                .imageUrl("https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1000&auto=format&fit=crop")
+                                .category("Living Room")
+                                .description("Comfortable grey fabric sofa")
+                                .color("Grey")
+                                .material("Fabric")
+                                .stock(5)
+                                .build();
+
+                Product toilet = Product.builder()
+                                .name("Bồn cầu cao cấp")
+                                .price(new BigDecimal("25400000000"))
+                                .imageUrl("https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1000&auto=format&fit=crop")
+                                .category("Decor")
+                                .description("Bồn cầu mạ vàng 24K phong cách hoàng gia")
+                                .color("Gold")
+                                .material("Stone")
+                                .stock(3)
+                                .build();
+
+                productRepository.saveAll(Arrays.asList(loungeChair, sofa, toilet));
+
+                // Add variants
+                loungeChair.setVariants(Arrays.asList(
+                        com.elitan.backend.entity.ProductVariant.builder().product(loungeChair).color("Natural").stock(5).build(),
+                        com.elitan.backend.entity.ProductVariant.builder().product(loungeChair).color("Black").stock(5).build()
+                ));
+                
+                sofa.setVariants(Arrays.asList(
+                        com.elitan.backend.entity.ProductVariant.builder().product(sofa).color("Grey").stock(3).build(),
+                        com.elitan.backend.entity.ProductVariant.builder().product(sofa).color("Black").stock(2).build()
+                ));
+
+                toilet.setVariants(Arrays.asList(
+                        com.elitan.backend.entity.ProductVariant.builder().product(toilet).color("Gold").stock(3).build()
+                ));
+
+                productRepository.saveAll(Arrays.asList(loungeChair, sofa, toilet));
         }
 
         private void seedColors() {

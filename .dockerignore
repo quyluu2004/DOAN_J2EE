@@ -1,0 +1,21 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.iml
+
+# Node
+frontend/node_modules
+
+# Java build
+backend/target
+backend/*.log
+backend/tmp_*.json
+backend/uploads
+
+# OS
+.DS_Store
+Thumbs.db

@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/materials")
-@CrossOrigin(origins = "https://localhost:5173")
 @RequiredArgsConstructor
 public class MaterialController {
     private final MaterialService materialService;

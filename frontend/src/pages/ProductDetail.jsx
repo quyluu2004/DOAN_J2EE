@@ -5,8 +5,9 @@ import { getWishlist, toggleWishlist } from '../services/wishlistService';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import * as reviewService from '../services/reviewService';
-import { Plus, Minus, MoveLeft, ShoppingBag, Star, Send, Heart, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
+import { Plus, Minus, MoveLeft, ShoppingBag, Star, Send, Heart, ShieldCheck, Truck, RotateCcw, ImagePlus, X } from 'lucide-react';
 import { toast } from 'sonner';
+import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocalization } from '../context/LocalizationContext';
 import { SplitText, BlurText, Rotating3DCard, DecorativeOrb, GlassMorphCard, ReflectiveCard, ClassicPictureFrame } from '../components/ui/ReactBits';
@@ -39,6 +40,8 @@ export default function ProductDetail() {
   const [activeImage, setActiveImage] = useState(0);
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ rating: 0, text: '' });
+  const [mediaFiles, setMediaFiles] = useState([]);
+  const [uploadingMedia, setUploadingMedia] = useState(false);
   const [reviewLoading, setReviewLoading] = useState(true);
   const [inWishlist, setInWishlist] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -96,6 +99,19 @@ export default function ProductDetail() {
     }
   };
 
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (mediaFiles.length + files.length > 5) {
+      toast.error('Chỉ được tải lên tối đa 5 hình ảnh/video.');
+      return;
+    }
+    setMediaFiles(prev => [...prev, ...files]);
+  };
+
+  const removeFile = (indexToRemove) => {
+    setMediaFiles(files => files.filter((_, index) => index !== indexToRemove));
+  };
+
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     if (newReview.rating === 0) {
@@ -109,13 +125,31 @@ export default function ProductDetail() {
     
     try {
       setLoading(true);
-      const res = await reviewService.addReview(id, newReview.rating, newReview.text);
+      setUploadingMedia(true);
+      
+      let uploadedUrls = [];
+      if (mediaFiles.length > 0) {
+        const token = localStorage.getItem('token');
+        const config = { headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${token}` } };
+        
+        const formData = new FormData();
+        mediaFiles.forEach(file => formData.append('files', file)); 
+        
+        const uploadRes = await axios.post('/api/upload', formData, config);
+        uploadedUrls = uploadRes.data; 
+      }
+
+      const mediaUrlsJson = uploadedUrls.length > 0 ? JSON.stringify(uploadedUrls) : null;
+      const res = await reviewService.addReview(id, newReview.rating, newReview.text, mediaUrlsJson);
+      
       setReviews(prev => [res, ...prev]);
       setNewReview({ rating: 0, text: '' });
+      setMediaFiles([]);
       toast.success('Your review has been shared.');
     } catch (error) {
       toast.error(error.message || 'Gửi đánh giá thất bại');
     } finally {
+      setUploadingMedia(false);
       setLoading(false);
     }
   };
@@ -125,16 +159,20 @@ export default function ProductDetail() {
     : 0;
 
   const handleAddToCart = () => {
-    if (!selectedVariant) {
+    const hasVariants = product?.variants?.length > 0;
+    if (hasVariants && !selectedVariant) {
       toast.error('Please select a finish first.');
       return;
     }
-    if (selectedVariant.stock <= 0) {
-      toast.error('This variation is currently out of stock.');
+    
+    const stockToCheck = selectedVariant ? selectedVariant.stock : (product.stock || 0);
+    if (stockToCheck <= 0) {
+      toast.error('This piece is currently out of stock.');
       return;
     }
-    addToCart(product.id, selectedVariant.id, quantity);
-    toast.success(`${quantity}x ${product.name} (${selectedVariant.color}) added to your collection.`, {
+
+    addToCart(product.id, selectedVariant?.id || null, quantity);
+    toast.success(`${quantity}x ${product.name} ${selectedVariant ? `(${selectedVariant.color})` : ''} added to your collection.`, {
       style: { background: '#703225', color: '#ffffff' }
     });
   };
@@ -284,12 +322,12 @@ export default function ProductDetail() {
                 </div>
                 
                 {/* Stock Level Indicator */}
-                {selectedVariant && (
+                {(selectedVariant || (product?.variants?.length === 0)) && (
                   <div className="pt-4 flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${selectedVariant.stock > 0 ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+                    <div className={`w-2 h-2 rounded-full ${(selectedVariant ? selectedVariant.stock : product.stock) > 0 ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
                     <span className="text-[10px] font-bold uppercase tracking-widest text-[#86736f]">
-                      {selectedVariant.stock > 0 
-                        ? `${selectedVariant.stock} ${t('product.stock.available') || 'in stock'}`
+                      {(selectedVariant ? selectedVariant.stock : product.stock) > 0 
+                        ? `${selectedVariant ? selectedVariant.stock : product.stock} ${t('product.stock.instock') || 'in stock'}`
                         : `${t('product.stock.outofstock') || 'Out of stock'}`
                       }
                     </span>
@@ -306,19 +344,23 @@ export default function ProductDetail() {
                </div>
                
                 <motion.button 
-                 whileHover={selectedVariant?.stock > 0 ? { y: -5, boxShadow: "0 20px 40px rgba(112,50,37,0.15)" } : {}}
-                 whileTap={selectedVariant?.stock > 0 ? { scale: 0.98 } : {}}
-                 onClick={handleAddToCart}
-                 disabled={!selectedVariant || selectedVariant.stock <= 0}
-                 className={`flex-1 rounded-sm h-16 uppercase tracking-[0.2em] text-[10px] font-black transition-all duration-700 flex justify-center items-center gap-4 px-8 ${
-                    !selectedVariant || selectedVariant.stock <= 0 
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                    : 'bg-[#221a0c] hover:bg-[#703225] text-white'
-                 }`}
-               >
-                 <ShoppingBag size={15} strokeWidth={2.5} />
-                 {selectedVariant?.stock > 0 ? t('product.acquire') : t('product.stock.outofstock') || 'Out of stock'}
-               </motion.button>
+                  whileHover={(selectedVariant ? selectedVariant.stock : product.stock) > 0 ? { y: -5, boxShadow: "0 20px 40px rgba(112,50,37,0.15)" } : {}}
+                  whileTap={(selectedVariant ? selectedVariant.stock : product.stock) > 0 ? { scale: 0.98 } : {}}
+                  onClick={handleAddToCart}
+                  disabled={(product?.variants?.length > 0 && !selectedVariant) || (selectedVariant ? selectedVariant.stock <= 0 : product.stock <= 0)}
+                  className={`flex-1 rounded-sm h-16 uppercase tracking-[0.2em] text-[10px] font-black transition-all duration-700 flex justify-center items-center gap-4 px-8 ${
+                     (product?.variants?.length > 0 && !selectedVariant) || (selectedVariant ? selectedVariant.stock <= 0 : product.stock <= 0)
+                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                     : 'bg-[#221a0c] hover:bg-[#703225] text-white'
+                  }`}
+                >
+                  <ShoppingBag size={15} strokeWidth={2.5} />
+                  {product?.variants?.length > 0 && !selectedVariant 
+                    ? t('product.select_finish') 
+                    : (selectedVariant ? selectedVariant.stock : product.stock) > 0 
+                      ? t('product.acquire') 
+                      : t('product.stock.outofstock') || 'Out of stock'}
+                </motion.button>
                
                <button 
                  onClick={handleWishlistToggle}
@@ -407,9 +449,24 @@ export default function ProductDetail() {
               <div className="bg-white h-full p-10 space-y-8 flex flex-col justify-between hover:-translate-y-2 transition-transform duration-700 shadow-sm hover:shadow-2xl hover:shadow-[#703225]/5">
                 <div>
                   <StarRating rating={review.rating} size={14} />
-                  <p className="text-[#221a0c] text-lg leading-relaxed mt-10 font-serif italic font-light opacity-90 group-hover:opacity-100 transition-opacity">
+                  <p className="text-[#221a0c] text-lg leading-relaxed mt-10 font-serif italic font-light opacity-90 group-hover:opacity-100 transition-opacity break-words whitespace-pre-wrap">
                     "{review.comment}"
                   </p>
+                  
+                  {review.mediaUrls && (() => {
+                     try {
+                       const urls = JSON.parse(review.mediaUrls);
+                       if (urls && urls.length > 0) {
+                         return (
+                           <div className="flex flex-wrap gap-3 mt-6">
+                             {urls.map((url, i) => (
+                               <img key={i} src={url.startsWith('/') ? url : `/${url}`} alt="Review" className="w-20 h-20 object-cover rounded-sm border border-[#221a0c]/10 shadow-sm" />
+                             ))}
+                           </div>
+                         );
+                       }
+                     } catch(e) { return null; }
+                  })()}
                 </div>
                 <div className="flex items-center justify-between pt-8 border-t border-[#221a0c]/5">
                   <span className="text-[9px] font-black text-[#221a0c] uppercase tracking-[0.3em]">{review.user?.fullName || 'Collector'}</span>
@@ -425,51 +482,98 @@ export default function ProductDetail() {
         </div>
 
         {/* Curation Form - Glass Theme */}
-        <div className="max-w-4xl mx-auto">
-          <GlassMorphCard className="p-16 md:p-24 rounded-sm relative overflow-hidden">
-             <div className="absolute top-0 right-0 w-64 h-64 bg-[#fcecd5]/30 rounded-full blur-[100px] -z-10" />
-             <div className="relative z-10 max-w-lg">
-                <h3 className="font-serif text-4xl mb-6 text-[#221a0c] leading-tight">{t('product.review_form.title')}</h3>
-                <p className="text-[10px] text-[#86736f] mb-12 uppercase tracking-[0.3em] font-black leading-loose">
-                  {isAuthenticated ? t('product.review_form.desc_auth') : t('product.review_form.desc_no_auth')}
-                </p>
+        <div className="max-w-4xl mx-auto pb-48">
+          <div className="relative group p-[2px] rounded-sm bg-gradient-to-br from-[#e8dec9] to-[#d4c8b8] shadow-2xl">
+            <div className="bg-[#fffcf9] rounded-sm relative overflow-hidden envelope-inner">
+               {/* Paper Texture Overlay */}
+               <div className="absolute inset-0 paper-texture" />
+               
+               {/* Decorative Envelope Flap */}
+               <div className="envelope-flap" />
+               
+               {/* Wax Seal Detail */}
+               <div className="wax-seal">
+                  <div className="text-white font-serif text-[8px] font-bold">É</div>
+               </div>
 
-                {isAuthenticated ? (
-                  <form onSubmit={handleSubmitReview} className="space-y-12">
-                    <div className="space-y-4">
-                      <label className="text-[9px] font-black uppercase tracking-[0.3em] text-[#703225] block">{t('product.review_form.intensity')}</label>
-                      <StarRating rating={newReview.rating} onRate={(r) => setNewReview(p => ({ ...p, rating: r }))} interactive size={32} />
-                    </div>
-                    <div className="space-y-4">
-                      <label className="text-[9px] font-black uppercase tracking-[0.3em] text-[#703225] block">{t('product.review_form.narrative')}</label>
-                      <textarea 
-                        value={newReview.text}
-                        onChange={(e) => setNewReview(p => ({ ...p, text: e.target.value }))}
-                        rows={5}
-                        placeholder={t('product.review_form.placeholder')}
-                        className="w-full bg-white/50 backdrop-blur-sm border border-[#221a0c]/10 text-[#221a0c] p-6 rounded-sm text-base focus:outline-none focus:border-[#703225] transition-all duration-500 resize-none font-medium placeholder:text-[#b8a99a]"
-                      />
-                    </div>
-                    <motion.button 
-                      whileHover={{ x: 10 }}
-                      type="submit" 
-                      className="bg-[#221a0c] hover:bg-[#703225] text-white rounded-sm h-14 px-12 uppercase tracking-[0.3em] text-[10px] font-black transition-all duration-700 flex items-center gap-6 shadow-xl shadow-black/10"
-                    >
-                      {t('product.review_form.submit')}
-                      <Send size={14} strokeWidth={2.5} />
-                    </motion.button>
-                  </form>
-                ) : (
-                  <Link 
-                    to="/login" 
-                    className="inline-flex items-center gap-6 bg-[#221a0c] hover:bg-[#703225] text-white rounded-sm h-14 px-12 uppercase tracking-[0.3em] text-[10px] font-black transition-all duration-700 shadow-xl shadow-black/10"
-                  >
-                    {t('product.review_form.authenticate')}
-                    <MoveLeft className="rotate-180" size={16} strokeWidth={2.5} />
-                  </Link>
-                )}
-             </div>
-          </GlassMorphCard>
+               <div className="p-16 md:p-24 pt-32 relative z-10">
+                  <div className="max-w-lg mx-auto text-center md:text-left">
+                     <h3 className="font-serif text-4xl mb-6 text-[#221a0c] leading-tight tracking-tight italic">
+                        {t('product.review_form.title')}
+                     </h3>
+                     <p className="text-[10px] text-[#86736f] mb-16 uppercase tracking-[0.4em] font-black leading-loose opacity-70">
+                       {isAuthenticated ? t('product.review_form.desc_auth') : t('product.review_form.desc_no_auth')}
+                     </p>
+
+                     {isAuthenticated ? (
+                       <form onSubmit={handleSubmitReview} className="space-y-16">
+                         <div className="space-y-6">
+                           <label className="text-[9px] font-black uppercase tracking-[0.5em] text-[#703225] block mb-2">{t('product.review_form.intensity')}</label>
+                           <StarRating rating={newReview.rating} onRate={(r) => setNewReview(p => ({ ...p, rating: r }))} interactive size={34} />
+                         </div>
+                         
+                         <div className="space-y-6">
+                           <label className="text-[9px] font-black uppercase tracking-[0.5em] text-[#703225] block mb-2">{t('product.review_form.narrative')}</label>
+                           <textarea 
+                             value={newReview.text}
+                             onChange={(e) => setNewReview(p => ({ ...p, text: e.target.value }))}
+                             rows={6}
+                             placeholder={t('product.review_form.placeholder')}
+                             className="w-full bg-white/40 border-b-2 border-[#221a0c]/10 text-[#221a0c] py-4 rounded-none text-lg focus:outline-none focus:border-b-[#703225] transition-all duration-700 resize-none font-serif italic placeholder:text-[#b8a99a] placeholder:opacity-50"
+                           />
+                           
+                           <div className="pt-4 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                             <label className={`cursor-pointer group inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold transition-all ${uploadingMedia ? 'text-[#b8a99a] cursor-not-allowed' : 'text-[#86736f] hover:text-[#703225]'}`}>
+                                <div className="p-3 rounded-full border border-dashed border-current group-hover:scale-110 transition-transform">
+                                   <ImagePlus size={18} />
+                                </div>
+                                {t('product.review_form.upload_media') || 'Join your visual story'}
+                                <input type="file" multiple accept="image/*" className="hidden" onChange={handleFileChange} disabled={uploadingMedia} />
+                             </label>
+
+                             <motion.button 
+                               whileHover={uploadingMedia ? {} : { scale: 1.02, y: -2 }}
+                               whileTap={{ scale: 0.98 }}
+                               type="submit" 
+                               disabled={uploadingMedia}
+                               className="bg-[#221a0c] hover:bg-[#703225] disabled:opacity-50 text-white rounded-sm h-16 px-14 uppercase tracking-[0.4em] text-[10px] font-black transition-all duration-700 flex items-center gap-8 shadow-[0_20px_40px_-10px_rgba(34,26,12,0.3)]"
+                             >
+                               {uploadingMedia ? 'Sealing...' : t('product.review_form.submit')}
+                               {!uploadingMedia && <Send size={16} strokeWidth={2} className="opacity-70" />}
+                             </motion.button>
+                           </div>
+                           
+                           {mediaFiles.length > 0 && (
+                             <motion.div 
+                               initial={{ opacity: 0, y: 20 }}
+                               animate={{ opacity: 1, y: 0 }}
+                               className="flex flex-wrap gap-4 mt-8 p-6 bg-white/20 rounded-sm border border-[#221a0c]/5 backdrop-blur-sm"
+                             >
+                               {mediaFiles.map((file, idx) => (
+                                 <div key={idx} className="relative w-24 h-24 group rounded-sm overflow-hidden border-2 border-white shadow-lg">
+                                   <img src={URL.createObjectURL(file)} alt="preview" className="w-full h-full object-cover" />
+                                   <button type="button" onClick={() => removeFile(idx)} className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500">
+                                     <X size={14} strokeWidth={3} />
+                                   </button>
+                                 </div>
+                               ))}
+                             </motion.div>
+                           )}
+                         </div>
+                       </form>
+                     ) : (
+                       <Link 
+                         to="/login" 
+                         className="inline-flex items-center gap-8 bg-[#221a0c] hover:bg-[#703225] text-white rounded-sm h-16 px-14 uppercase tracking-[0.4em] text-[10px] font-black transition-all duration-700 shadow-2xl"
+                       >
+                         {t('product.review_form.authenticate')}
+                         <MoveLeft className="rotate-180 opacity-70" size={18} strokeWidth={2} />
+                       </Link>
+                     )}
+                  </div>
+               </div>
+            </div>
+          </div>
         </div>
       </section>
       

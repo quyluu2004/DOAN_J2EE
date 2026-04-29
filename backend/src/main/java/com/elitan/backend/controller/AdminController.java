@@ -12,7 +12,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/stats")
-@CrossOrigin(origins = "http://localhost:5173")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
     private final AdminService adminService;

@@ -18,6 +18,7 @@ import CustomWall, { WallPreview } from './CustomWall';
 import FirstPersonWalk from './FirstPersonWalk';
 import RulerTool from './RulerTool';
 import Annotation from './Annotation';
+import { checkCollision, resolvePosition } from '../../lib/collisionUtils';
 
 // --- Click Handler for adding walls ---
 const FloorClickHandler = ({ yOffset }) => {
@@ -121,14 +122,72 @@ const RenderItem = ({ item, yOffset, is2D, isActive, isGhost }) => {
         <TransformControls 
           object={groupRef}
           mode={transformMode}
-          showY={!is2D && transformMode === 'translate'}
-          onObjectChange={() => {
+          showY={!is2D && (transformMode === 'translate' || transformMode === 'rotate')}
+          onObjectChange={(e) => {
             if (!groupRef.current) return;
             const { position, rotation } = groupRef.current;
+            
+            // --- Smart Gravity & Floor Clipping Logic ---
+            // If the user isn't dragging the 'Y' axis (green arrow), force the item 
+            // to stay grounded (y = 0) unless it was already higher (e.g. on a table).
+            // For now, simplicity: prevent sinking below 0.
+            const targetY = Math.max(0, position.y - yOffset);
+            
+            // Perform collision check
+            const roomPoints = useStore.getState().roomPoints;
+            const activeFloorId = useStore.getState().activeFloorId;
+            const allItems = useStore.getState().floors.find(f => f.id === activeFloorId)?.items || [];
+            
+            const updatedPosition = [position.x, is2D ? 0 : targetY, position.z];
+            const updatedRotation = [is2D ? 0 : rotation.x, rotation.y, is2D ? 0 : rotation.z];
+            
+            const updatedItem = {
+              ...item,
+              position: updatedPosition,
+              rotation: updatedRotation
+            };
+            
+            const isColliding = checkCollision(updatedItem, allItems, roomPoints);
+            
             updateItem(item.id, {
-              position: [position.x, is2D ? 0 : position.y - yOffset, position.z],
-              rotation: [is2D ? 0 : rotation.x, rotation.y, is2D ? 0 : rotation.z]
+              position: updatedPosition,
+              rotation: updatedRotation,
+              isColliding
             });
+            
+            // Sync the Gizmo visual in real-time for floor-clipping
+            if (!is2D) {
+              groupRef.current.position.y = targetY + yOffset;
+            }
+          }}
+          onMouseUp={() => {
+            const state = useStore.getState();
+            const currentItem = state.floors
+              .find(f => f.id === state.activeFloorId)
+              ?.items.find(i => i.id === item.id);
+              
+            if (!currentItem) return;
+
+            // --- Snap-on-Drop Strategy ---
+            // If the item is invalid (colliding/out of bounds), 
+            // we resolve it to the nearest valid surface/wall instead of snapping back to last position.
+            const roomPoints = state.roomPoints;
+            const resolved = resolvePosition(currentItem, roomPoints);
+            
+            // Final check after resolution
+            const allItems = state.floors.find(f => f.id === state.activeFloorId)?.items || [];
+            const isCollidingAfterSnap = checkCollision({ ...currentItem, ...resolved }, allItems, roomPoints);
+            
+            updateItem(item.id, {
+              ...resolved,
+              isColliding: isCollidingAfterSnap
+            });
+
+            // Force Gizmo to the resolved position
+            if (groupRef.current) {
+              groupRef.current.position.set(resolved.position[0], resolved.position[1] + yOffset, resolved.position[2]);
+              groupRef.current.rotation.set(...resolved.rotation);
+            }
           }}
         />
       )}
@@ -177,16 +236,38 @@ const RoomCanvas = () => {
 
   const is2D = viewMode === '2D';
 
+  const orbitRef = useRef();
+
+  // Reset target only when floor or view mode changes to preserve manual panning
+  React.useEffect(() => {
+    if (orbitRef.current) {
+      orbitRef.current.target.set(roomCenter.x, yOffsetActive + (is2D ? 0 : 0.5), roomCenter.z);
+      orbitRef.current.update();
+    }
+  }, [activeFloorId, is2D, roomCenter.x, roomCenter.z, yOffsetActive]);
+
+  // Memoize camera position to prevent jumping
+  const cameraPosition = React.useMemo(() => [roomCenter.x + 8, yOffsetActive + 6, roomCenter.z + 8], [roomCenter.x, yOffsetActive, roomCenter.z]);
+
   return (
     <Canvas
       shadows
       onPointerMissed={() => { if (toolMode === 'select') setSelectedId(null); }}
+      onCreated={({ gl }) => {
+        // Safety check to ensure we have a valid DOM element before R3F connects events
+        if (!gl.domElement) {
+            console.warn("RoomCanvas: gl.domElement is null onCreated");
+            return;
+        }
+        // Additional gl setup if needed
+        gl.setClearColor(is2D ? '#f0f0f0' : '#e8e3db', 1);
+      }}
       style={{ background: is2D ? '#f0f0f0' : '#e8e3db', cursor: toolMode === 'wall' ? 'crosshair' : 'auto' }}
     >
       {is2D ? (
         <OrthographicCamera makeDefault position={[roomCenter.x, 50, roomCenter.z]} zoom={40} near={0.1} far={1000} />
       ) : (
-        <PerspectiveCamera makeDefault position={[roomCenter.x + 8, yOffsetActive + 6, roomCenter.z + 8]} fov={55} />
+        <PerspectiveCamera makeDefault position={cameraPosition} fov={55} />
       )}
       <ambientLight intensity={is2D ? 1 : 0.5} />
       <directionalLight position={[5, 8 + yOffsetActive, 5]} intensity={is2D ? 0.5 : 1} castShadow shadow-mapSize-width={2048} shadow-mapSize-height={2048} />
@@ -248,10 +329,29 @@ const RoomCanvas = () => {
       )}
 
       <Suspense fallback={null}>
-        <Environment preset="apartment" />
+        <Environment preset="city" />
       </Suspense>
 
       <ContactShadows position={[0, yOffsetActive + 0.01, 0]} opacity={0.5} scale={20} blur={2} far={4} />
+
+      {/* Nền vô tận + Grid */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, yOffsetActive - 0.02, 0]} receiveShadow>
+        <planeGeometry args={[500, 500]} />
+        <meshStandardMaterial color={is2D ? '#e8e5e0' : '#d5d0c8'} roughness={1} />
+      </mesh>
+      <Grid
+        position={[0, yOffsetActive - 0.01, 0]}
+        args={[500, 500]}
+        cellSize={1}
+        cellThickness={0.5}
+        cellColor={is2D ? '#c0bdb8' : '#bfb9ad'}
+        sectionSize={5}
+        sectionThickness={1.2}
+        sectionColor={is2D ? '#a8a49e' : '#a69e90'}
+        fadeDistance={is2D ? 80 : 50}
+        fadeStrength={1.5}
+        infiniteGrid={true}
+      />
 
       {/* Chế độ đi bộ (First-Person Walk) */}
       <FirstPersonWalk enabled={isWalkMode} yOffset={yOffsetActive} roomWidth={roomWidth} roomDepth={roomDepth} />
@@ -276,14 +376,17 @@ const RoomCanvas = () => {
       {/* Chế độ xem tổng quan (Orbit) - tắt khi đang đi bộ */}
       {!isWalkMode && (
         <OrbitControls
+          ref={orbitRef}
           makeDefault
-          enabled={toolMode === 'select'}
+          enabled={true}
           enableRotate={!is2D}
+          enableDamping={true}
+          dampingFactor={0.1}
+          rotateSpeed={1.5}
           minPolarAngle={0.1}
           maxPolarAngle={Math.PI / 2}
           minDistance={3}
           maxDistance={30}
-          target={[roomCenter.x, yOffsetActive + (is2D ? 0 : 0.5), roomCenter.z]}
         />
       )}
     </Canvas>

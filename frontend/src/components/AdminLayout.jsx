@@ -19,6 +19,7 @@ export default function AdminLayout() {
     { title: 'Users', icon: Users, path: '/admin/users' },
     { title: 'Colors', icon: Palette, path: '/admin/colors' },
     { title: 'Materials', icon: Box, path: '/admin/materials' },
+    { title: 'Templates', icon: Folders, path: '/admin/templates' },
   ];
 
   return (

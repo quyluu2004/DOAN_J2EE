@@ -30,12 +30,20 @@ public class SecurityConfig {
 
                 // Tắt CSRF vì dùng JWT (stateless)
                 .csrf(csrf -> csrf.disable())
+                
+                // Tắt Basic Auth (popup trình duyệt) và Form Login mặc định
+                .httpBasic(basic -> basic.disable())
+                .formLogin(form -> form.disable())
+
                 .authorizeHttpRequests(auth -> auth
                         // 1. PUBLIC ACCESS
+                        .requestMatchers("/api/reviews/**").permitAll() 
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/search-by-image", "/api/products/sync-clarifai").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/collections", "/api/collections/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/materials", "/api/materials/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/colors", "/api/colors/**").permitAll()
                         .requestMatchers("/uploads", "/uploads/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/orders/send-otp", "/api/orders/verify-otp").permitAll()
 
@@ -53,7 +61,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/all", "/api/users/*/role").hasRole("ADMIN")
                         .requestMatchers("/api/orders/all", "/api/orders/*/status").hasRole("ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/upload").hasRole("ADMIN")
                         .requestMatchers("/api/products/import-file", "/api/products/import-status/**").hasRole("ADMIN")
 
                         // 3. AUTHENTICATED ACCESS
@@ -61,8 +68,23 @@ public class SecurityConfig {
                         .requestMatchers("/api/wishlist/**").authenticated()
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/api/users/profile").authenticated()
+                        .requestMatchers("/api/upload", "/api/upload/**").authenticated()
+                        .requestMatchers("/api/reviews", "/api/reviews/**").authenticated()
 
-                        // 4. CATCH ALL
+                        // 4. FRONTEND STATIC FILES + SPA ROUTES (React Router)
+                        .requestMatchers(org.springframework.http.HttpMethod.GET,
+                            "/", "/index.html", "/assets/**", "/favicon.ico",
+                            "/shop", "/shop/**", "/products/**",
+                            "/about", "/contact", "/wishlist",
+                            "/login", "/register", "/forgot-password", "/reset-password",
+                            "/profile", "/profile/**",
+                            "/checkout", "/checkout/**",
+                            "/orders", "/orders/**",
+                            "/3d-designer", "/my-designs",
+                            "/admin", "/admin/**"
+                        ).permitAll()
+
+                        // 5. CATCH ALL — mọi request khác cần authentication
                         .anyRequest().authenticated()
                 )
 

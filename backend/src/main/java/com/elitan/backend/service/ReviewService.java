@@ -21,7 +21,7 @@ public class ReviewService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Review addReview(String userEmail, Long productId, int rating, String comment) {
+    public Review addReview(String userEmail, Long productId, int rating, String comment, String mediaUrls) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Product product = productRepository.findById(productId)
@@ -32,6 +32,7 @@ public class ReviewService {
                 .product(product)
                 .rating(rating)
                 .comment(comment)
+                .mediaUrls(mediaUrls)
                 .build();
 
         Review savedReview = reviewRepository.save(review);

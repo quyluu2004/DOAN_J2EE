@@ -112,6 +112,19 @@
 			<version>0.4.20</version>
 		</dependency>
 
+		<!-- HTML to PDF Generation for Invoices -->
+		<dependency>
+			<groupId>com.openhtmltopdf</groupId>
+			<artifactId>openhtmltopdf-pdfbox</artifactId>
+			<version>1.0.10</version>
+		</dependency>
+
+		<!-- Thymeleaf for HTML Templates -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

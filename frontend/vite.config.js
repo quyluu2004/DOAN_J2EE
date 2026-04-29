@@ -9,11 +9,9 @@ import { fileURLToPath } from "url"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-import basicSsl from '@vitejs/plugin-basic-ssl'
-
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), basicSsl()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -33,4 +31,7 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    include: ['tslib', '@radix-ui/react-dialog', '@radix-ui/react-checkbox', '@radix-ui/react-label']
+  }
 })

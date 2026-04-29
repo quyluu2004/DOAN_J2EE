@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = {"http://localhost:5173", "https://localhost:5173"})
 @lombok.extern.slf4j.Slf4j
 public class ProductController {
     private final ProductService productService;

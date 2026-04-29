@@ -35,6 +35,8 @@ public class UserService {
                 .avatarUrl(user.getAvatarUrl())
                 .provider(user.getProvider())
                 .role(user.getRole())
+                .discordUserId(user.getDiscordUserId())
+                .twoFactorEnabled(user.isTwoFactorEnabled())
                 .build();
     }
 
@@ -59,6 +61,7 @@ public class UserService {
         userRepository.save(user);
 
         return UserProfileResponse.builder()
+                .id(user.getId())
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .phone(user.getPhone())
@@ -66,6 +69,8 @@ public class UserService {
                 .avatarUrl(user.getAvatarUrl())
                 .provider(user.getProvider())
                 .role(user.getRole())
+                .discordUserId(user.getDiscordUserId())
+                .twoFactorEnabled(user.isTwoFactorEnabled())
                 .build();
     }
 
@@ -99,6 +104,8 @@ public class UserService {
                 .avatarUrl(user.getAvatarUrl())
                 .provider(user.getProvider())
                 .role(user.getRole())
+                .discordUserId(user.getDiscordUserId())
+                .twoFactorEnabled(user.isTwoFactorEnabled())
                 .build()).collect(java.util.stream.Collectors.toList());
     }
 
@@ -116,6 +123,23 @@ public class UserService {
                 .avatarUrl(user.getAvatarUrl())
                 .provider(user.getProvider())
                 .role(user.getRole())
+                .discordUserId(user.getDiscordUserId())
+                .twoFactorEnabled(user.isTwoFactorEnabled())
                 .build();
+    }
+
+    public void linkDiscord(String email, String userId) {
+        User user = findByEmail(email);
+        user.setDiscordUserId(userId);
+        userRepository.save(user);
+    }
+
+    public void toggle2FA(String email, boolean enabled) {
+        User user = findByEmail(email);
+        if (enabled && user.getDiscordUserId() == null) {
+            throw new RuntimeException("Vui lòng liên kết Discord trước khi bật 2FA");
+        }
+        user.setTwoFactorEnabled(enabled);
+        userRepository.save(user);
     }
 }

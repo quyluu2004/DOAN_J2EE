@@ -91,7 +91,13 @@
       "placeholder": "Chia sẻ cảm nghĩ của bạn...",
       "submit": "Lưu đánh giá",
       "authenticate": "Đăng nhập"
-    }
+    },
+    "stock": {
+      "outofstock": "Hết hàng",
+      "instock": "Còn hàng",
+      "lowstock": "Chỉ còn {{count}} sản phẩm"
+    },
+    "select_finish": "Vui lòng chọn loại hoàn thiện"
   },
   "common": {
     "currency": "Tiền tệ",
@@ -141,53 +147,60 @@
   },
   "checkout": {
     "title": "Thanh toán",
+    "secure_checkout": "Thanh toán bảo mật",
     "contact_shipping": "Thông tin liên hệ & Giao hàng",
     "delivery_method": "Phương thức giao hàng",
     "review_verify": "Kiểm tra & Xác thực",
-    "place_order": "Đặt hàng ngay",
-    "secure_checkout": "Thanh toán bảo mật",
-    "shipping_fee": "Phí vận chuyển",
-    "total": "Tổng thanh toán",
-    "deposit": "Tiền đặt cọc 30%",
-    "deposit_desc": "Thanh toán 30% ngay bây giờ. Phần còn lại thanh toán khi nhận hàng.",
-    "empty_cart": "Giỏ hàng của bạn đang trống",
-    "continue_shopping": "Tiếp tục mua sắm",
-    "edit": "Chỉnh sửa",
-    "fields": {
-      "name": "Họ và tên",
+    "summary": "Tóm tắt đơn hàng",
+    "form": {
+      "full_name": "Họ và tên",
       "phone": "Số điện thoại",
       "address": "Địa chỉ chi tiết",
-      "name_place": "Nhập họ và tên của bạn",
-      "address_place": "Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố"
+      "placeholder_name": "Nhập họ và tên",
+      "placeholder_address": "Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố"
     },
-    "delivery": {
-      "standard": "Giao hàng tiêu chuẩn",
+    "btn_continue_delivery": "Tiếp tục vận chuyển",
+    "btn_continue_payment": "Tiếp tục thanh toán",
+    "shipping": {
+      "standard_title": "Giao hàng tiêu chuẩn",
       "standard_desc": "3-5 ngày làm việc. Giao tại cửa.",
-      "white_glove": "Giao hàng cao cấp White Glove",
-      "white_glove_desc": "Hẹn giờ giao, lắp đặt và dọn dẹp mặt bằng.",
-      "free": "Miễn phí"
+      "white_glove_title": "Giao hàng cao cấp White Glove",
+      "white_glove_desc": "Hẹn giờ giao, lắp đặt và dọn dẹp mặt bằng."
     },
+    "payment_desc": "Vui lòng chọn phương thức thanh toán của bạn.",
     "payment": {
       "cod": "Thanh toán khi nhận hàng",
       "vnpay": "VNPay / Visa",
-      "deposit_opt": "Thanh toán cọc 30% trước",
-      "balance_desc": "Phần còn lại thanh toán khi nhận hàng."
+      "deposit_title": "Thanh toán cọc 30% trước",
+      "deposit_desc": "Trả trước 30%, phần còn lại trả khi nhận hàng."
     },
     "otp": {
-      "title": "Yêu cầu xác thực Email",
-      "desc": "Để bảo mật đơn hàng cao cấp, chúng tôi sẽ gửi mã OTP đến email: {{email}}",
-      "sending": "Đang gửi...",
-      "send_cta": "Gửi mã OTP qua Email",
+      "header": "Yêu cầu xác thực Email",
+      "subtext": "Mã OTP đã được gửi đến: {{email}}",
+      "btn_send": "Gửi mã OTP qua Email",
+      "sent": "Đã gửi mã OTP thành công",
+      "fail": "Gửi mã OTP thất bại",
       "placeholder": "Nhập mã 6 chữ số",
       "no_code": "Không nhận được mã?",
-      "resend_in": "Gửi lại sau {{s}} giây",
+      "resend_in": "Gửi lại sau {{time}} giây",
       "resend_now": "Gửi lại ngay",
-      "processing": "Đang xử lý...",
+      "title": "Xác thực OTP",
       "secure_tx": "Giao dịch được mã hóa an toàn"
     },
-    "summary": {
-      "title": "Tóm tắt đơn hàng"
-    }
+    "errors": {
+      "shippinginfo": "Vui lòng nhập đầy đủ thông tin giao hàng",
+      "shippingmethod": "Vui lòng chọn phương thức giao hàng",
+      "paymentmethod": "Vui lòng chọn phương thức thanh toán",
+      "generic": "Có lỗi xảy ra, vui lòng thử lại sau"
+    },
+    "place_order": "Đặt hàng ngay",
+    "shipping_fee": "Phí vận chuyển",
+    "total": "Tổng thanh toán",
+    "deposit": "Tiền đặt cọc",
+    "secure_info": "Thông tin được bảo mật",
+    "success": "Đặt hàng thành công!",
+    "empty_cart": "Giỏ hàng của bạn đang trống",
+    "continue_shopping": "Tiếp tục mua hàng"
   },
   "wishlist": {
     "title": "Sản phẩm yêu thích",
@@ -215,9 +228,9 @@
     "stats": {
       "active": "Đang xử lý",
       "total": "Tổng đơn hàng",
-      "zalo": "Trạng thái Zalo",
-      "zalo_verified": "Đã xác thực Zalo",
-      "otp_verified": "Đã xác thực qua OTP"
+      "zalo": "Trạng thái Discord",
+      "zalo_verified": "Đã xác thực Discord",
+      "otp_verified": "Đã xác thực qua Discord"
     },
     "recent": "Đơn hàng gần đây",
     "no_orders": "Chưa có đơn hàng. Khám phá bộ sưu tập ngay.",
@@ -236,7 +249,7 @@
     "cancel": "Hủy bỏ",
     "security": {
       "title": "Bảo mật",
-      "desc": "Để bảo vệ bạn, mọi đơn hàng đều yêu cầu xác thực Zalo OTP qua điện thoại: {{phone}}",
+      "desc": "Để bảo vệ tốt nhất, mã OTP 2FA sẽ được gửi qua Discord đã liên kết.",
       "change_password": "Đổi mật khẩu"
     },
     "concierge": {

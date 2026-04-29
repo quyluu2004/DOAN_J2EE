@@ -20,16 +20,20 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final RestTemplate restTemplate; // Inject Bean thay vì tạo mới mỗi lần
+    private final RestTemplate restTemplate;
+
+    private final DiscordService discordService;
 
     public AuthService(UserRepository userRepository, 
                        PasswordEncoder passwordEncoder, 
                        JwtService jwtService, 
-                       RestTemplate restTemplate) {
+                       RestTemplate restTemplate,
+                       DiscordService discordService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.restTemplate = restTemplate;
+        this.discordService = discordService;
     }
 
     @Value("${google.client-id}")
@@ -40,15 +44,12 @@ public class AuthService {
 
     // Đăng ký tài khoản mới
     public AuthResponse register(RegisterRequest request) {
-        // Kiểm tra email đã tồn tại chưa
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email đã được sử dụng: " + request.getEmail());
         }
 
-        // Mã hóa mật khẩu bằng BCrypt
         String hashedPassword = passwordEncoder.encode(request.getPassword());
 
-        // Tạo user mới
         User user = User.builder()
                 .email(request.getEmail())
                 .passwordHash(hashedPassword)
@@ -59,12 +60,14 @@ public class AuthService {
 
         userRepository.save(user);
 
-        // Tạo JWT token cho user vừa đăng ký (auto-login sau đăng ký)
         String token = jwtService.generateToken(user.getEmail(), user.getRole(), user.getFullName());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
 
         return AuthResponse.builder()
                 .token(token)
+                .refreshToken(refreshToken)
                 .message("Đăng ký thành công!")
+                .userId(user.getId())
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .role(user.getRole())
@@ -73,30 +76,89 @@ public class AuthService {
 
     // Đăng nhập
     public AuthResponse login(LoginRequest request) {
-        // Tìm user theo email
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Email hoặc mật khẩu không đúng"));
 
-        // Kiểm tra user có password không (social login user không có password)
         if (user.getPasswordHash() == null || user.getPasswordHash().isEmpty()) {
             throw new RuntimeException("Tài khoản này đã đăng ký bằng " + user.getProvider()
                     + ". Vui lòng đăng nhập bằng " + user.getProvider() + ".");
         }
 
-        // So sánh mật khẩu đã mã hóa
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new RuntimeException("Email hoặc mật khẩu không đúng");
         }
 
-        // Tạo JWT token
+        // Kiểm tra 2FA
+        if (user.isTwoFactorEnabled()) {
+            if (user.getDiscordUserId() == null) {
+                throw new RuntimeException("Tài khoản chưa được liên kết Discord để nhận OTP 2FA.");
+            }
+
+            // Sinh mã OTP 6 số
+            String otp = String.format("%06d", new java.security.SecureRandom().nextInt(1000000));
+            user.setTwoFactorCode(otp);
+            user.setTwoFactorExpiry(java.time.LocalDateTime.now().plusMinutes(5));
+            userRepository.save(user);
+
+            // Gửi OTP qua Discord
+            discordService.sendMessage(user.getDiscordUserId(), 
+                "**Mã OTP đăng nhập ÉLITAN của bạn là: ** `" + otp + "`\n" +
+                "Mã này sẽ hết hạn sau 5 phút.");
+
+            return AuthResponse.builder()
+                    .twoFactorRequired(true)
+                    .email(user.getEmail())
+                    .message("Vui lòng nhập mã OTP đã gửi qua Discord của bạn.")
+                    .build();
+        }
+
         String token = jwtService.generateToken(user.getEmail(), user.getRole(), user.getFullName());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
 
         return AuthResponse.builder()
                 .token(token)
+                .refreshToken(refreshToken)
+                .userId(user.getId())
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .role(user.getRole())
                 .message("Đăng nhập thành công!")
+                .build();
+    }
+
+    // Xác thực 2FA
+    public AuthResponse verify2FA(com.elitan.backend.dto.Verify2FARequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+
+        if (!user.isTwoFactorEnabled()) {
+            throw new RuntimeException("Tài khoản này chưa bật 2FA");
+        }
+
+        if (user.getTwoFactorCode() == null || !user.getTwoFactorCode().equals(request.getCode())) {
+            throw new RuntimeException("Mã OTP không đúng");
+        }
+
+        if (user.getTwoFactorExpiry() == null || user.getTwoFactorExpiry().isBefore(java.time.LocalDateTime.now())) {
+            throw new RuntimeException("Mã OTP đã hết hạn");
+        }
+
+        // Xóa mã sau khi dùng
+        user.setTwoFactorCode(null);
+        user.setTwoFactorExpiry(null);
+        userRepository.save(user);
+
+        String token = jwtService.generateToken(user.getEmail(), user.getRole(), user.getFullName());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+
+        return AuthResponse.builder()
+                .token(token)
+                .refreshToken(refreshToken)
+                .userId(user.getId())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .role(user.getRole())
+                .message("Xác minh 2FA thành công!")
                 .build();
     }
 
@@ -120,7 +182,6 @@ public class AuthService {
                 fullName = fbInfo.get("name");
                 providerId = fbInfo.get("id");
 
-                // Kiểm tra nếu Facebook không trả email
                 if (email == null || email.isEmpty()) {
                     throw new RuntimeException(
                             "Tài khoản Facebook của bạn không có email. Vui lòng cập nhật email trên Facebook hoặc đăng ký bằng email.");
@@ -130,26 +191,20 @@ public class AuthService {
                 throw new RuntimeException("Provider không hỗ trợ: " + provider);
         }
 
-        // Tìm user theo provider + providerId
         Optional<User> existingUser = userRepository.findByProviderAndProviderId(provider, providerId);
 
         User user;
         if (existingUser.isPresent()) {
-            // User đã tồn tại → đăng nhập
             user = existingUser.get();
         } else {
-            // Kiểm tra email đã tồn tại chưa
             Optional<User> userByEmail = userRepository.findByEmail(email);
             if (userByEmail.isPresent()) {
-                // Email đã dùng → chỉ liên kết providerId, KHÔNG ghi đè provider
-                // Giữ nguyên provider gốc để user vẫn login bằng password được
                 user = userByEmail.get();
                 if (user.getProviderId() == null || user.getProviderId().isEmpty()) {
                     user.setProviderId(providerId);
                     userRepository.save(user);
                 }
             } else {
-                // Tạo user mới (auto-register)
                 user = User.builder()
                         .email(email)
                         .fullName(fullName)
@@ -161,11 +216,39 @@ public class AuthService {
             }
         }
 
-        // Tạo JWT token
+        // Kiểm tra 2FA
+        if (user.isTwoFactorEnabled()) {
+            if (user.getDiscordUserId() == null) {
+                // Nếu chưa liên kết thì cho vào luôn hoặc thông báo, 
+                // nhưng thường thì login social nên cho vào nếu chưa bắt buộc
+                // Tuy nhiên nếu đã bật (True) mà ko có ID thì có thể là lỗi dữ liệu
+            } else {
+                // Sinh mã OTP 6 số
+                String otp = String.format("%06d", new java.security.SecureRandom().nextInt(1000000));
+                user.setTwoFactorCode(otp);
+                user.setTwoFactorExpiry(java.time.LocalDateTime.now().plusMinutes(5));
+                userRepository.save(user);
+
+                // Gửi OTP qua Discord
+                discordService.sendMessage(user.getDiscordUserId(), 
+                    "**Mã OTP đăng nhập ÉLITAN (Social) của bạn là: ** `" + otp + "`\n" +
+                    "Mã này sẽ hết hạn sau 5 phút.");
+
+                return AuthResponse.builder()
+                        .twoFactorRequired(true)
+                        .email(user.getEmail())
+                        .message("Vui lòng nhập mã OTP đã gửi qua Discord của bạn.")
+                        .build();
+            }
+        }
+
         String token = jwtService.generateToken(user.getEmail(), user.getRole(), user.getFullName());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
 
         return AuthResponse.builder()
                 .token(token)
+                .refreshToken(refreshToken)
+                .userId(user.getId())
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .role(user.getRole())
@@ -173,7 +256,6 @@ public class AuthService {
                 .build();
     }
 
-    // Xác minh Google Access Token bằng Google Userinfo API
     @SuppressWarnings("unchecked")
     private Map<String, String> verifyGoogleToken(String accessToken) {
         try {
@@ -193,7 +275,6 @@ public class AuthService {
         }
     }
 
-    // Xác minh Facebook Access Token
     @SuppressWarnings("unchecked")
     private Map<String, String> verifyFacebookToken(String accessToken) {
         try {
@@ -211,5 +292,26 @@ public class AuthService {
         } catch (Exception e) {
             throw new RuntimeException("Lỗi xác minh Facebook token: " + e.getMessage());
         }
+    }
+
+    public AuthResponse generateNewAccessToken(String refreshToken) {
+        if (!jwtService.isTokenValid(refreshToken)) {
+            throw new RuntimeException("Refresh token đã hết hạn hoặc không hợp lệ");
+        }
+        String email = jwtService.extractEmail(refreshToken);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
+        
+        String token = jwtService.generateToken(user.getEmail(), user.getRole(), user.getFullName());
+        String newRefreshToken = jwtService.generateRefreshToken(user.getEmail());
+        
+        return AuthResponse.builder()
+                .token(token)
+                .refreshToken(newRefreshToken)
+                .userId(user.getId())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .role(user.getRole())
+                .message("Token refreshed")
+                .build();
     }
 }

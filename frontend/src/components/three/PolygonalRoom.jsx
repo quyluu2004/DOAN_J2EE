@@ -1,8 +1,8 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
 import { useStore } from '../../store/useStore';
 import { Html } from '@react-three/drei';
-import { useThree } from '@react-three/fiber';
+import { useThree, useFrame } from '@react-three/fiber';
 
 // Helper to create floor texture (Grid/Wood/Tile)
 const createFloorTexture = (type, width, depth, color) => {
@@ -57,29 +57,41 @@ const createWallTexture = (repeatX, color) => {
   return texture;
 };
 
-// --- Corner Handle Component ---
+// --- Corner Handle Component (Throttled để giảm giật) ---
 const CornerHandle = ({ index, position, yOffset }) => {
   const updateRoomPoint = useStore((s) => s.updateRoomPoint);
   const [hovered, setHovered] = useState(false);
+  const pendingUpdate = useRef(null);
+  const isDragging = useRef(false);
 
-  const onPointerMove = (e) => {
-    if (e.buttons !== 1) return;
+  // Dùng useFrame để throttle updates theo render frame (~60fps)
+  useFrame(() => {
+    if (pendingUpdate.current) {
+      const { x, z } = pendingUpdate.current;
+      updateRoomPoint(index, x, z);
+      pendingUpdate.current = null;
+    }
+  });
+
+  const onPointerMove = useCallback((e) => {
+    if (!isDragging.current) return;
     e.stopPropagation();
     const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -yOffset);
     const point = new THREE.Vector3();
     e.ray.intersectPlane(plane, point);
     if (point) {
-      const nx = Math.round(point.x * 10) / 10;
-      const nz = Math.round(point.z * 10) / 10;
-      updateRoomPoint(index, nx, nz);
+      // Snap to 0.2m grid thay vì 0.1m → ít updates hơn
+      const nx = Math.round(point.x * 5) / 5;
+      const nz = Math.round(point.z * 5) / 5;
+      pendingUpdate.current = { x: nx, z: nz };
     }
-  };
+  }, [yOffset, index]);
 
   return (
     <group position={[position[0], 0.2, position[1]]}>
       <mesh 
-        onPointerDown={(e) => { e.stopPropagation(); e.target.setPointerCapture(e.pointerId); }}
-        onPointerUp={(e) => { e.stopPropagation(); e.target.releasePointerCapture(e.pointerId); }}
+        onPointerDown={(e) => { e.stopPropagation(); e.target.setPointerCapture(e.pointerId); isDragging.current = true; }}
+        onPointerUp={(e) => { e.stopPropagation(); e.target.releasePointerCapture(e.pointerId); isDragging.current = false; }}
         onPointerMove={onPointerMove}
         onPointerOver={() => { setHovered(true); document.body.style.cursor = 'move'; }}
         onPointerOut={() => { setHovered(false); document.body.style.cursor = 'auto'; }}
@@ -101,8 +113,18 @@ const EdgeHandle = ({ index, p1, p2, yOffset }) => {
 
   const dragging = React.useRef(false);
   const lastPoint = React.useRef(new THREE.Vector3());
+  const pendingEdgeUpdate = useRef(null);
 
-  const onPointerMove = (e) => {
+  // Throttle edge translation to render frame
+  useFrame(() => {
+    if (pendingEdgeUpdate.current) {
+      const { dx, dz } = pendingEdgeUpdate.current;
+      translateRoomEdge(index, dx, dz);
+      pendingEdgeUpdate.current = null;
+    }
+  });
+
+  const onPointerMove = useCallback((e) => {
     if (!dragging.current) return;
     e.stopPropagation();
     const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -yOffset);
@@ -111,17 +133,17 @@ const EdgeHandle = ({ index, p1, p2, yOffset }) => {
     if (point) {
       const dx = point.x - lastPoint.current.x;
       const dz = point.z - lastPoint.current.z;
-      if (Math.abs(dx) >= 0.1 || Math.abs(dz) >= 0.1) {
-        const snapX = Math.round(dx * 10) / 10;
-        const snapZ = Math.round(dz * 10) / 10;
+      if (Math.abs(dx) >= 0.2 || Math.abs(dz) >= 0.2) {
+        const snapX = Math.round(dx * 5) / 5;
+        const snapZ = Math.round(dz * 5) / 5;
         if (snapX !== 0 || snapZ !== 0) {
-          translateRoomEdge(index, snapX, snapZ);
+          pendingEdgeUpdate.current = { dx: snapX, dz: snapZ };
           lastPoint.current.x += snapX;
           lastPoint.current.z += snapZ;
         }
       }
     }
-  };
+  }, [yOffset, index]);
 
   return (
     <group position={[midX, 0.15, midZ]}>

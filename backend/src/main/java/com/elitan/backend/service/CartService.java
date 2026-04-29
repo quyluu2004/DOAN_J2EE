@@ -56,8 +56,11 @@ public class CartService {
                 Product product = productRepository.findById(request.getProductId())
                                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
 
-                ProductVariant variant = variantRepository.findById(request.getVariantId())
-                                .orElseThrow(() -> new RuntimeException("Không tìm thấy biến thể sản phẩm"));
+                ProductVariant variant = null;
+                if (request.getVariantId() != null) {
+                        variant = variantRepository.findById(request.getVariantId())
+                                        .orElseThrow(() -> new RuntimeException("Không tìm thấy biến thể sản phẩm"));
+                }
 
                 Cart cart = cartRepository.findByUserId(user.getId())
                                 .orElseGet(() -> {
@@ -65,8 +68,9 @@ public class CartService {
                                         return cartRepository.save(newCart);
                                 });
 
-                // Kiểm tra xem biến thể đã có trong giỏ chưa
-                cartItemRepository.findByCartIdAndVariantId(cart.getId(), variant.getId())
+                final ProductVariant finalVariant = variant;
+                // Kiểm tra xem tổ hợp sản phẩm + biến thể đã có trong giỏ chưa
+                cartItemRepository.findByCartIdAndProductIdAndVariantId(cart.getId(), product.getId(), request.getVariantId())
                                 .ifPresentOrElse(
                                                 existingItem -> {
                                                         existingItem.setQuantity(existingItem.getQuantity()
@@ -76,7 +80,8 @@ public class CartService {
                                                 () -> {
                                                         CartItem newItem = CartItem.builder()
                                                                         .cart(cart)
-                                                                        .variant(variant)
+                                                                        .product(product)
+                                                                        .variant(finalVariant)
                                                                         .quantity(request.getQuantity())
                                                                         .build();
                                                         cartItemRepository.save(newItem);
@@ -146,25 +151,34 @@ public class CartService {
 
                 List<CartItemResponse> itemResponses = items.stream().map(item -> {
                         ProductVariant variant = item.getVariant();
-                        Product product = variant.getProduct();
-                        BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+                        Product product = item.getProduct();
+                        
+                        // Fallback for legacy data without direct product link
+                        if (product == null && variant != null) {
+                            product = variant.getProduct();
+                        }
+                        
+                        if (product == null) return null; // Should not happen in healthy state
+
+                        BigDecimal price = product.getPrice();
+                        BigDecimal itemTotal = price.multiply(BigDecimal.valueOf(item.getQuantity()));
 
                         return CartItemResponse.builder()
                                         .id(item.getId())
                                         .productId(product.getId())
-                                        .variantId(variant.getId())
+                                        .variantId(variant != null ? variant.getId() : null)
                                         .name(product.getName())
                                         .category(product.getCategory())
-                                        .price(product.getPrice())
-                                        .imageUrl(variant.getImageUrl() != null ? variant.getImageUrl() : product.getImageUrl())
+                                        .price(price)
+                                        .imageUrl(variant != null && variant.getImageUrl() != null ? variant.getImageUrl() : product.getImageUrl())
                                         .thumbnailUrl(product.getThumbnailUrl())
-                                        .color(variant.getColor())
+                                        .color(variant != null ? variant.getColor() : null)
                                         .material(product.getMaterial())
                                         .dimensions(product.getDimensions())
                                         .quantity(item.getQuantity())
                                         .itemTotal(itemTotal)
                                         .build();
-                }).collect(Collectors.toList());
+                }).filter(java.util.Objects::nonNull).collect(Collectors.toList());
 
                 BigDecimal subTotal = itemResponses.stream()
                                 .map(CartItemResponse::getItemTotal)

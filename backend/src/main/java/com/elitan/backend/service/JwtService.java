@@ -37,6 +37,17 @@ public class JwtService {
                 .compact();
     }
 
+    // Tạo Refresh Token (Hạn 7 ngày)
+    public String generateRefreshToken(String email) {
+        long refreshExpiration = 7L * 24 * 60 * 60 * 1000;
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
     // Lấy email từ token
     public String extractEmail(String token) {
         return extractClaims(token).getSubject();

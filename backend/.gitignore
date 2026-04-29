@@ -31,4 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
-application.properties
+
+### Secrets — KHÔNG ĐƯỢC COMMIT ###
+src/main/resources/application.properties
+
+### Build logs ###
+*.log
+tmp_*.json
+stub_methods.txt
+methods.txt
+post_searches_methods.txt

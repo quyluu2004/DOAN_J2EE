@@ -1,6 +1,6 @@
 package com.elitan.backend.service;
 
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -95,5 +95,35 @@ public class EmailService {
                 </div>
                 """
                 .formatted(resetLink);
+    }
+    // Gửi email xác nhận kèm Invoice PDF
+    public void sendOrderConfirmation(String to, String orderId, byte[] invoicePdf) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setSubject("ÉLITAN — Order Confirmation " + orderId);
+
+            String htmlContent = """
+                <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #111827; padding: 20px;">
+                    <h1 style="font-size: 24px; color: #703225;">Thank you for your order.</h1>
+                    <p style="font-size: 14px; line-height: 1.6;">Your order <strong>%s</strong> has been successfully placed.</p>
+                    <p style="font-size: 14px; line-height: 1.6;">A detailed electronic invoice is attached as a PDF to this email for your records.</p>
+                    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+                    <p style="font-size: 12px; color: #6B7280;">Warm regards,<br><strong>ÉLITAN Concierge Team</strong></p>
+                </div>
+                """.formatted(orderId);
+                
+            helper.setText(htmlContent, true);
+            
+            // Attach PDF
+            helper.addAttachment("Elitan_Invoice_" + orderId + ".pdf", new org.springframework.core.io.ByteArrayResource(invoicePdf));
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            System.err.println("Failed to send order email: " + e.getMessage());
+        }
     }
 }

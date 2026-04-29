@@ -22,7 +22,11 @@ public class CartItem {
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "variant_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "variant_id", nullable = true)
     private ProductVariant variant;
 
     private Integer quantity;

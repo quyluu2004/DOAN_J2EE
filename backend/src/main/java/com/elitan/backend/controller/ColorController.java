@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/colors")
-@CrossOrigin(origins = "https://localhost:5173")
 @RequiredArgsConstructor
 public class ColorController {
     private final ColorService colorService;

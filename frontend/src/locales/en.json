@@ -91,7 +91,13 @@
       "placeholder": "Compose your thoughts...",
       "submit": "Archive Review",
       "authenticate": "Authenticate"
-    }
+    },
+    "stock": {
+      "outofstock": "Out of Stock",
+      "instock": "In Stock",
+      "lowstock": "Only {{count}} pieces left"
+    },
+    "select_finish": "Please Select Finish"
   },
   "common": {
     "currency": "Currency",
@@ -141,53 +147,60 @@
   },
   "checkout": {
     "title": "Checkout",
+    "secure_checkout": "Secure Checkout",
     "contact_shipping": "Contact & Shipping",
     "delivery_method": "Delivery Method",
     "review_verify": "Review & Verify",
-    "place_order": "Place Order",
-    "secure_checkout": "Secure Checkout",
-    "shipping_fee": "Shipping Fee",
-    "total": "Total Amount",
-    "deposit": "30% Deposit Amount",
-    "deposit_desc": "Pay 30% deposit now. Balance due on delivery.",
-    "empty_cart": "Your cart is currently empty",
-    "continue_shopping": "Continue Shopping",
-    "edit": "Edit",
-    "fields": {
-      "name": "Full Name",
+    "summary": "Order Summary",
+    "form": {
+      "full_name": "Full Name",
       "phone": "Phone Number",
       "address": "Detailed Address",
-      "name_place": "Enter your full name",
-      "address_place": "House number, Street, Ward, District, City"
+      "placeholder_name": "Enter your full name",
+      "placeholder_address": "House number, Street, Ward, District, City"
     },
-    "delivery": {
-      "standard": "Standard Delivery",
+    "btn_continue_delivery": "Continue to Delivery",
+    "btn_continue_payment": "Continue to Payment",
+    "shipping": {
+      "standard_title": "Standard Delivery",
       "standard_desc": "3-5 business days. Threshold drop-off.",
-      "white_glove": "White Glove Premium",
-      "white_glove_desc": "Scheduled delivery, assembly, and debris removal.",
-      "free": "Free"
+      "white_glove_title": "White Glove Premium",
+      "white_glove_desc": "Scheduled delivery, assembly, and debris removal."
     },
+    "payment_desc": "Choose your preferred payment method.",
     "payment": {
       "cod": "Cash on Delivery",
       "vnpay": "VNPay / Visa",
-      "deposit_opt": "Pay 30% Deposit Now",
-      "balance_desc": "Balance due on delivery."
+      "deposit_title": "Pay 30% Deposit Now",
+      "deposit_desc": "Pay 30% deposit now. Balance due on delivery."
     },
     "otp": {
-      "title": "Email Verification Required",
-      "desc": "To secure your premium order, we will send an OTP to your email: {{email}}",
-      "sending": "Sending...",
-      "send_cta": "Send OTP via Email",
+      "header": "Verification Required",
+      "subtext": "OTP has been sent to: {{email}}",
+      "btn_send": "Send OTP Code",
+      "sent": "OTP sent successfully",
+      "fail": "Failed to send OTP",
       "placeholder": "Enter 6-digit code",
       "no_code": "Didn't receive code?",
-      "resend_in": "Resend in {{s}}s",
+      "resend_in": "Resend in {{time}}s",
       "resend_now": "Resend Now",
-      "processing": "Processing...",
-      "secure_tx": "Encrypted Secure Transaction"
+      "title": "Internal Security",
+      "secure_tx": "Secure Encrypted Transaction"
     },
-    "summary": {
-      "title": "Order Summary"
-    }
+    "errors": {
+      "shippinginfo": "Please fill in all shipping information",
+      "shippingmethod": "Please select a shipping method",
+      "paymentmethod": "Please select a payment method",
+      "generic": "Something went wrong, please try again"
+    },
+    "place_order": "Place Order Now",
+    "shipping_fee": "Shipping Fee",
+    "total": "Total Amount",
+    "deposit": "Deposit Amount",
+    "secure_info": "Your information is secure",
+    "success": "Order placed successfully!",
+    "empty_cart": "Your cart is currently empty",
+    "continue_shopping": "Continue Shopping"
   },
   "wishlist": {
     "title": "My Favorites",
@@ -215,9 +228,9 @@
     "stats": {
       "active": "Active Orders",
       "total": "Total Crafted",
-      "zalo": "Zalo Status",
-      "zalo_verified": "Zalo Verified",
-      "otp_verified": "Verified via OTP"
+      "zalo": "Discord Status",
+      "zalo_verified": "Discord Verified",
+      "otp_verified": "Verified via Discord"
     },
     "recent": "Recent Orders",
     "no_orders": "No orders yet. Discover our collection.",
@@ -236,7 +249,7 @@
     "cancel": "Cancel",
     "security": {
       "title": "Security",
-      "desc": "For your protection, every order requires Zalo OTP verification on your phone: {{phone}}",
+      "desc": "For your protection, 2FA codes are sent via your linked Discord account.",
       "change_password": "Change Password"
     },
     "concierge": {

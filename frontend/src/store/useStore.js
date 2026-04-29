@@ -232,7 +232,13 @@ export const useStore = create((set, get) => ({
   addItem: (item) => set((state) => ({
     floors: state.floors.map(f =>
       f.id === state.activeFloorId
-        ? { ...f, items: [...f.items, { ...item, id: Math.random().toString(36).substr(2, 9) }] }
+        ? { ...f, items: [...f.items, { 
+            ...item, 
+            id: Math.random().toString(36).substr(2, 9),
+            isColliding: false,
+            lastValidPosition: item.position || [0, 0, 0],
+            lastValidRotation: item.rotation || [0, 0, 0]
+          }] }
         : f
     )
   })),
@@ -249,7 +255,30 @@ export const useStore = create((set, get) => ({
   updateItem: (id, updates) => set((state) => ({
     floors: state.floors.map(f =>
       f.id === state.activeFloorId
-        ? { ...f, items: f.items.map(i => i.id === id ? { ...i, ...updates } : i) }
+        ? { ...f, items: f.items.map(i => {
+            if (i.id === id) {
+              const newItem = { ...i, ...updates };
+              // If not colliding, update last valid state
+              if (!newItem.isColliding) {
+                newItem.lastValidPosition = newItem.position;
+                newItem.lastValidRotation = newItem.rotation;
+              }
+              return newItem;
+            }
+            return i;
+          }) }
+        : f
+    )
+  })),
+
+  revertItem: (id) => set((state) => ({
+    floors: state.floors.map(f =>
+      f.id === state.activeFloorId
+        ? { ...f, items: f.items.map(i => 
+            i.id === id 
+              ? { ...i, position: i.lastValidPosition, rotation: i.lastValidRotation, isColliding: false } 
+              : i
+          ) }
         : f
     )
   })),
@@ -261,6 +290,7 @@ export const useStore = create((set, get) => ({
     const state = get();
     return JSON.stringify({
       roomWidth: state.roomWidth, roomDepth: state.roomDepth, wallHeight: state.wallHeight,
+      roomArea: state.roomArea, roomPoints: state.roomPoints,
       wallColor: state.wallColor, floorType: state.floorType, floorColor: state.floorColor,
       floors: state.floors
     });
@@ -271,6 +301,7 @@ export const useStore = create((set, get) => ({
       const data = JSON.parse(jsonStr);
       set({
         roomWidth: data.roomWidth || 10, roomDepth: data.roomDepth || 10, wallHeight: data.wallHeight || 3,
+        roomArea: data.roomArea || 100, roomPoints: data.roomPoints || [[-5, -5], [5, -5], [5, 5], [-5, 5]],
         wallColor: data.wallColor || '#F5F0E8', floorType: data.floorType || 'wood', floorColor: data.floorColor || '#C4A882',
         floors: data.floors || [{ id: 'floor-1', name: 'Tầng 1', items: [], walls: [] }],
         activeFloorId: data.floors?.[0]?.id || 'floor-1'

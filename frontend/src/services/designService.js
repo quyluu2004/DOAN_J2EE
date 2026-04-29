@@ -22,6 +22,24 @@ export const getDesignById = async (id) => {
   return response.data;
 };
 
+export const getTemplates = async () => {
+  const response = await axios.get(`${BASE_URL}/templates`, { headers: getAuthHeader() });
+  return response.data;
+};
+
 export const deleteDesign = async (id) => {
   await axios.delete(`${BASE_URL}/${id}`, { headers: getAuthHeader() });
 };
+
+export const uploadThumbnail = async (file) => {
+    const formData = new FormData();
+    formData.append('files', file);
+    const response = await axios.post('/api/upload', formData, {
+        headers: {
+            ...getAuthHeader(),
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response.data[0];
+};
+

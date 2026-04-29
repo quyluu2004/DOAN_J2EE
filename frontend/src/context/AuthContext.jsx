@@ -22,10 +22,33 @@ export const AuthProvider = ({ children }) => {
     // Đăng nhập thường
     const login = async (email, password) => {
         const data = await authService.login(email, password);
+        
+        // Nếu yêu cầu 2FA, trả về data để UI xử lý, chưa set user
+        if (data.twoFactorRequired) {
+            return data;
+        }
+
         setUser({
+            id: data.userId,
             email: data.email,
             fullName: data.fullName,
             role: data.role,
+            discordUserId: data.discordUserId,
+            twoFactorEnabled: data.twoFactorEnabled,
+        });
+        return data;
+    };
+
+    // Xác minh 2FA và hoàn tất đăng nhập
+    const verify2FA = async (email, code) => {
+        const data = await authService.verify2FA(email, code);
+        setUser({
+            id: data.userId,
+            email: data.email,
+            fullName: data.fullName,
+            role: data.role,
+            discordUserId: data.discordUserId,
+            twoFactorEnabled: data.twoFactorEnabled,
         });
         return data;
     };
@@ -33,10 +56,19 @@ export const AuthProvider = ({ children }) => {
     // Đăng nhập bằng Google/Facebook
     const socialLogin = async (token, provider) => {
         const data = await authService.socialLogin(token, provider);
+        
+        // Nếu yêu cầu 2FA, trả về data để UI xử lý, chưa set user
+        if (data.twoFactorRequired) {
+            return data;
+        }
+
         setUser({
+            id: data.userId,
             email: data.email,
             fullName: data.fullName,
             role: data.role,
+            discordUserId: data.discordUserId,
+            twoFactorEnabled: data.twoFactorEnabled,
         });
         return data;
     };
@@ -46,9 +78,12 @@ export const AuthProvider = ({ children }) => {
         const data = await authService.register(fullName, email, password);
         if (data.token) {
             setUser({
+                id: data.userId,
                 email: data.email,
                 fullName: data.fullName,
                 role: data.role,
+                discordUserId: data.discordUserId,
+                twoFactorEnabled: data.twoFactorEnabled,
             });
         }
         return data;
@@ -75,6 +110,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         isAuthenticated: !!user,
         login,
+        verify2FA,
         socialLogin,
         register,
         logout,

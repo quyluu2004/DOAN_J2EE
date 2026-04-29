@@ -61,7 +61,7 @@ const Navbar = () => {
                     {[
                         { label: t('nav.home'), to: '/' },
                         { label: t('nav.shop'), to: '/shop' },
-                        { label: '3D Designer', to: '/3d-designer' },
+                        { label: '3D Studio', to: '/3d-designer' },
                         { label: t('nav.about'), to: '/about' },
                         { label: t('nav.contact'), to: '/contact' }
                     ].map((item) => (
@@ -157,15 +157,18 @@ const Navbar = () => {
 
                     {isAuthenticated ? (
                         <>
-                            <span className="hidden md:block text-sm font-medium text-gray-600 ml-4">
+                            <Link to="/profile" className="hidden md:block text-sm font-medium text-gray-600 ml-4 hover:text-black transition">
                                 {t('nav.welcome')}, {user?.fullName?.split(' ')[0]}
-                            </span>
+                            </Link>
                             <Link to="/wishlist" className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black transition">
                                 <Heart className="w-4 h-4" />
                                 {t('nav.wishlist')}
                             </Link>
                             <Link to="/orders" className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black transition">
                                 {t('nav.orders')}
+                            </Link>
+                            <Link to="/my-designs" className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black transition">
+                                My Designs
                             </Link>
                             <button
                                 onClick={() => { logout(); navigate('/'); }}

@@ -130,15 +130,15 @@ const Checkout = () => {
                         <div className="space-y-8">
                             {/* STEP 1: SHIPPING INFO */}
                             <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm transition-all">
-                                <div className="flex items-center justify-between mb-8">
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-sm ${activeStep >= 1 ? 'bg-black text-white' : 'bg-gray-100 text-gray-400'}`}>1</div>
-                                        <h2 className={`text-xl font-semibold tracking-tight ${activeStep >= 1 ? 'text-gray-900' : 'text-gray-400'}`}>{t('checkout.contact_shipping')}</h2>
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-sm ${activeStep >= 1 ? 'bg-black text-white' : 'bg-gray-100 text-gray-400'}`}>1</div>
+                                            <h2 className={`text-xl font-semibold tracking-tight ${activeStep >= 1 ? 'text-gray-900' : 'text-gray-400'}`}>{t('checkout.contact_shipping')}</h2>
+                                        </div>
+                                        {activeStep > 1 && (
+                                            <button onClick={() => setActiveStep(1)} className="text-sm font-medium text-gray-500 hover:text-black transition">{t('common.edit') || 'Edit'}</button>
+                                        )}
                                     </div>
-                                    {activeStep > 1 && (
-                                        <button onClick={() => setActiveStep(1)} className="text-sm font-medium text-gray-500 hover:text-black transition">Edit</button>
-                                    )}
-                                </div>
 
                                 {activeStep === 1 && (
                                     <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
@@ -182,7 +182,7 @@ const Checkout = () => {
                                         <h2 className={`text-xl font-semibold tracking-tight ${activeStep >= 2 ? 'text-gray-900' : 'text-gray-400'}`}>{t('checkout.delivery_method')}</h2>
                                     </div>
                                     {activeStep > 2 && (
-                                        <button onClick={() => setActiveStep(2)} className="text-sm font-medium text-gray-500 hover:text-black transition">Edit</button>
+                                        <button onClick={() => setActiveStep(2)} className="text-sm font-medium text-gray-500 hover:text-black transition">{t('common.edit') || 'Edit'}</button>
                                     )}
                                 </div>
 
@@ -332,7 +332,7 @@ const Checkout = () => {
                                         </div>
 
                                         <p className="text-center flex justify-center items-center gap-1.5 text-[10px] text-gray-400 uppercase tracking-widest">
-                                            <ShieldCheck size={12} /> {t('checkout.secure_info')}
+                                            <ShieldCheck size={12} /> {t('checkout.otp.secure_tx')}
                                         </p>
                                     </div>
                                 )}

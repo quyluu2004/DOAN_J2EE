@@ -41,8 +41,18 @@ public class User {
 
     // Thông tin profile mở rộng
     private String phone;
+    @Column(columnDefinition = "TEXT")
     private String address;
     private String avatarUrl;
+
+    @Builder.Default
+    private boolean twoFactorEnabled = false;
+
+    private String discordUserId;
+    
+    private String twoFactorCode;
+    
+    private java.time.LocalDateTime twoFactorExpiry;
 
     @Builder.Default
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();

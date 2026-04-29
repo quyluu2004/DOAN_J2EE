@@ -9,7 +9,6 @@ public class AddToCartRequest {
     @NotNull(message = "Product ID is required")
     private Long productId;
 
-    @NotNull(message = "Variant ID is required")
     private Long variantId;
 
     @NotNull(message = "Quantity is required")

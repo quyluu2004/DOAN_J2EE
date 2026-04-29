@@ -1,40 +1,34 @@
 package com.elitan.backend.controller;
 
+import com.elitan.backend.dto.RoomDesignRequest;
 import com.elitan.backend.entity.RoomDesign;
 import com.elitan.backend.service.RoomDesignService;
-import com.elitan.backend.entity.User;
-import com.elitan.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/designs")
 @RequiredArgsConstructor
 public class RoomDesignController {
     private final RoomDesignService roomDesignService;
-    private final UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<RoomDesign> saveDesign(@RequestBody RoomDesignRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        RoomDesign design;
-        if (request.getId() != null) {
-            design = roomDesignService.getDesignById(request.getId())
-                    .orElse(new RoomDesign());
-        } else {
-            design = new RoomDesign();
+    public ResponseEntity<?> saveDesign(
+            @RequestBody RoomDesignRequest request,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        try {
+            return ResponseEntity.ok(roomDesignService.saveDesignFromRequest(request, authHeader));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage() != null ? e.getMessage() : "Unknown error"));
         }
+    }
 
-        design.setUser(user);
-        design.setName(request.getName());
-        design.setDesignData(request.getDesignData());
-        design.setThumbnailUrl(request.getThumbnailUrl());
-
-        return ResponseEntity.ok(roomDesignService.saveDesign(design));
+    @GetMapping("/templates")
+    public ResponseEntity<List<RoomDesign>> getTemplates() {
+        return ResponseEntity.ok(roomDesignService.getTemplates());
     }
 
     @GetMapping("/user/{userId}")
@@ -53,14 +47,5 @@ public class RoomDesignController {
     public ResponseEntity<Void> deleteDesign(@PathVariable Long id) {
         roomDesignService.deleteDesign(id);
         return ResponseEntity.ok().build();
-    }
-
-    @lombok.Data
-    public static class RoomDesignRequest {
-        private Long id;
-        private Long userId;
-        private String name;
-        private String designData;
-        private String thumbnailUrl;
     }
 }

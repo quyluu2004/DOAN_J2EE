@@ -17,13 +17,33 @@ const Login = () => {
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    const { login, socialLogin } = useAuth()
+    const [showOTP, setShowOTP] = useState(false)
+    const [otpCode, setOtpCode] = useState('')
+    const { login, verify2FA, socialLogin } = useAuth()
     const { t } = useLocalization()
     const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
+
+        // Nếu đang ở màn hình nhập OTP
+        if (showOTP) {
+            if (otpCode.length < 6) {
+                setError("Vui lòng nhập đầy đủ mã OTP 6 số");
+                return;
+            }
+            setLoading(true);
+            try {
+                await verify2FA(email, otpCode);
+                navigate('/');
+            } catch (err) {
+                setError(err.message || "Xác minh OTP thất bại");
+            } finally {
+                setLoading(false);
+            }
+            return;
+        }
 
         // Validate phía Frontend
         if (!email || !password) {
@@ -37,8 +57,12 @@ const Login = () => {
 
         setLoading(true)
         try {
-            await login(email, password)
-            navigate('/') // Chuyển về trang chủ
+            const data = await login(email, password)
+            if (data.twoFactorRequired) {
+                setShowOTP(true);
+            } else {
+                navigate('/') // Chuyển về trang chủ
+            }
         } catch (err) {
             setError(err.message || t('auth.error_login_fail'))
         } finally {
@@ -60,8 +84,13 @@ const Login = () => {
                 const userInfo = await res.json()
 
                 // Gửi access_token và thông tin user về backend
-                await socialLogin(tokenResponse.access_token, 'GOOGLE')
-                navigate('/')
+                const data = await socialLogin(tokenResponse.access_token, 'GOOGLE')
+                if (data.twoFactorRequired) {
+                    setEmail(userInfo.email); // Lưu email để verify OTP
+                    setShowOTP(true);
+                } else {
+                    navigate('/')
+                }
             } catch (err) {
                 setError(err.message || t('auth.error_google_fail'))
             } finally {
@@ -106,8 +135,13 @@ const Login = () => {
                 (async () => {
                     setLoading(true);
                     try {
-                        await socialLogin(response.authResponse.accessToken, 'FACEBOOK');
-                        navigate('/');
+                        const data = await socialLogin(response.authResponse.accessToken, 'FACEBOOK');
+                        if (data.twoFactorRequired) {
+                            setEmail(data.email); // Backend trả về email để verify
+                            setShowOTP(true);
+                        } else {
+                            navigate('/');
+                        }
                     } catch (err) {
                         console.error("FB Login Error:", err);
                         setError(err.message || t('auth.error_facebook_fail'));
@@ -116,7 +150,7 @@ const Login = () => {
                     }
                 })();
             } else {
-                console.log('User cancelled login or did not fully authorize.');
+                // User cancelled login or did not fully authorize.
             }
         }, { scope: 'email,public_profile' });
     };
@@ -188,31 +222,56 @@ const Login = () => {
                             <div className="flex-1 h-px bg-white/20"></div>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="email" className="text-xs font-bold tracking-widest text-gray-400 uppercase">{t('auth.email_label')}</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="h-10 bg-transparent border-0 border-b border-gray-600 rounded-none px-0 text-white placeholder:text-gray-600 focus-visible:ring-0 focus-visible:border-white transition-colors"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <Label htmlFor="password" className="text-xs font-bold tracking-widest text-gray-400 uppercase">{t('auth.password_label')}</Label>
-                                <Link to="/forgot-password" className="text-[10px] text-gray-400 hover:text-white transition-colors tracking-wider uppercase">
-                                    {t('auth.forgot_password')}
-                                </Link>
+                        {!showOTP ? (
+                            <>
+                                <div className="space-y-2">
+                                    <Label htmlFor="email" className="text-xs font-bold tracking-widest text-gray-400 uppercase">{t('auth.email_label')}</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="h-10 bg-transparent border-0 border-b border-gray-600 rounded-none px-0 text-white placeholder:text-gray-600 focus-visible:ring-0 focus-visible:border-white transition-colors"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between">
+                                        <Label htmlFor="password" className="text-xs font-bold tracking-widest text-gray-400 uppercase">{t('auth.password_label')}</Label>
+                                        <Link to="/forgot-password" className="text-[10px] text-gray-400 hover:text-white transition-colors tracking-wider uppercase">
+                                            {t('auth.forgot_password')}
+                                        </Link>
+                                    </div>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="h-10 bg-transparent border-0 border-b border-gray-600 rounded-none px-0 text-white placeholder:text-gray-600 focus-visible:ring-0 focus-visible:border-white transition-colors"
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            <div className="space-y-4 py-4">
+                                <div className="text-center space-y-2">
+                                    <Label className="text-xs font-bold tracking-widest text-yellow-500 uppercase">Xác minh 2FA</Label>
+                                    <p className="text-xs text-gray-400">Chúng tôi đã gửi mã OTP gồm 6 chữ số đến Discord của bạn.</p>
+                                </div>
+                                <Input
+                                    type="text"
+                                    placeholder="Nhập mã OTP"
+                                    value={otpCode}
+                                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').substring(0, 6))}
+                                    className="h-14 text-center text-2xl tracking-[1em] font-bold bg-white/5 border-white/20 rounded-none focus-visible:ring-offset-0 focus-visible:ring-white/30"
+                                />
+                                <button 
+                                    type="button" 
+                                    onClick={() => setShowOTP(false)}
+                                    className="w-full text-[10px] text-gray-500 hover:text-white uppercase tracking-widest transition-colors"
+                                >
+                                    Quay lại đăng nhập
+                                </button>
                             </div>
-                            <Input
-                                id="password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="h-10 bg-transparent border-0 border-b border-gray-600 rounded-none px-0 text-white placeholder:text-gray-600 focus-visible:ring-0 focus-visible:border-white transition-colors"
-                            />
-                        </div>
+                        )}
                     </CardContent>
                     <CardFooter className="flex flex-col space-y-6 px-8 pb-10">
                         <Button

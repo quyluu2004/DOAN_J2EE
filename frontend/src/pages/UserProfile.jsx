@@ -169,20 +169,20 @@ export default function UserProfile() {
                   <p className="text-4xl font-serif text-[#703225]">{orders.length}</p>
                 </CardContent>
               </Card>
-              <Card className="border-[#fcecd5] shadow-sm hover:shadow-md transition-shadow bg-[#703225] text-white">
-                <CardHeader>
-                  <CardTitle className="text-sm font-bold uppercase tracking-widest text-[#fff8f3]/70">Zalo Status</CardTitle>
-                </CardHeader>
-                <CardContent className="flex items-center gap-3">
-                  <div className="bg-blue-500 p-2 rounded-full">
-                    <MessageCircle size={20} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="font-bold">Zalo Verified</p>
-                    <p className="text-xs text-[#fff8f3]/70">Verified via OTP</p>
-                  </div>
-                </CardContent>
-              </Card>
+               <Card className="border-[#fcecd5] shadow-sm hover:shadow-md transition-shadow bg-[#703225] text-white">
+                 <CardHeader>
+                   <CardTitle className="text-sm font-bold uppercase tracking-widest text-[#fff8f3]/70">Discord Status</CardTitle>
+                 </CardHeader>
+                 <CardContent className="flex items-center gap-3">
+                   <div className="bg-blue-500 p-2 rounded-full">
+                     <MessageCircle size={20} className="text-white" />
+                   </div>
+                   <div>
+                     <p className="font-bold">Discord Verified</p>
+                     <p className="text-xs text-[#fff8f3]/70">Verified via OTP</p>
+                   </div>
+                 </CardContent>
+               </Card>
             </div>
 
             <Card className="border-[#fcecd5] shadow-sm">
@@ -326,7 +326,7 @@ export default function UserProfile() {
                       <div className="space-y-2 relative">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-[#86736f] flex items-center gap-2">
                           Phone Number 
-                          <Badge className="bg-blue-100 text-blue-700 border-none px-2 py-0 h-4 text-[8px] font-bold">ZALO VERIFIED</Badge>
+                          <Badge className="bg-blue-100 text-blue-700 border-none px-2 py-0 h-4 text-[8px] font-bold">DISCORD VERIFIED</Badge>
                         </label>
                         <div className="relative">
                           <Input 
@@ -372,7 +372,7 @@ export default function UserProfile() {
                     <CardTitle className="font-serif text-lg">Security</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <p className="text-xs text-[#86736f]">For your protection, every order requires Zalo OTP verification on your phone: <span className="font-bold">{user.phone || 'N/A'}</span></p>
+                    <p className="text-xs text-[#86736f]">For your protection, 2FA codes are sent via your linked Discord account.</p>
                     <Button variant="outline" className="w-full border-[#fcecd5] text-[#703225]">Change Password</Button>
                   </CardContent>
                 </Card>

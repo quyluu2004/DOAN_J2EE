@@ -120,7 +120,7 @@ const Register = () => {
                     }
                 })();
             } else {
-                console.log('User cancelled login or did not fully authorize.');
+                // User cancelled login or did not fully authorize.
             }
         }, { scope: 'email,public_profile' });
     };

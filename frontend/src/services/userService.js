@@ -1,8 +1,9 @@
 // userService.js — Gọi API cho Profile (cần JWT auth)
 
 import { getToken } from "./authService";
+import { API_BASE_URL } from '../config';
 
-const API_URL = "/api/users";
+const API_URL = `${API_BASE_URL}/api/users`;
 
 // Helper: tạo headers với JWT token
 const authHeaders = () => ({
@@ -55,6 +56,38 @@ export const changePassword = async (currentPassword, newPassword) => {
 
     if (!response.ok) {
         throw new Error(data.error || "Đổi mật khẩu thất bại");
+    }
+
+    return data;
+};
+
+// Liên kết Discord
+export const linkDiscord = async (userId) => {
+    const response = await fetch(`${API_URL}/link-discord`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ userId }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.error || "Liên kết Discord thất bại");
+    }
+
+    return data;
+};
+
+// Bật/tắt 2FA
+export const toggle2FA = async (enabled) => {
+    const response = await fetch(`${API_URL}/toggle-2fa`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ enabled }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.error || "Cập nhật 2FA thất bại");
     }
 
     return data;

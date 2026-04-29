@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Invoice</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        body {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            color: #221a0c;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #703225;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            color: #111827;
+        }
+        .subtitle {
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #86736f;
+        }
+        .invoice-details {
+            display: table;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        .detail-column {
+            display: table-cell;
+            width: 50%;
+        }
+        .table-responsive {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .table-responsive th {
+            background-color: #fcecd5;
+            color: #703225;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 12px;
+            text-align: left;
+        }
+        .table-responsive td {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 12px;
+            font-size: 14px;
+        }
+        .total-section {
+            text-align: right;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .total-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #703225;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 11px;
+            color: #6B7280;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">ÉLITAN</div>
+        <div class="subtitle">Luxury Furniture</div>
+        <h2 style="margin-top: 20px; letter-spacing: 2px;">INVOICE / RECEIPT</h2>
+    </div>
+
+    <div class="invoice-details">
+        <div class="detail-column">
+            <h4 style="margin-bottom: 5px; color: #86736f;">Billed To:</h4>
+            <p style="margin: 0; font-weight: bold;" th:text="${order.shippingName}">Customer Name</p>
+            <p style="margin: 5px 0 0 0;" th:text="${order.shippingAddress}">Address</p>
+            <p style="margin: 5px 0 0 0;" th:text="${order.shippingPhone}">Phone</p>
+        </div>
+        <div class="detail-column" style="text-align: right;">
+            <p style="margin: 0;"><strong>Invoice ID:</strong> <span th:text="${order.trackingNumber}">#ORD-123456</span></p>
+            <p style="margin: 5px 0;"><strong>Date:</strong> <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy')}">01/01/2026</span></p>
+            <p style="margin: 5px 0;"><strong>Status:</strong> <span th:text="${order.status}">PAID</span></p>
+        </div>
+    </div>
+
+    <table class="table-responsive">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Variation</th>
+                <th style="text-align: center;">Qty</th>
+                <th style="text-align: right;">Price</th>
+                <th style="text-align: right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${order.items}">
+                <td th:text="${item.productName}">Product Name</td>
+                <td th:text="${item.color}">Color</td>
+                <td style="text-align: center;" th:text="${item.quantity}">1</td>
+                <td style="text-align: right;">$<span th:text="${item.priceAtPurchase}">0.00</span></td>
+                <td style="text-align: right; font-weight: bold;">$<span th:text="${item.itemTotal}">0.00</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="total-section">
+        <p>Subtotal: $<span th:text="${order.totalPrice - order.shippingFee}">0.00</span></p>
+        <p>Shipping Fee (<span th:text="${order.shippingMethod}">STANDARD</span>): $<span th:text="${order.shippingFee}">0.00</span></p>
+        <h3 style="margin-top: 15px;">TOTAL: <span class="total-amount">$<span th:text="${order.totalPrice}">0.00</span></span></h3>
+    </div>
+
+    <div class="footer">
+        <p>Thank you for choosing ÉLITAN. We hope our pieces bring timeless elegance to your home.</p>
+        <p>If you have any inquiries, please contact concierge@elitan.com.</p>
+        <p>© 2026 ÉLITAN. All rights reserved.</p>
+    </div>
+</body>
+</html>

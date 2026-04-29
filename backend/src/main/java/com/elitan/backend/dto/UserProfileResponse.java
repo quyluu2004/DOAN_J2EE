@@ -18,4 +18,6 @@ public class UserProfileResponse {
     private String avatarUrl;
     private String provider;
     private String role;
+    private String discordUserId;
+    private boolean twoFactorEnabled;
 }

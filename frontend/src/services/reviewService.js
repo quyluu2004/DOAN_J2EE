@@ -1,4 +1,6 @@
-const API_URL = "/api/reviews";
+import { API_BASE_URL } from '../config';
+
+const API_URL = `${API_BASE_URL}/api/reviews`;
 
 const getHeaders = () => {
     const token = localStorage.getItem("token");
@@ -8,11 +10,11 @@ const getHeaders = () => {
     };
 };
 
-export const addReview = async (productId, rating, comment) => {
+export const addReview = async (productId, rating, comment, mediaUrls) => {
     const response = await fetch(`${API_URL}/product/${productId}`, {
         method: "POST",
         headers: getHeaders(),
-        body: JSON.stringify({ rating, comment }),
+        body: JSON.stringify({ rating, comment, mediaUrls }),
     });
 
     if (!response.ok) {

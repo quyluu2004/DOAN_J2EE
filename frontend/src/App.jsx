@@ -34,6 +34,7 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminUsers from './pages/admin/AdminUsers';
 import ColorManagement from './pages/admin/ColorManagement';
 import MaterialManagement from './pages/admin/MaterialManagement';
+import AdminTemplates from './pages/admin/AdminTemplates';
 
 // Lấy Google Client ID từ biến môi trường
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -44,7 +45,7 @@ function AnimatedRoutes() {
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+      <Routes location={location}>
         <Route path="/" element={
           <PageTransition>
             <HomePage />
@@ -136,6 +137,8 @@ function AnimatedRoutes() {
             <Route path="users" element={<AdminUsers />} />
             <Route path="colors" element={<ColorManagement />} />
             <Route path="materials" element={<MaterialManagement />} />
+            <Route path="templates" element={<AdminTemplates />} />
+            <Route path="templates/create" element={<RoomDesigner isAdmin={true} />} />
           </Route>
         </Route>
       </Routes>

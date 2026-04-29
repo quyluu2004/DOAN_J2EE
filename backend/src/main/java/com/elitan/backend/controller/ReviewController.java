@@ -23,10 +23,11 @@ public class ReviewController {
             @PathVariable Long productId,
             @RequestBody Map<String, Object> request) {
         
-        int rating = (int) request.get("rating");
+        int rating = request.get("rating") != null ? ((Number) request.get("rating")).intValue() : 5;
         String comment = (String) request.get("comment");
+        String mediaUrls = (String) request.get("mediaUrls");
         
-        Review review = reviewService.addReview(authentication.getName(), productId, rating, comment);
+        Review review = reviewService.addReview(authentication.getName(), productId, rating, comment, mediaUrls);
         return ResponseEntity.ok(review);
     }
 

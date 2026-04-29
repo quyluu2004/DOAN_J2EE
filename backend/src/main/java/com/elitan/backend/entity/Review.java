@@ -30,6 +30,9 @@ public class Review {
     @Column(columnDefinition = "TEXT")
     private String comment;
 
+    @Column(columnDefinition = "TEXT")
+    private String mediaUrls;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

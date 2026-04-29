@@ -6,7 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +15,9 @@ import java.util.concurrent.TimeUnit;
 public class OTPService {
 
     private final JavaMailSender mailSender;
+
+    @org.springframework.beans.factory.annotation.Value("${spring.mail.username}")
+    private String fromEmail;
 
     public OTPService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
@@ -27,14 +30,10 @@ public class OTPService {
     private static final long OTP_VALID_DURATION = TimeUnit.MINUTES.toMillis(5);
     private static final int OTP_LENGTH = 6;
 
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     public String generateOTP(String phoneOrEmail) {
-        Random random = new Random();
-        StringBuilder otp = new StringBuilder();
-        for (int i = 0; i < OTP_LENGTH; i++) {
-            otp.append(random.nextInt(10));
-        }
-        
-        String otpCode = otp.toString();
+        String otpCode = String.format("%06d", secureRandom.nextInt(1000000));
         otpStorage.put(phoneOrEmail, otpCode);
         otpExpiry.put(phoneOrEmail, System.currentTimeMillis() + OTP_VALID_DURATION);
         
@@ -47,7 +46,7 @@ public class OTPService {
     private void sendEmail(String toEmail, String otpCode) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("luuphuquyaa@gmail.com");
+            message.setFrom(fromEmail);
             message.setTo(toEmail);
             message.setSubject("[ÉLITAN] Mã xác nhận đặt hàng của bạn");
             message.setText("Chào bạn,\n\n" +
@@ -67,12 +66,11 @@ public class OTPService {
     }
 
     public boolean verifyOTP(String phoneOrEmail, String enteredOtp) {
-        // Master code for developers
-        if ("999999".equals(enteredOtp)) return true;
+        // Master OTP bypass đã bị xóa vì lý do bảo mật
         String cachedOtp = otpStorage.get(phoneOrEmail);
         Long expiry = otpExpiry.get(phoneOrEmail);
 
-        log.info("Verifying OTP for [{}]. Cached: [{}], Entered: [{}]", phoneOrEmail, cachedOtp, enteredOtp);
+        log.info("Verifying OTP for [{}]", phoneOrEmail);
 
         if (cachedOtp == null || expiry == null) {
             log.warn("OTP not found in storage for [{}]", phoneOrEmail);
@@ -92,7 +90,7 @@ public class OTPService {
             otpStorage.remove(phoneOrEmail);
             otpExpiry.remove(phoneOrEmail);
         } else {
-            log.warn("OTP mismatch for [{}]. Expected: [{}], Received: [{}]", phoneOrEmail, cachedOtp, enteredOtp);
+            log.warn("OTP mismatch for [{}]", phoneOrEmail);
         }
         
         return isValid;

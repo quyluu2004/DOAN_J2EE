@@ -17,6 +17,56 @@
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.5);
   }
+
+  .paper-texture {
+    background-color: #fffcf9;
+    background-image: 
+      radial-gradient(#221a0c 0.5px, transparent 0.5px),
+      radial-gradient(#221a0c 0.5px, #fffcf9 0.5px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    opacity: 0.03;
+    pointer-events: none;
+  }
+
+  .envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #fdf5e6;
+    clip-path: polygon(0 0, 50% 100%, 100% 0);
+    box-shadow: 0 10px 20px rgba(34, 26, 12, 0.05);
+    z-index: 20;
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .wax-seal {
+    position: absolute;
+    top: 45px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background: #703225;
+    border-radius: 50%;
+    box-shadow: 
+      inset 2px 2px 5px rgba(0,0,0,0.3),
+      2px 4px 10px rgba(112, 50, 37, 0.4);
+    z-index: 30;
+    display: flex;
+    items-center: center;
+    justify-content: center;
+    border: 2px solid #5a281e;
+  }
+
+  .envelope-inner {
+    border: 1px solid #e8dec9;
+    box-shadow: 
+      inset 0 0 100px rgba(232, 222, 201, 0.2),
+      0 30px 60px -12px rgba(34, 26, 12, 0.15);
+  }
 }
 
 @theme inline {

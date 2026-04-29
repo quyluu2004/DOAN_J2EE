@@ -1,6 +1,7 @@
 // authService.js - Gọi API Backend cho Login/Register/Social Login
+import { API_BASE_URL } from '../config';
 
-const API_URL = "/api/auth";
+const API_URL = `${API_BASE_URL}/api/auth`;
 
 // Đăng ký tài khoản (backend trả về token → auto-login)
 export const register = async (fullName, email, password) => {
@@ -20,9 +21,12 @@ export const register = async (fullName, email, password) => {
     if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify({
+            id: data.userId,
             email: data.email,
             fullName: data.fullName,
             role: data.role,
+            discordUserId: data.discordUserId,
+            twoFactorEnabled: data.twoFactorEnabled,
         }));
     }
 
@@ -38,19 +42,51 @@ export const login = async (email, password) => {
     });
 
     const data = await response.json();
-
     if (!response.ok) {
         throw new Error(data.error || "Đăng nhập thất bại");
+    }
+
+    // Nếu yêu cầu 2FA, không lưu token ngay
+    if (data.twoFactorRequired) {
+        return data;
     }
 
     // Lưu token và thông tin user vào localStorage
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify({
+        id: data.userId,
         email: data.email,
         fullName: data.fullName,
         role: data.role,
+        discordUserId: data.discordUserId,
+        twoFactorEnabled: data.twoFactorEnabled,
     }));
+    return data;
+};
 
+// Xác minh 2FA
+export const verify2FA = async (email, code) => {
+    const response = await fetch(`${API_URL}/verify-2fa`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.error || "Xác minh 2FA thất bại");
+    }
+
+    // Sau khi verify thành công → Lưu token
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify({
+        id: data.userId,
+        email: data.email,
+        fullName: data.fullName,
+        role: data.role,
+        discordUserId: data.discordUserId,
+        twoFactorEnabled: data.twoFactorEnabled,
+    }));
     return data;
 };
 
@@ -71,9 +107,12 @@ export const socialLogin = async (token, provider) => {
     // Lưu token và thông tin user vào localStorage
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify({
+        id: data.userId,
         email: data.email,
         fullName: data.fullName,
         role: data.role,
+        discordUserId: data.discordUserId,
+        twoFactorEnabled: data.twoFactorEnabled,
     }));
 
     return data;

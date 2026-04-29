@@ -73,7 +73,7 @@ public class SecurityConfig {
 
                         // 4. FRONTEND STATIC FILES + SPA ROUTES (React Router)
                         .requestMatchers(org.springframework.http.HttpMethod.GET,
-                            "/", "/index.html", "/assets/**", "/favicon.ico",
+                            "/", "/index.html", "/assets/**", "/favicon.ico", "/vite.svg",
                             "/shop", "/shop/**", "/products/**",
                             "/about", "/contact", "/wishlist",
                             "/login", "/register", "/forgot-password", "/reset-password",
@@ -81,7 +81,8 @@ public class SecurityConfig {
                             "/checkout", "/checkout/**",
                             "/orders", "/orders/**",
                             "/3d-designer", "/my-designs",
-                            "/admin", "/admin/**"
+                            "/admin", "/admin/**",
+                            "/api/designs/templates"
                         ).permitAll()
 
                         // 5. CATCH ALL — mọi request khác cần authentication

@@ -1,5 +1,7 @@
 package com.elitan.backend.controller;
 
+import com.elitan.backend.service.CloudinaryService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -7,21 +9,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/upload")
 @Slf4j
+@RequiredArgsConstructor
 public class FileUploadController {
 
-    private final String UPLOAD_DIR = "uploads/";
+    private final CloudinaryService cloudinaryService;
 
     // Whitelist MIME types được phép upload
     private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
@@ -43,11 +41,6 @@ public class FileUploadController {
         List<String> fileUrls = new ArrayList<>();
 
         try {
-            Path uploadPath = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
             for (MultipartFile file : files) {
                 if (file.isEmpty()) continue;
 
@@ -79,29 +72,11 @@ public class FileUploadController {
                     continue;
                 }
 
-                String newFilename = UUID.randomUUID().toString() + extension;
-                Path filePath = uploadPath.resolve(newFilename);
-
-                if (extension.equals(".glb")) {
-                    // Đối với file 3D .glb, copy trực tiếp không qua optimize
-                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                } else {
-                    // Đối với ảnh, thử optimize bằng Thumbnailator
-                    Path tempPath = uploadPath.resolve("temp_" + newFilename);
-                    Files.copy(file.getInputStream(), tempPath, StandardCopyOption.REPLACE_EXISTING);
-                    try {
-                        net.coobird.thumbnailator.Thumbnails.of(tempPath.toFile())
-                                .size(1200, 1800)
-                                .outputQuality(0.85)
-                                .toFile(filePath.toFile());
-                        Files.deleteIfExists(tempPath);
-                    } catch (Exception e) {
-                        // Fallback nếu không phải định dạng ảnh Thumbnailator hiểu
-                        Files.move(tempPath, filePath, StandardCopyOption.REPLACE_EXISTING);
-                    }
-                }
-
-                fileUrls.add("/uploads/" + newFilename);
+                boolean isRaw = extension.equals(".glb");
+                
+                // Gửi file lên Cloudinary
+                String secureUrl = cloudinaryService.uploadFile(file, "elitan_uploads", isRaw);
+                fileUrls.add(secureUrl);
             }
 
             return ResponseEntity.ok(fileUrls);

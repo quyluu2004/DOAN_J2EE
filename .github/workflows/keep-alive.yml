@@ -1,0 +1,27 @@
+name: Keep Render Backend Alive
+
+on:
+  schedule:
+    # Chạy mỗi 14 phút để tránh Render sleep (Render tự động sleep sau 15 phút không có request)
+    - cron: '*/14 * * * *'
+  # Cho phép chạy manual từ giao diện GitHub
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render backend
+        run: |
+          # TODO: Thay đổi URL bên dưới thành URL backend thật của bạn sau khi deploy lên Render
+          # Ví dụ: https://elitan-backend.onrender.com/api/health
+          BACKEND_URL="https://your-app-name.onrender.com/api/health"
+          
+          echo "Pinging $BACKEND_URL..."
+          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" $BACKEND_URL)
+          
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "✅ Ping thành công! Backend vẫn đang thức (Status: $HTTP_STATUS)"
+          else
+            echo "⚠️ Ping có thể thất bại hoặc backend đang khởi động lại (Status: $HTTP_STATUS)"
+          fi

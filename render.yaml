@@ -2,6 +2,7 @@
 services:
   - type: web
     name: elitan
+    plan: free
     runtime: docker
     dockerfilePath: ./Dockerfile
     envVars:

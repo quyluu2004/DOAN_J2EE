@@ -47,6 +47,10 @@ const FurnitureItem = ({ item, isActive, isGhost }) => {
 
   const cleanUrl = React.useMemo(() => {
     if (!item.glbUrl) return null;
+    // Don't strip origin for Cloudinary/external URLs
+    if (item.glbUrl.includes('cloudinary.com') || item.glbUrl.startsWith('http')) {
+        return item.glbUrl;
+    }
     return item.glbUrl.replace(/^https?:\/\/[^/]+/, '');
   }, [item.glbUrl]);
 

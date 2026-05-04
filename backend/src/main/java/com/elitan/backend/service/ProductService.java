@@ -92,7 +92,17 @@ public class ProductService {
         return saved;
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+
+    @org.springframework.transaction.annotation.Transactional
     public void deleteProduct(Long id) {
+        // Clear foreign key constraints manually to allow deletion
+        jdbcTemplate.update("DELETE FROM reviews WHERE product_id = ?", id);
+        jdbcTemplate.update("DELETE FROM wishlist WHERE product_id = ?", id);
+        jdbcTemplate.update("DELETE FROM cart_items WHERE product_id = ?", id);
+        jdbcTemplate.update("DELETE FROM order_details WHERE product_id = ?", id);
+
         productRepository.deleteById(id);
         if (productCacheService != null) {
             productCacheService.evictProduct(id);

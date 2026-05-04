@@ -19,7 +19,7 @@ export default function AdminProducts() {
   const [availableColors, setAvailableColors] = useState([]);
   const [availableMaterials, setAvailableMaterials] = useState([]);
   const [glbFile, setGlbFile] = useState(null);
-
+  const [selectedProducts, setSelectedProducts] = useState(new Set());
   // Import state
   const [showImport, setShowImport] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -189,6 +189,35 @@ export default function AdminProducts() {
     }
   };
 
+  const toggleSelection = (e, id) => {
+    e.stopPropagation();
+    const newSelection = new Set(selectedProducts);
+    if (newSelection.has(id)) {
+      newSelection.delete(id);
+    } else {
+      newSelection.add(id);
+    }
+    setSelectedProducts(newSelection);
+  };
+
+  const handleBulkDelete = async () => {
+    if (!window.confirm(`Are you sure you want to delete ${selectedProducts.size} products?`)) return;
+    try {
+      const token = localStorage.getItem('token');
+      const deletePromises = Array.from(selectedProducts).map(id => 
+        axios.delete(`/api/products/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+      );
+      await Promise.all(deletePromises);
+      toast.success(`${selectedProducts.size} products deleted successfully`);
+      setSelectedProducts(new Set());
+      fetchProducts();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete some products. They might be in user carts.");
+      fetchProducts();
+    }
+  };
+
   // ===== IMPORT HANDLERS =====
   const handleImportFile = useCallback(async (file) => {
     if (!file) return;
@@ -293,6 +322,20 @@ export default function AdminProducts() {
             <Plus className="w-4 h-4" />
             <span className="font-semibold text-xs tracking-widest uppercase">New Product</span>
           </motion.button>
+          <AnimatePresence>
+            {selectedProducts.size > 0 && (
+              <motion.button 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                onClick={handleBulkDelete}
+                className="flex items-center space-x-3 bg-[#93000a] text-white px-8 py-4 rounded-none hover:bg-[#690005] transition-colors relative overflow-hidden shadow-lg"
+              >
+                <X className="w-4 h-4" />
+                <span className="font-semibold text-xs tracking-widest uppercase">Delete ({selectedProducts.size})</span>
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -411,6 +454,16 @@ export default function AdminProducts() {
                   {/* Stock Indicator */}
                   <div className={`absolute top-4 left-4 backdrop-blur-md px-3 py-1 text-[0.65rem] tracking-widest uppercase font-semibold ${product.stock > 0 ? 'bg-white/20 text-white border border-white/20' : 'bg-red-500/80 text-white border border-red-500/50'}`}>
                     {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
+                  </div>
+                  
+                  {/* Selection Checkbox */}
+                  <div className="absolute top-4 right-4 z-20 bg-white/50 backdrop-blur-sm p-1 rounded hover:bg-white transition-colors" onClick={(e) => e.stopPropagation()}>
+                    <input 
+                      type="checkbox" 
+                      className="w-5 h-5 accent-[#131313] cursor-pointer"
+                      checked={selectedProducts.has(product.id)}
+                      onChange={(e) => toggleSelection(e, product.id)}
+                    />
                   </div>
                 </div>
                 

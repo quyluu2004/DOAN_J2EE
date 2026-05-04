@@ -75,6 +75,7 @@ public class ProductService {
         product.setDimensions(productDetails.getDimensions());
         product.setStock(productDetails.getStock());
         product.setThumbnailUrl(productDetails.getThumbnailUrl());
+        product.setGlbUrl(productDetails.getGlbUrl());
         
         // Update variants
         if (productDetails.getVariants() != null) {

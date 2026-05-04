@@ -67,7 +67,13 @@ public class FileUploadController {
 
                 // Validate MIME type
                 String contentType = file.getContentType();
-                if (contentType == null || !ALLOWED_MIME_TYPES.contains(contentType)) {
+                // Special case for .glb because browsers often send it as application/octet-stream or empty
+                if (extension.equals(".glb")) {
+                    if (contentType == null || (!contentType.equals("model/gltf-binary") && !contentType.equals("model/gltf+json") && !contentType.equals("application/octet-stream") && !contentType.equals(""))) {
+                        // Allow empty or octet-stream for .glb
+                        contentType = "model/gltf-binary"; 
+                    }
+                } else if (contentType == null || !ALLOWED_MIME_TYPES.contains(contentType)) {
                     log.warn("Rejected file with disallowed MIME type: {}", contentType);
                     continue;
                 }

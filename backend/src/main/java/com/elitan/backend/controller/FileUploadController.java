@@ -91,4 +91,24 @@ public class FileUploadController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    /**
+     * Get signed upload params for direct frontend-to-Cloudinary upload.
+     * This is MUCH faster than uploading through the backend because:
+     * 1. Frontend uploads directly to Cloudinary CDN (nearest edge)
+     * 2. No double-hop through Render backend
+     * 3. No backend memory/bandwidth bottleneck
+     */
+    @GetMapping("/sign")
+    public ResponseEntity<java.util.Map<String, Object>> getSignedParams(
+            @RequestParam(defaultValue = "auto") String resource_type) {
+        try {
+            java.util.Map<String, Object> params = cloudinaryService.generateSignedParams(
+                    "elitan_uploads", resource_type);
+            return ResponseEntity.ok(params);
+        } catch (Exception e) {
+            log.error("Failed to generate upload signature: ", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

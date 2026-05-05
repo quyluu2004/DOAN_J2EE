@@ -183,9 +183,34 @@ export default function AdminProducts() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Upload directly to Cloudinary (bypasses slow backend)
+  const uploadDirectToCloudinary = async (file, resourceType, token) => {
+    // Step 1: Get signed params from backend (tiny request, very fast)
+    const signRes = await axios.get('/api/upload/sign', {
+      params: { resource_type: resourceType },
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const params = signRes.data;
+    
+    // Step 2: Upload directly to Cloudinary CDN
+    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${params.cloud_name}/${resourceType}/upload`;
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('api_key', params.api_key);
+    fd.append('timestamp', params.timestamp);
+    fd.append('signature', params.signature);
+    fd.append('folder', params.folder);
+    fd.append('public_id', params.public_id);
+    
+    const uploadRes = await axios.post(cloudinaryUrl, fd, {
+      timeout: 180000 // 3 min timeout, directly to Cloudinary so should be fast
+    });
+    return uploadRes.data.secure_url;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isSubmitting) return; // Prevent double submit
+    if (isSubmitting) return;
     setIsSubmitting(true);
     console.log('[AdminProducts] handleSubmit triggered');
     try {
@@ -195,42 +220,43 @@ export default function AdminProducts() {
       let finalImageUrl = formData.imageUrl;
       let finalGlbUrl = formData.glbUrl;
 
-      // Upload images and GLB in parallel for speed
+      // Upload images and GLB in parallel, DIRECTLY to Cloudinary (fast!)
       const uploadPromises = [];
 
       if (selectedFiles.length > 0) {
-        console.log('[AdminProducts] Uploading', selectedFiles.length, 'image files...');
-        const uploadData = new FormData();
-        Array.from(selectedFiles).forEach(f => uploadData.append('files', f));
+        console.log('[AdminProducts] Direct-uploading', selectedFiles.length, 'image(s) to Cloudinary...');
+        // Upload all images in parallel
+        const imageUploads = Array.from(selectedFiles).map(file => 
+          uploadDirectToCloudinary(file, 'image', token)
+            .then(url => {
+              console.log('[AdminProducts] Image uploaded:', url);
+              return url;
+            })
+        );
         uploadPromises.push(
-          axios.post('/api/upload', uploadData, config)
-            .then(res => {
-              console.log('[AdminProducts] Image upload response:', res.data);
-              if (res.data.length > 0) finalImageUrl = res.data[0];
+          Promise.all(imageUploads)
+            .then(urls => {
+              if (urls.length > 0) finalImageUrl = urls[0];
             })
             .catch(err => {
-              console.error('[AdminProducts] Image upload failed:', err);
-              toast.error('Image upload failed, but will try to save product');
+              console.error('[AdminProducts] Image upload failed:', err.message);
+              toast.error('Image upload failed');
             })
         );
       }
 
       if (glbFile) {
-        console.log('[AdminProducts] Uploading GLB file:', glbFile.name, '(' + (glbFile.size / (1024*1024)).toFixed(2) + 'MB)');
-        const glbUploadData = new FormData();
-        glbUploadData.append('files', glbFile);
+        const sizeMB = (glbFile.size / (1024*1024)).toFixed(2);
+        console.log('[AdminProducts] Direct-uploading GLB to Cloudinary:', glbFile.name, `(${sizeMB}MB)`);
         uploadPromises.push(
-          axios.post('/api/upload', glbUploadData, { 
-            ...config, 
-            timeout: 120000 // 2 min timeout for large GLB files
-          })
-            .then(res => {
-              console.log('[AdminProducts] GLB upload response:', res.data);
-              if (res.data.length > 0) finalGlbUrl = res.data[0];
+          uploadDirectToCloudinary(glbFile, 'raw', token)
+            .then(url => {
+              console.log('[AdminProducts] GLB uploaded:', url);
+              finalGlbUrl = url;
             })
             .catch(err => {
               console.error('[AdminProducts] GLB upload failed:', err.message);
-              toast.error('3D model upload failed (file may be too large). Product will be saved without 3D model.');
+              toast.error('3D model upload failed. Product will be saved without 3D model.');
             })
         );
       }

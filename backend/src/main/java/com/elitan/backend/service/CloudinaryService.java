@@ -50,4 +50,30 @@ public class CloudinaryService {
             throw new IOException("Failed to upload file to Cloudinary: " + e.getMessage());
         }
     }
+
+    /**
+     * Generate signed upload parameters for direct frontend-to-Cloudinary upload.
+     * This bypasses the backend for file transfer, making uploads much faster.
+     */
+    public Map<String, Object> generateSignedParams(String folder, String resourceType) {
+        long timestamp = System.currentTimeMillis() / 1000L;
+        String publicId = UUID.randomUUID().toString();
+        
+        Map<String, Object> paramsToSign = new java.util.TreeMap<>();
+        paramsToSign.put("timestamp", timestamp);
+        paramsToSign.put("folder", folder);
+        paramsToSign.put("public_id", publicId);
+        
+        String signature = cloudinary.apiSignRequest(paramsToSign, cloudinary.config.apiSecret);
+        
+        Map<String, Object> result = new java.util.HashMap<>();
+        result.put("timestamp", timestamp);
+        result.put("signature", signature);
+        result.put("api_key", cloudinary.config.apiKey);
+        result.put("cloud_name", cloudinary.config.cloudName);
+        result.put("folder", folder);
+        result.put("public_id", publicId);
+        result.put("resource_type", resourceType != null ? resourceType : "auto");
+        return result;
+    }
 }

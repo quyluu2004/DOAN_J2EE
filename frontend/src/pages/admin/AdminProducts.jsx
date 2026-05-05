@@ -210,13 +210,17 @@ export default function AdminProducts() {
       }
       
       const payload = { 
-        ...formData, 
+        name: formData.name,
+        category: formData.category,
         price: parseFloat(formData.price), 
         stock: parseInt(formData.stock) || 0, 
         imageUrl: finalImageUrl, 
-        additionalImages: finalAdditionalImages, 
         glbUrl: finalGlbUrl,
-        variants: formData.variants.map(v => ({
+        description: formData.description,
+        color: formData.color || null,
+        material: formData.material || null,
+        dimensions: formData.dimensions || null,
+        variants: (formData.variants || []).map(v => ({
           ...v,
           stock: parseInt(v.stock) || 0
         }))

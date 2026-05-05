@@ -4,7 +4,7 @@ services:
     name: elitan
     plan: free
     runtime: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./backend/Dockerfile
     envVars:
       - key: DB_URL
         sync: false

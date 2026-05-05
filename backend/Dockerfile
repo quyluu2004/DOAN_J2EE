@@ -6,11 +6,11 @@
 # Stage 1: Build Backend
 FROM eclipse-temurin:17-jdk-alpine AS backend-build
 WORKDIR /app/backend
-COPY backend/.mvn .mvn
-COPY backend/mvnw backend/pom.xml ./
+COPY .mvn .mvn
+COPY mvnw pom.xml ./
 # Download dependencies first (Docker cache layer) để build nhanh hơn ở các lần sau
 RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
-COPY backend/src ./src
+COPY src ./src
 # Build JAR (dùng prod profile, bỏ qua test để tăng tốc)
 RUN ./mvnw clean package -DskipTests -B
 

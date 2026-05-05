@@ -181,35 +181,65 @@ export default function AdminProducts() {
     }));
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // Prevent double submit
+    setIsSubmitting(true);
     console.log('[AdminProducts] handleSubmit triggered');
     try {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
       
       let finalImageUrl = formData.imageUrl;
+      let finalGlbUrl = formData.glbUrl;
+
+      // Upload images and GLB in parallel for speed
+      const uploadPromises = [];
 
       if (selectedFiles.length > 0) {
         console.log('[AdminProducts] Uploading', selectedFiles.length, 'image files...');
         const uploadData = new FormData();
         Array.from(selectedFiles).forEach(f => uploadData.append('files', f));
-        const uploadRes = await axios.post('/api/upload', uploadData, config);
-        const uploadedUrls = uploadRes.data;
-        console.log('[AdminProducts] Image upload response:', uploadedUrls);
-        if (uploadedUrls.length > 0) {
-            finalImageUrl = uploadedUrls[0];
-        }
+        uploadPromises.push(
+          axios.post('/api/upload', uploadData, config)
+            .then(res => {
+              console.log('[AdminProducts] Image upload response:', res.data);
+              if (res.data.length > 0) finalImageUrl = res.data[0];
+            })
+            .catch(err => {
+              console.error('[AdminProducts] Image upload failed:', err);
+              toast.error('Image upload failed, but will try to save product');
+            })
+        );
       }
 
-      let finalGlbUrl = formData.glbUrl;
       if (glbFile) {
-        console.log('[AdminProducts] Uploading GLB file:', glbFile.name);
+        console.log('[AdminProducts] Uploading GLB file:', glbFile.name, '(' + (glbFile.size / (1024*1024)).toFixed(2) + 'MB)');
         const glbUploadData = new FormData();
         glbUploadData.append('files', glbFile);
-        const glbRes = await axios.post('/api/upload', glbUploadData, config);
-        console.log('[AdminProducts] GLB upload response:', glbRes.data);
-        if (glbRes.data.length > 0) finalGlbUrl = glbRes.data[0];
+        uploadPromises.push(
+          axios.post('/api/upload', glbUploadData, { 
+            ...config, 
+            timeout: 120000 // 2 min timeout for large GLB files
+          })
+            .then(res => {
+              console.log('[AdminProducts] GLB upload response:', res.data);
+              if (res.data.length > 0) finalGlbUrl = res.data[0];
+            })
+            .catch(err => {
+              console.error('[AdminProducts] GLB upload failed:', err.message);
+              toast.error('3D model upload failed (file may be too large). Product will be saved without 3D model.');
+            })
+        );
+      }
+
+      // Wait for all uploads to complete
+      if (uploadPromises.length > 0) {
+        console.log('[AdminProducts] Waiting for', uploadPromises.length, 'upload(s)...');
+        await Promise.all(uploadPromises);
+        console.log('[AdminProducts] All uploads completed');
       }
       
       const payload = { 
@@ -236,12 +266,12 @@ export default function AdminProducts() {
         console.log('[AdminProducts] PUT /api/products/' + editProduct.id);
         const res = await axios.put(`/api/products/${editProduct.id}`, payload, config);
         console.log('[AdminProducts] Update response:', res.status, res.data);
-        toast.success("Product and variants updated successfully");
+        toast.success("Product updated successfully");
       } else {
         console.log('[AdminProducts] POST /api/products');
         const res = await axios.post('/api/products', payload, config);
         console.log('[AdminProducts] Create response:', res.status, res.data);
-        toast.success("Product and variants added successfully");
+        toast.success("Product added successfully");
       }
       handleCloseModal();
       fetchProducts();
@@ -250,6 +280,8 @@ export default function AdminProducts() {
       console.error('[AdminProducts] Error response:', err.response?.status, err.response?.data);
       const errorMsg = err.response?.data?.message || err.response?.data?.error || err.message || "Operation failed";
       toast.error(errorMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -859,12 +891,18 @@ export default function AdminProducts() {
                   <div className="pt-8 flex justify-end space-x-4 border-t border-[#e2e2e2]/50 mt-8">
                     <button type="button" onClick={handleCloseModal} className="px-8 py-4 text-xs font-semibold tracking-widest uppercase text-[#777777] hover:text-[#131313] hover:bg-[#f9f9f9] transition-colors">Cancel</button>
                     <motion.button 
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                      whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+                      whileTap={!isSubmitting ? { scale: 0.98 } : {}}
                       type="submit" 
-                      className="px-8 py-4 bg-[#131313] text-white text-xs font-semibold tracking-widest uppercase hover:bg-[#2a2a2a] transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.1)]"
+                      disabled={isSubmitting}
+                      className={`px-8 py-4 text-xs font-semibold tracking-widest uppercase transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.1)] flex items-center gap-3 ${
+                        isSubmitting 
+                          ? 'bg-[#777777] text-white/70 cursor-wait' 
+                          : 'bg-[#131313] text-white hover:bg-[#2a2a2a]'
+                      }`}
                     >
-                      {editProduct ? 'Save Changes' : 'Publish Asset'}
+                      {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                      {isSubmitting ? 'Uploading & Saving...' : (editProduct ? 'Save Changes' : 'Publish Asset')}
                     </motion.button>
                   </div>
                 </form>

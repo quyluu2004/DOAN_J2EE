@@ -1,12 +1,44 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Plus, X, Image as ImageIcon, Upload, FileSpreadsheet, CheckCircle, AlertCircle, Loader2, Box } from 'lucide-react';
+import { Plus, X, Image as ImageIcon, Upload, FileSpreadsheet, CheckCircle, AlertCircle, Loader2, Box, Eye, RotateCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SplitText, SpotlightCard } from '../../components/ui/ReactBits';
 import { getAllCollections } from '../../services/collectionService';
 import { getAllColors } from '../../services/colorService';
 import { getAllMaterials } from '../../services/materialService';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, useGLTF, Environment, Center } from '@react-three/drei';
+
+/* ── Inline GLB Preview Component ── */
+function GlbModel({ url }) {
+  const { scene } = useGLTF(url);
+  return (
+    <Center>
+      <primitive object={scene.clone()} />
+    </Center>
+  );
+}
+
+function GlbPreviewCanvas({ url }) {
+  return (
+    <div className="relative w-full h-48 bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded overflow-hidden border border-[#e2e2e2]">
+      <Canvas camera={{ position: [0, 1, 3], fov: 45 }} style={{ width: '100%', height: '100%' }}>
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[5, 5, 5]} intensity={1} />
+        <Suspense fallback={null}>
+          <GlbModel url={url} />
+          <Environment preset="apartment" />
+        </Suspense>
+        <OrbitControls autoRotate autoRotateSpeed={2} enableZoom={true} enablePan={false} />
+      </Canvas>
+      {/* Overlay hint */}
+      <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm text-white/70 text-[0.55rem] uppercase tracking-widest px-2 py-1 rounded pointer-events-none">
+        <RotateCw className="w-3 h-3" /> 3D Preview
+      </div>
+    </div>
+  );
+}
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -15,6 +47,7 @@ export default function AdminProducts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [glbPreviewUrl, setGlbPreviewUrl] = useState(null);
   const [categories, setCategories] = useState([]);
   const [availableColors, setAvailableColors] = useState([]);
   const [availableMaterials, setAvailableMaterials] = useState([]);
@@ -72,6 +105,34 @@ export default function AdminProducts() {
     }
   };
 
+  // Generate object URLs for image previews
+  const imagePreviews = useMemo(() => {
+    if (!selectedFiles || selectedFiles.length === 0) return [];
+    return Array.from(selectedFiles).map(f => ({
+      name: f.name,
+      url: URL.createObjectURL(f),
+      size: (f.size / 1024).toFixed(1)
+    }));
+  }, [selectedFiles]);
+
+  // Cleanup object URLs on change
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach(p => URL.revokeObjectURL(p.url));
+    };
+  }, [imagePreviews]);
+
+  // Generate GLB preview URL
+  useEffect(() => {
+    if (glbFile) {
+      const url = URL.createObjectURL(glbFile);
+      setGlbPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setGlbPreviewUrl(null);
+    }
+  }, [glbFile]);
+
   const handleOpenModal = (product = null) => {
     setSelectedFiles([]);
     if (product) {
@@ -85,6 +146,7 @@ export default function AdminProducts() {
       });
     }
     setGlbFile(null);
+    setGlbPreviewUrl(null);
     setIsModalOpen(true);
   };
 
@@ -581,6 +643,7 @@ export default function AdminProducts() {
                     </div>
                     {/* Right Column */}
                     <div className="space-y-6">
+                      {/* ── Image Upload with Preview ── */}
                       <div>
                         <label className="block text-[0.65rem] font-semibold tracking-[0.2em] text-[#777777] uppercase mb-2">Upload Visual Assets</label>
                         <div className="relative border-2 border-dashed border-[#e2e2e2] hover:border-[#775a19] bg-[#f9f9f9] hover:bg-white transition-all p-8 flex flex-col items-center justify-center cursor-pointer group h-32">
@@ -590,7 +653,64 @@ export default function AdminProducts() {
                             {selectedFiles.length > 0 ? `${selectedFiles.length} files selected` : "Drag & Drop Images"}
                           </p>
                         </div>
+                        {/* Image Thumbnails Preview */}
+                        <AnimatePresence>
+                          {imagePreviews.length > 0 && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="mt-3 grid grid-cols-4 gap-2"
+                            >
+                              {imagePreviews.map((preview, idx) => (
+                                <motion.div
+                                  key={preview.name + idx}
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={{ delay: idx * 0.05 }}
+                                  className="relative aspect-square rounded overflow-hidden border border-[#e2e2e2] group/thumb bg-[#f3f3f3]"
+                                >
+                                  <img
+                                    src={preview.url}
+                                    alt={preview.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                  {/* Overlay with file info */}
+                                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex flex-col items-center justify-center p-1">
+                                    <Eye className="w-4 h-4 text-white mb-1" />
+                                    <span className="text-[0.5rem] text-white/80 text-center truncate w-full px-1">{preview.name}</span>
+                                    <span className="text-[0.45rem] text-white/60">{preview.size} KB</span>
+                                  </div>
+                                  {idx === 0 && (
+                                    <div className="absolute top-1 left-1 bg-[#775a19] text-white text-[0.45rem] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm">
+                                      Main
+                                    </div>
+                                  )}
+                                </motion.div>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                        {/* Existing images preview (when editing) */}
+                        {!selectedFiles.length && editProduct?.imageUrl && (
+                          <div className="mt-3">
+                            <p className="text-[0.55rem] uppercase tracking-widest text-[#999] mb-2">Current images</p>
+                            <div className="grid grid-cols-4 gap-2">
+                              <div className="relative aspect-square rounded overflow-hidden border border-[#e2e2e2] bg-[#f3f3f3]">
+                                <img src={editProduct.imageUrl} alt="Main" className="w-full h-full object-cover" />
+                                <div className="absolute top-1 left-1 bg-[#775a19] text-white text-[0.45rem] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm">Main</div>
+                              </div>
+                              {(editProduct.additionalImages || []).map((url, idx) => (
+                                <div key={idx} className="relative aspect-square rounded overflow-hidden border border-[#e2e2e2] bg-[#f3f3f3]">
+                                  <img src={url} alt={`Additional ${idx + 1}`} className="w-full h-full object-cover" />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
+
+                      {/* ── 3D Model Upload with Preview ── */}
                       <div>
                         <label className="block text-[0.65rem] font-semibold tracking-[0.2em] text-[#777777] uppercase mb-2">3D Model (.glb)</label>
                         <div className="relative border-2 border-dashed border-[#e2e2e2] hover:border-[#131313] bg-[#f9f9f9] hover:bg-white transition-all p-8 flex flex-col items-center justify-center cursor-pointer group h-32">
@@ -600,11 +720,41 @@ export default function AdminProducts() {
                             {glbFile ? glbFile.name : (formData.glbUrl ? "Change 3D Model" : "Drag & Drop .glb File")}
                           </p>
                         </div>
+                        {/* GLB 3D Preview - New local file */}
+                        <AnimatePresence>
+                          {glbPreviewUrl && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="mt-3"
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <p className="text-[0.55rem] uppercase tracking-widest text-[#999]">New model preview</p>
+                                <button
+                                  type="button"
+                                  onClick={() => { setGlbFile(null); setGlbPreviewUrl(null); }}
+                                  className="text-[0.55rem] uppercase tracking-widest text-[#93000a] hover:text-[#690005] flex items-center gap-1"
+                                >
+                                  <X className="w-3 h-3" /> Remove
+                                </button>
+                              </div>
+                              <GlbPreviewCanvas url={glbPreviewUrl} />
+                              <p className="text-[0.5rem] text-[#999] mt-1 font-mono">
+                                {glbFile?.name} — {(glbFile?.size / (1024 * 1024)).toFixed(2)} MB
+                              </p>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                        {/* Existing GLB preview (when editing and no new file selected) */}
                         {formData.glbUrl && !glbFile && (
-                          <p className="text-[0.65rem] uppercase tracking-widest text-[#12a150] mt-3 flex items-center gap-2">
-                            <CheckCircle className="w-3 h-3" />
-                            3D model already linked
-                          </p>
+                          <div className="mt-3">
+                            <p className="text-[0.65rem] uppercase tracking-widest text-[#12a150] mb-2 flex items-center gap-2">
+                              <CheckCircle className="w-3 h-3" />
+                              3D model already linked
+                            </p>
+                            <GlbPreviewCanvas url={formData.glbUrl} />
+                          </div>
                         )}
                       </div>
                       <div className="group">

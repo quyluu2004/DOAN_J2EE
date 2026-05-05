@@ -183,29 +183,32 @@ export default function AdminProducts() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('[AdminProducts] handleSubmit triggered');
     try {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
       
       let finalImageUrl = formData.imageUrl;
-      let finalAdditionalImages = formData.additionalImages || [];
 
       if (selectedFiles.length > 0) {
+        console.log('[AdminProducts] Uploading', selectedFiles.length, 'image files...');
         const uploadData = new FormData();
         Array.from(selectedFiles).forEach(f => uploadData.append('files', f));
         const uploadRes = await axios.post('/api/upload', uploadData, config);
         const uploadedUrls = uploadRes.data;
+        console.log('[AdminProducts] Image upload response:', uploadedUrls);
         if (uploadedUrls.length > 0) {
             finalImageUrl = uploadedUrls[0];
-            finalAdditionalImages = uploadedUrls.slice(1);
         }
       }
 
       let finalGlbUrl = formData.glbUrl;
       if (glbFile) {
+        console.log('[AdminProducts] Uploading GLB file:', glbFile.name);
         const glbUploadData = new FormData();
         glbUploadData.append('files', glbFile);
         const glbRes = await axios.post('/api/upload', glbUploadData, config);
+        console.log('[AdminProducts] GLB upload response:', glbRes.data);
         if (glbRes.data.length > 0) finalGlbUrl = glbRes.data[0];
       }
       
@@ -221,23 +224,32 @@ export default function AdminProducts() {
         material: formData.material || null,
         dimensions: formData.dimensions || null,
         variants: (formData.variants || []).map(v => ({
-          ...v,
-          stock: parseInt(v.stock) || 0
+          color: v.color,
+          stock: parseInt(v.stock) || 0,
+          imageUrl: v.imageUrl || null
         }))
       };
 
+      console.log('[AdminProducts] Sending payload:', JSON.stringify(payload, null, 2));
+
       if (editProduct) {
-        await axios.put(`/api/products/${editProduct.id}`, payload, config);
+        console.log('[AdminProducts] PUT /api/products/' + editProduct.id);
+        const res = await axios.put(`/api/products/${editProduct.id}`, payload, config);
+        console.log('[AdminProducts] Update response:', res.status, res.data);
         toast.success("Product and variants updated successfully");
       } else {
-        await axios.post('/api/products', payload, config);
+        console.log('[AdminProducts] POST /api/products');
+        const res = await axios.post('/api/products', payload, config);
+        console.log('[AdminProducts] Create response:', res.status, res.data);
         toast.success("Product and variants added successfully");
       }
       handleCloseModal();
       fetchProducts();
     } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.message || err.message || "Operation failed");
+      console.error('[AdminProducts] Submit ERROR:', err);
+      console.error('[AdminProducts] Error response:', err.response?.status, err.response?.data);
+      const errorMsg = err.response?.data?.message || err.response?.data?.error || err.message || "Operation failed";
+      toast.error(errorMsg);
     }
   };
 

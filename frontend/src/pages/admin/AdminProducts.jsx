@@ -647,7 +647,7 @@ export default function AdminProducts() {
                       <div>
                         <label className="block text-[0.65rem] font-semibold tracking-[0.2em] text-[#777777] uppercase mb-2">Upload Visual Assets</label>
                         <div className="relative border-2 border-dashed border-[#e2e2e2] hover:border-[#775a19] bg-[#f9f9f9] hover:bg-white transition-all p-8 flex flex-col items-center justify-center cursor-pointer group h-32">
-                          <input type="file" multiple accept="image/*" onChange={(e) => setSelectedFiles(e.target.files)} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                          <input type="file" multiple accept="image/*" onChange={(e) => setSelectedFiles(Array.from(e.target.files))} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                           <ImageIcon className="w-8 h-8 text-[#c6c6c6] group-hover:text-[#775a19] transition-colors mb-3" />
                           <p className="text-xs font-semibold uppercase tracking-widest text-[#474747] group-hover:text-[#131313] text-center">
                             {selectedFiles.length > 0 ? `${selectedFiles.length} files selected` : "Drag & Drop Images"}

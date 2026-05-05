@@ -1,0 +1,15 @@
+name: Keep Render Backend Alive
+
+on:
+  schedule:
+    # Chạy mỗi 10 phút
+    - cron: "*/10 * * * *"
+  # Cho phép chạy thủ công từ tab Actions
+  workflow_dispatch:
+
+jobs:
+  ping-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Backend
+        run: curl -s "https://elitan.onrender.com" > /dev/null

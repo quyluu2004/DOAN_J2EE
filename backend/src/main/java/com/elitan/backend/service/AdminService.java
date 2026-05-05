@@ -2,6 +2,8 @@ package com.elitan.backend.service;
 
 import com.elitan.backend.entity.Product;
 import com.elitan.backend.repository.ProductRepository;
+import com.elitan.backend.repository.WebsiteVisitRepository;
+import com.elitan.backend.repository.OrderRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,15 @@ import java.util.Map;
 public class AdminService {
     private final EntityManager entityManager;
     private final ProductRepository productRepository;
+    private final WebsiteVisitRepository websiteVisitRepository;
+    private final OrderRepository orderRepository;
 
-    public AdminService(EntityManager entityManager, ProductRepository productRepository) {
+    public AdminService(EntityManager entityManager, ProductRepository productRepository,
+                        WebsiteVisitRepository websiteVisitRepository, OrderRepository orderRepository) {
         this.entityManager = entityManager;
         this.productRepository = productRepository;
+        this.websiteVisitRepository = websiteVisitRepository;
+        this.orderRepository = orderRepository;
     }
 
     public List<Map<String, Object>> getMonthlyRevenue() {
@@ -85,6 +92,10 @@ public class AdminService {
         stats.put("totalProducts", productRepository.count());
         stats.put("totalUsers", entityManager.createNativeQuery("SELECT COUNT(*) FROM users").getSingleResult());
         stats.put("activeOrders", entityManager.createNativeQuery("SELECT COUNT(*) FROM orders WHERE status NOT IN ('DELIVERED', 'CANCELLED')").getSingleResult());
+
+        // Real-time Analytics (dữ liệu thực tế từ môi trường production)
+        stats.put("totalVisits", websiteVisitRepository.count());
+        stats.put("totalCompletedOrders", orderRepository.countValidOrders());
 
         // Analytics Data
         stats.put("revenueData", getMonthlyRevenue());

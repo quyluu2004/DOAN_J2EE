@@ -147,8 +147,26 @@ function AnimatedRoutes() {
 }
 
 import { LocalizationProvider } from './context/LocalizationContext';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { API_BASE_URL } from './config';
 
 function App() {
+  // Ghi nhận lượt truy cập (mỗi session tính 1 lần)
+  useEffect(() => {
+    const recordVisit = async () => {
+      if (!sessionStorage.getItem('visited')) {
+        try {
+          await axios.post(`${API_BASE_URL}/api/v1/analytics/visit`);
+          sessionStorage.setItem('visited', 'true');
+        } catch (error) {
+          console.error("Failed to record visit", error);
+        }
+      }
+    };
+    recordVisit();
+  }, []);
+
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <LocalizationProvider>

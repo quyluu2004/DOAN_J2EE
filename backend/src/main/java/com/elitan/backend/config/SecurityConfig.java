@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/colors", "/api/colors/**").permitAll()
                         .requestMatchers("/uploads", "/uploads/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/orders/send-otp", "/api/orders/verify-otp").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/analytics/visit").permitAll()
 
                         // 2. ADMIN ACCESS (Must come before broader .authenticated() rules)
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
@@ -60,7 +61,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/colors", "/api/colors/**").hasRole("ADMIN")
                         .requestMatchers("/api/users/all", "/api/users/*/role").hasRole("ADMIN")
                         .requestMatchers("/api/orders/all", "/api/orders/*/status").hasRole("ADMIN")
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**", "/api/v1/analytics/dashboard").hasRole("ADMIN")
                         .requestMatchers("/api/products/import-file", "/api/products/import-status/**").hasRole("ADMIN")
 
                         // 3. AUTHENTICATED ACCESS

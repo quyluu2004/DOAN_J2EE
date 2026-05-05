@@ -6,7 +6,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Cell
 } from 'recharts';
-import { AlertTriangle, TrendingUp, Users, Package, DollarSign } from 'lucide-react';
+import { AlertTriangle, TrendingUp, Users, Package, DollarSign, Eye, ShoppingCart } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
@@ -50,15 +50,17 @@ export default function AdminDashboard() {
       
       {/* Key Metrics */}
       <motion.div 
-        className="grid gap-6 md:grid-cols-2 xl:grid-cols-4 mb-12"
+        className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 mb-12"
         initial="hidden" animate="visible"
         variants={{
            hidden: { opacity: 0 },
            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
         }}
       >
-        <StatCard title="Total Revenue" value={`$${data.totalRevenue?.toLocaleString()}`} icon={<DollarSign size={20}/>} trend="+12.5% vs last month" />
-        <StatCard title="Active Orders" value={data.activeOrders} icon={<Package size={20}/>} trend="8 awaiting shipment" />
+        <StatCard title="Website Visits" value={data.totalVisits?.toLocaleString() || '0'} icon={<Eye size={20}/>} trend="Total page views" highlight />
+        <StatCard title="Completed Orders" value={data.totalCompletedOrders?.toLocaleString() || '0'} icon={<ShoppingCart size={20}/>} trend="Successful purchases" highlight />
+        <StatCard title="Total Revenue" value={`$${data.totalRevenue?.toLocaleString()}`} icon={<DollarSign size={20}/>} trend="All-time earnings" />
+        <StatCard title="Active Orders" value={data.activeOrders} icon={<Package size={20}/>} trend="Awaiting shipment" />
         <StatCard title="New Customers" value={data.newCustomers} icon={<Users size={20}/>} trend="This month's registrations" />
         <StatCard title="Total Products" value={data.totalProducts} icon={<TrendingUp size={20}/>} trend="Curated collection size" />
       </motion.div>
@@ -158,18 +160,18 @@ export default function AdminDashboard() {
   );
 }
 
-function StatCard({ title, value, icon, trend }) {
+function StatCard({ title, value, icon, trend, highlight }) {
   return (
     <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}>
-      <SpotlightCard className="p-8 h-full">
+      <SpotlightCard className={`p-8 h-full ${highlight ? 'bg-[#121212] text-white' : ''}`}>
         <div className="flex justify-between items-start mb-6">
-           <div className="p-3 bg-[#f9f9f9] rounded-sm text-[#703225]">
+           <div className={`p-3 rounded-sm ${highlight ? 'bg-[#2a2a2a] text-[#d4a843]' : 'bg-[#f9f9f9] text-[#703225]'}`}>
               {icon}
            </div>
-           <span className="text-[10px] font-bold text-green-600">{trend}</span>
+           <span className={`text-[10px] font-bold ${highlight ? 'text-[#d4a843]' : 'text-green-600'}`}>{trend}</span>
         </div>
-        <h3 className="text-[10px] font-bold tracking-[0.2em] text-[#777] uppercase mb-2">{title}</h3>
-        <p className="text-3xl font-serif text-[#121212]">{value}</p>
+        <h3 className={`text-[10px] font-bold tracking-[0.2em] uppercase mb-2 ${highlight ? 'text-[#999]' : 'text-[#777]'}`}>{title}</h3>
+        <p className={`text-3xl font-serif ${highlight ? 'text-white' : 'text-[#121212]'}`}>{value}</p>
       </SpotlightCard>
     </motion.div>
   );

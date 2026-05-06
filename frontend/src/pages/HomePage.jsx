@@ -8,6 +8,8 @@ import { useLocalization } from '../context/LocalizationContext';
 import MiniRoom3D from '../components/MiniRoom3D';
 import { SplitText } from '@/components/ui/ReactBits';
 
+import { API_BASE_URL } from '../config';
+
 const HomePage = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [products, setProducts] = useState([]);
@@ -23,19 +25,25 @@ const HomePage = () => {
         window.addEventListener('scroll', handleScroll);
 
         // Fetch products for best sellers
-        fetch('/api/products')
-            .then(res => res.json())
-            .then(data => setProducts(data.slice(0, 4)))
-            .catch(err => console.error(err));
+        fetch(`${API_BASE_URL}/api/products`)
+            .then(res => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            })
+            .then(data => setProducts(Array.isArray(data) ? data.slice(0, 4) : []))
+            .catch(err => console.error('Error fetching best sellers:', err));
 
         // Fetch exactly 3 featured products for Hero
-        fetch('/api/products?size=3')
-            .then(res => res.json())
+        fetch(`${API_BASE_URL}/api/products?size=3`)
+            .then(res => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            })
             .then(data => {
                 const items = Array.isArray(data) ? data : (data.content || []);
                 setFeaturedProducts(items.slice(0, 3));
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error('Error fetching featured products:', err));
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);

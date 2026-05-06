@@ -41,3 +41,4 @@ Thumbs.db
 # === Misc ===
 *.zip
 tmp_*.json
+.planning/

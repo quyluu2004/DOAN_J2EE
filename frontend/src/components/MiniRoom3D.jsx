@@ -5,21 +5,55 @@ import * as THREE from 'three';
 
 // Realistic Hand using a standard GLB model (pointing gesture)
 const HandModel = () => {
-  // Using a stable CDN model for a hand (procedural fallback if loading fails)
-  const { scene } = useGLTF('https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/hand-right/model.gltf');
+  // Try to load a realistic model, but provide a robust procedural fallback
   const handRef = useRef();
+  let model = null;
   
+  try {
+    // Attempting a more stable URL for a hand model
+    const { scene } = useGLTF('https://models.readyplayer.me/6385d38104a896d8e2392723.glb?pose=A');
+    model = scene;
+  } catch (e) {
+    console.warn("Could not load external hand model, using procedural fallback.");
+  }
+
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
-    handRef.current.position.y = 4 + Math.sin(t * 3) * 0.4;
-    handRef.current.rotation.y = Math.PI / 2 + Math.sin(t * 1.5) * 0.2;
+    if (handRef.current) {
+      handRef.current.position.y = 4 + Math.sin(t * 3) * 0.4;
+      handRef.current.rotation.y = Math.PI / 2 + Math.sin(t * 1.5) * 0.2;
+    }
   });
 
+  if (model) {
+    return (
+      <group ref={handRef} scale={10} rotation={[Math.PI / 2, 0, 0]}>
+        <primitive object={model} />
+        <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
+      </group>
+    );
+  }
+
+  // Robust Procedural Fallback Hand (Organic shapes)
   return (
-    <group ref={handRef} scale={1.5} rotation={[Math.PI / 2, 0, 0]}>
-      <primitive object={scene} />
-      {/* Apply a golden material to match the luxury brand */}
-      <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
+    <group ref={handRef} scale={0.8}>
+      {/* Palm */}
+      <mesh position={[0, 0.5, 0]} castShadow>
+        <sphereGeometry args={[0.35, 16, 16]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.8} roughness={0.2} />
+      </mesh>
+      {/* Fingers */}
+      {[[-0.2, 0.2], [0, 0.1], [0.2, 0.2]].map((pos, i) => (
+        <mesh key={i} position={[pos[0], pos[1], 0]} castShadow>
+          <capsuleGeometry args={[0.07, 0.4, 4, 8]} />
+          <meshStandardMaterial color="#d4af37" metalness={0.8} />
+        </mesh>
+      ))}
+      {/* Pointing Index */}
+      <mesh position={[0.15, -0.4, 0]} castShadow>
+        <capsuleGeometry args={[0.08, 0.8, 4, 8]} />
+        <meshStandardMaterial color="#d4af37" metalness={1} />
+      </mesh>
     </group>
   );
 };

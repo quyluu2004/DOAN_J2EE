@@ -1,178 +1,119 @@
 import React, { useRef, Suspense } from 'react';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, ContactShadows, Float, Environment, useGLTF, Text } from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { 
+  OrbitControls, 
+  PerspectiveCamera, 
+  ContactShadows, 
+  Float, 
+  Environment, 
+  useGLTF, 
+  MeshReflectorMaterial, 
+  BakeShadows,
+  Stage
+} from '@react-three/drei';
 import * as THREE from 'three';
 
-// Realistic Hand using a standard GLB model (pointing gesture)
-const HandModel = () => {
-  // Try to load a realistic model, but provide a robust procedural fallback
-  const handRef = useRef();
-  let model = null;
-  
-  try {
-    // Attempting a more stable URL for a hand model
-    const { scene } = useGLTF('https://models.readyplayer.me/6385d38104a896d8e2392723.glb?pose=A');
-    model = scene;
-  } catch (e) {
-    console.warn("Could not load external hand model, using procedural fallback.");
-  }
+// Stable high-quality model from Three.js examples
+const HighQualityChair = () => {
+  const { scene } = useGLTF('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/SheenChair.glb');
+  return <primitive object={scene} scale={3.5} position={[0, -0.5, 0]} />;
+};
 
+const RealisticHand = () => {
+  const handRef = useRef();
+  // Using a stable hand model from a reliable source
+  const { scene } = useGLTF('https://models.readyplayer.me/6385d38104a896d8e2392723.glb?pose=A');
+  
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (handRef.current) {
-      handRef.current.position.y = 4 + Math.sin(t * 3) * 0.4;
-      handRef.current.rotation.y = Math.PI / 2 + Math.sin(t * 1.5) * 0.2;
+      handRef.current.position.y = 4.5 + Math.sin(t * 2) * 0.3;
+      handRef.current.rotation.y = Math.PI / 2 + Math.sin(t * 0.5) * 0.1;
     }
   });
 
-  if (model) {
-    return (
-      <group ref={handRef} scale={10} rotation={[Math.PI / 2, 0, 0]}>
-        <primitive object={model} />
-        <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
-      </group>
-    );
-  }
-
-  // Robust Procedural Fallback Hand (Organic shapes)
   return (
-    <group ref={handRef} scale={0.8}>
-      {/* Palm */}
-      <mesh position={[0, 0.5, 0]} castShadow>
-        <sphereGeometry args={[0.35, 16, 16]} />
-        <meshStandardMaterial color="#d4af37" metalness={0.8} roughness={0.2} />
-      </mesh>
-      {/* Fingers */}
-      {[[-0.2, 0.2], [0, 0.1], [0.2, 0.2]].map((pos, i) => (
-        <mesh key={i} position={[pos[0], pos[1], 0]} castShadow>
-          <capsuleGeometry args={[0.07, 0.4, 4, 8]} />
-          <meshStandardMaterial color="#d4af37" metalness={0.8} />
-        </mesh>
-      ))}
-      {/* Pointing Index */}
-      <mesh position={[0.15, -0.4, 0]} castShadow>
-        <capsuleGeometry args={[0.08, 0.8, 4, 8]} />
-        <meshStandardMaterial color="#d4af37" metalness={1} />
-      </mesh>
+    <group ref={handRef} scale={12} rotation={[Math.PI / 2.2, 0, 0]}>
+      <primitive object={scene} />
+      {/* Apply a premium gold material to all meshes in the scene */}
+      <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.15} />
     </group>
   );
 };
 
-const LuxurySofa = () => {
-  return (
-    <group position={[-2, 0.25, -2]}>
-      {/* L-Shape Main */}
-      <mesh position={[0, 0.1, 0]} castShadow>
-        <boxGeometry args={[4, 0.7, 1.5]} />
-        <meshStandardMaterial color="#1e293b" roughness={0.8} />
-      </mesh>
-      <mesh position={[1.2, 0.1, 1.5]} castShadow>
-        <boxGeometry args={[1.6, 0.7, 1.5]} />
-        <meshStandardMaterial color="#1e293b" roughness={0.8} />
-      </mesh>
-      {/* Backrests */}
-      <mesh position={[0, 0.7, -0.6]} castShadow>
-        <boxGeometry args={[4, 0.8, 0.3]} />
-        <meshStandardMaterial color="#1e293b" roughness={0.8} />
-      </mesh>
-      <mesh position={[1.85, 0.7, 1.5]} rotation={[0, Math.PI / 2, 0]} castShadow>
-        <boxGeometry args={[1.5, 0.8, 0.3]} />
-        <meshStandardMaterial color="#1e293b" roughness={0.8} />
-      </mesh>
-      {/* Cushions */}
-      {[[-1.2, 0.5, 0.1], [0.2, 0.5, 0.1], [1.2, 0.5, 1.2]].map((pos, i) => (
-        <mesh key={i} position={pos} castShadow>
-          <boxGeometry args={[0.8, 0.2, 0.8]} />
-          <meshStandardMaterial color="#334155" />
-        </mesh>
-      ))}
-    </group>
-  );
-};
-
-const Rug = () => (
-  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.5, 0.01, -0.5]} receiveShadow>
-    <planeGeometry args={[6, 6]} />
-    <meshStandardMaterial color="#e2e8f0" roughness={1} opacity={0.8} transparent />
-  </mesh>
-);
-
-const DiningSet = () => (
-  <group position={[2.5, 0, 1.5]}>
-    {/* Marble Table */}
-    <mesh position={[0, 0.6, 0]} castShadow>
-      <boxGeometry args={[2, 0.1, 1.2]} />
-      <meshStandardMaterial color="#ffffff" roughness={0.05} metalness={0.1} />
-    </mesh>
-    {[[-0.8, 0.3, 0.4], [0.8, 0.3, 0.4], [-0.8, 0.3, -0.4], [0.8, 0.3, -0.4]].map((pos, i) => (
-      <mesh key={i} position={pos} castShadow>
-        <boxGeometry args={[0.06, 0.6, 0.06]} />
-        <meshStandardMaterial color="#334155" />
-      </mesh>
-    ))}
-    {/* Chairs */}
-    {[[-1.2, 0, 0], [1.2, 0, 0]].map((pos, i) => (
-      <group key={i} position={pos} rotation={[0, i === 0 ? Math.PI/2 : -Math.PI/2, 0]}>
-        <mesh position={[0, 0.35, 0]} castShadow>
-          <boxGeometry args={[0.5, 0.05, 0.5]} />
-          <meshStandardMaterial color="#1e293b" />
-        </mesh>
-        <mesh position={[0, 0.6, -0.2]} castShadow>
-          <boxGeometry args={[0.5, 0.5, 0.05]} />
-          <meshStandardMaterial color="#1e293b" />
-        </mesh>
-      </group>
-    ))}
-  </group>
-);
-
-const LuxuryRoom = () => {
+const CinematicRoom = () => {
   return (
     <group rotation={[0, -Math.PI / 4, 0]}>
-      {/* Floor - Marble feel */}
+      {/* Floor with Realistic Reflections */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[14, 14]} />
-        <meshStandardMaterial color="#f1f5f9" metalness={0.2} roughness={0.1} />
-      </mesh>
-      
-      {/* Walls - Wooden Texture Feel */}
-      <mesh position={[-7, 3.5, 0]} receiveShadow>
-        <boxGeometry args={[0.2, 7, 14]} />
-        <meshStandardMaterial color="#78350f" roughness={0.4} /> {/* Walnut color */}
-      </mesh>
-      <mesh position={[0, 3.5, -7]} receiveShadow>
-        <boxGeometry args={[14, 7, 0.2]} />
-        <meshStandardMaterial color="#78350f" roughness={0.4} />
-      </mesh>
-
-      {/* Skirting board */}
-      <mesh position={[-6.85, 0.2, 0]} receiveShadow>
-        <boxGeometry args={[0.1, 0.4, 14]} />
-        <meshStandardMaterial color="#1e293b" />
-      </mesh>
-      <mesh position={[0, 0.2, -6.85]} receiveShadow>
-        <boxGeometry args={[14, 0.4, 0.1]} />
-        <meshStandardMaterial color="#1e293b" />
+        <planeGeometry args={[16, 16]} />
+        <MeshReflectorMaterial
+          blur={[300, 100]}
+          resolution={1024}
+          mixBlur={1}
+          mixStrength={40}
+          roughness={1}
+          depthScale={1.2}
+          minDepthThreshold={0.4}
+          maxDepthThreshold={1.4}
+          color="#101010"
+          metalness={0.5}
+        />
       </mesh>
 
-      {/* Modern Windows with Glowing light */}
-      <group position={[0, 4, -6.95]}>
-        <mesh position={[-3, 0, 0]}>
-          <boxGeometry args={[5, 3, 0.1]} />
-          <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={2} transparent opacity={0.4} />
+      {/* Luxury Wood Walls */}
+      <group>
+        <mesh position={[-8, 4, 0]} receiveShadow>
+          <boxGeometry args={[0.3, 8, 16]} />
+          <meshStandardMaterial color="#2d1b0d" roughness={0.6} metalness={0.2} />
         </mesh>
-        <mesh position={[3, 0, 0]}>
-          <boxGeometry args={[5, 3, 0.1]} />
-          <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={2} transparent opacity={0.4} />
+        <mesh position={[0, 4, -8]} receiveShadow>
+          <boxGeometry args={[16, 8, 0.3]} />
+          <meshStandardMaterial color="#2d1b0d" roughness={0.6} metalness={0.2} />
+        </mesh>
+        
+        {/* Wall Accents (Gold strips) */}
+        <mesh position={[-7.8, 4, -4]} castShadow>
+          <boxGeometry args={[0.1, 8, 0.2]} />
+          <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
+        </mesh>
+        <mesh position={[4, 4, -7.8]} castShadow>
+          <boxGeometry args={[0.2, 8, 0.1]} />
+          <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
         </mesh>
       </group>
 
-      <Rug />
-      <LuxurySofa />
-      <DiningSet />
-      
+      {/* Panoramic Window with Glow */}
+      <mesh position={[0, 4.5, -8.1]}>
+        <boxGeometry args={[10, 4, 0.1]} />
+        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={5} transparent opacity={0.3} />
+      </mesh>
+
+      {/* Furniture Composition */}
+      <group position={[-2, 0, -2]}>
+        <Suspense fallback={null}>
+          <HighQualityChair />
+        </Suspense>
+      </group>
+
+      {/* Coffee Table */}
+      <mesh position={[1.5, 0.3, -1]} castShadow>
+        <boxGeometry args={[1.5, 0.1, 1.5]} />
+        <meshStandardMaterial color="#ffffff" metalness={0.8} roughness={0.1} />
+      </mesh>
+      <mesh position={[1.5, 0.15, -1]} castShadow>
+        <cylinderGeometry args={[0.1, 0.1, 0.3, 16]} />
+        <meshStandardMaterial color="#d4af37" metalness={1} />
+      </mesh>
+
+      {/* Decorative Rug */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]} receiveShadow>
+        <planeGeometry args={[10, 10]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={1} opacity={0.5} transparent />
+      </mesh>
+
       <Suspense fallback={null}>
-        <HandModel />
+        <RealisticHand />
       </Suspense>
     </group>
   );
@@ -180,43 +121,45 @@ const LuxuryRoom = () => {
 
 const MiniRoom3D = () => {
   return (
-    <div className="w-full h-full min-h-[500px] md:min-h-[650px] cursor-grab active:cursor-grabbing">
+    <div className="w-full h-full min-h-[500px] md:min-h-[700px] cursor-grab active:cursor-grabbing">
       <Canvas shadows dpr={[1, 2]}>
-        <PerspectiveCamera makeDefault position={[14, 14, 14]} fov={35} />
+        <PerspectiveCamera makeDefault position={[16, 16, 16]} fov={30} />
+        
+        <Suspense fallback={null}>
+          <Stage environment="city" intensity={0.5} contactShadow={false} shadows="contact" adjustCamera={false}>
+            <CinematicRoom />
+          </Stage>
+        </Suspense>
+
         <OrbitControls 
           enableZoom={false} 
           minPolarAngle={Math.PI / 6} 
-          maxPolarAngle={Math.PI / 2.1}
+          maxPolarAngle={Math.PI / 2.2}
           enablePan={false}
           autoRotate
-          autoRotateSpeed={0.4}
+          autoRotateSpeed={0.3}
         />
         
-        <ambientLight intensity={0.6} />
+        <ambientLight intensity={0.2} />
         <spotLight 
-          position={[10, 20, 10]} 
-          angle={0.5} 
+          position={[20, 30, 20]} 
+          angle={0.15} 
           penumbra={1} 
-          intensity={800} 
+          intensity={1000} 
           castShadow 
           shadow-mapSize={[2048, 2048]}
         />
-        <pointLight position={[5, 5, 5]} intensity={100} color="#fcd34d" />
-        <pointLight position={[-5, 8, -5]} intensity={50} color="#ffffff" />
-        
-        <Float speed={1.2} rotationIntensity={0.05} floatIntensity={0.1}>
-          <LuxuryRoom />
-        </Float>
         
         <ContactShadows 
           position={[0, -0.01, 0]} 
-          opacity={0.4} 
-          scale={25} 
-          blur={2.5} 
-          far={12} 
+          opacity={0.6} 
+          scale={30} 
+          blur={3} 
+          far={15} 
         />
         
         <Environment preset="apartment" />
+        <BakeShadows />
       </Canvas>
     </div>
   );

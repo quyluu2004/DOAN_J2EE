@@ -1,4 +1,4 @@
-import React, { useRef, Suspense, useMemo } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { 
   OrbitControls, 
@@ -6,173 +6,182 @@ import {
   ContactShadows, 
   Float, 
   Environment, 
-  useGLTF, 
   BakeShadows,
   Html
 } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Fallback Loader
-const Loader = () => (
-  <Html center>
-    <div className="flex flex-col items-center justify-center text-white bg-black/50 p-4 rounded-lg">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mb-2"></div>
-      <p className="text-sm font-medium">Loading 3D Studio...</p>
-    </div>
-  </Html>
-);
+// --- Procedural Luxury Furniture ---
 
-const HighQualityChair = () => {
-  const { scene } = useGLTF('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/SheenChair.glb');
+const ModernSofa = () => {
+  const fabricMaterial = new THREE.MeshStandardMaterial({ color: '#334155', roughness: 0.9, metalness: 0.05 });
   
-  // Apply luxury materials to the model
-  useMemo(() => {
-    scene.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-  }, [scene]);
-
-  return <primitive object={scene} scale={3.5} position={[0, -0.5, 0]} />;
-};
-
-const RealisticHand = () => {
-  const handRef = useRef();
-  const { scene } = useGLTF('https://models.readyplayer.me/6385d38104a896d8e2392723.glb?pose=A');
-  
-  const goldMaterial = useMemo(() => new THREE.MeshStandardMaterial({
-    color: '#d4af37',
-    metalness: 1,
-    roughness: 0.15
-  }), []);
-
-  useMemo(() => {
-    scene.traverse((child) => {
-      if (child.isMesh) {
-        child.material = goldMaterial;
-        child.castShadow = true;
-      }
-    });
-  }, [scene, goldMaterial]);
-
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    if (handRef.current) {
-      handRef.current.position.y = 4.5 + Math.sin(t * 2) * 0.3;
-      handRef.current.rotation.y = Math.PI / 2 + Math.sin(t * 0.5) * 0.1;
-    }
-  });
-
   return (
-    <group ref={handRef} scale={12} rotation={[Math.PI / 2.2, 0, 0]}>
-      <primitive object={scene} />
+    <group position={[-2.5, 0, -2.5]}>
+      {/* Base */}
+      <mesh position={[0, 0.35, 0]} castShadow receiveShadow>
+        <boxGeometry args={[4.5, 0.7, 1.8]} />
+        <primitive object={fabricMaterial} attach="material" />
+      </mesh>
+      {/* L-Extension */}
+      <mesh position={[1.4, 0.35, 1.4]} castShadow receiveShadow>
+        <boxGeometry args={[1.7, 0.7, 1.8]} />
+        <primitive object={fabricMaterial} attach="material" />
+      </mesh>
+      {/* Backrests */}
+      <mesh position={[0, 1.0, -0.65]} castShadow>
+        <boxGeometry args={[4.5, 0.9, 0.4]} />
+        <primitive object={fabricMaterial} attach="material" />
+      </mesh>
+      <mesh position={[2.0, 1.0, 1.4]} rotation={[0, Math.PI / 2, 0]} castShadow>
+        <boxGeometry args={[1.8, 0.9, 0.4]} />
+        <primitive object={fabricMaterial} attach="material" />
+      </mesh>
+      {/* Luxury Cushions */}
+      {[[-1.2, 0.8, 0], [0.2, 0.8, 0], [1.4, 0.8, 1.2]].map((pos, i) => (
+        <mesh key={i} position={pos} castShadow>
+          <boxGeometry args={[0.9, 0.3, 0.9]} />
+          <meshStandardMaterial color="#475569" roughness={0.8} />
+        </mesh>
+      ))}
     </group>
   );
 };
 
-const CinematicRoom = () => {
+const MarbleTable = () => (
+  <group position={[2, 0, 1]}>
+    {/* Marble Top */}
+    <mesh position={[0, 0.6, 0]} castShadow receiveShadow>
+      <boxGeometry args={[2, 0.1, 1.5]} />
+      <meshStandardMaterial color="#ffffff" roughness={0.05} metalness={0.1} />
+    </mesh>
+    {/* Gold Base */}
+    <mesh position={[0, 0.3, 0]} castShadow>
+      <cylinderGeometry args={[0.1, 0.15, 0.6, 32]} />
+      <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
+    </mesh>
+    <mesh position={[0, 0.05, 0]} receiveShadow>
+      <cylinderGeometry args={[0.6, 0.7, 0.1, 32]} />
+      <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
+    </mesh>
+  </group>
+);
+
+const ArtisticHand = () => {
+  const handRef = useRef();
+  const goldMaterial = new THREE.MeshStandardMaterial({ color: '#d4af37', metalness: 1, roughness: 0.15 });
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    if (handRef.current) {
+      handRef.current.position.y = 4.5 + Math.sin(t * 2.5) * 0.4;
+      handRef.current.rotation.y = Math.PI / 4 + Math.sin(t * 0.8) * 0.15;
+    }
+  });
+
+  return (
+    <group ref={handRef} scale={0.9}>
+      {/* Stylized Palm */}
+      <mesh castShadow>
+        <sphereGeometry args={[0.4, 32, 32]} />
+        <primitive object={goldMaterial} attach="material" />
+      </mesh>
+      {/* Pointing Finger */}
+      <mesh position={[0, -0.6, 0]} castShadow>
+        <capsuleGeometry args={[0.08, 0.8, 8, 16]} />
+        <primitive object={goldMaterial} attach="material" />
+      </mesh>
+      {/* Other Fingers (Stylized/Folded) */}
+      {[[-0.2, -0.2], [-0.1, -0.25], [0.1, -0.25]].map((pos, i) => (
+        <mesh key={i} position={[pos[0], pos[1], 0.2]} castShadow>
+          <capsuleGeometry args={[0.07, 0.2, 4, 8]} />
+          <primitive object={goldMaterial} attach="material" />
+        </mesh>
+      ))}
+    </group>
+  );
+};
+
+const LuxuryDiorama = () => {
   return (
     <group rotation={[0, -Math.PI / 4, 0]}>
-      {/* Floor - Simple but elegant (replacing unstable Reflector) */}
+      {/* Floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial color="#111827" metalness={0.8} roughness={0.1} />
+        <planeGeometry args={[16, 16]} />
+        <meshStandardMaterial color="#0f172a" metalness={0.8} roughness={0.1} />
       </mesh>
 
-      {/* Luxury Wood Walls */}
+      {/* Walnut Wood Walls */}
       <group>
         <mesh position={[-8, 4, 0]} receiveShadow>
           <boxGeometry args={[0.3, 8, 16]} />
-          <meshStandardMaterial color="#2d1b0d" roughness={0.6} />
+          <meshStandardMaterial color="#451a03" roughness={0.5} />
         </mesh>
         <mesh position={[0, 4, -8]} receiveShadow>
           <boxGeometry args={[16, 8, 0.3]} />
-          <meshStandardMaterial color="#2d1b0d" roughness={0.6} />
+          <meshStandardMaterial color="#451a03" roughness={0.5} />
         </mesh>
         
-        {/* Wall Accents (Gold strips) */}
-        <mesh position={[-7.8, 4, -4]} castShadow>
-          <boxGeometry args={[0.1, 8, 0.15]} />
-          <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
-        </mesh>
-        <mesh position={[4, 4, -7.8]} castShadow>
-          <boxGeometry args={[0.15, 8, 0.1]} />
-          <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
-        </mesh>
+        {/* Decorative Gold Inlays */}
+        {[[-4, -7.8], [0, -7.8], [4, -7.8]].map((pos, i) => (
+          <mesh key={i} position={[pos[0], 4, pos[1]]}>
+            <boxGeometry args={[0.1, 8, 0.15]} />
+            <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
+          </mesh>
+        ))}
       </group>
 
-      {/* Panoramic Window with Glow */}
+      {/* Floating Art/Window effect */}
       <mesh position={[0, 4.5, -8.1]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={2} transparent opacity={0.3} />
+        <boxGeometry args={[12, 4, 0.1]} />
+        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={1.5} transparent opacity={0.2} />
       </mesh>
 
-      {/* Furniture */}
-      <group position={[-2, 0.5, -2]}>
-        <Suspense fallback={null}>
-          <HighQualityChair />
-        </Suspense>
-      </group>
-
-      {/* Coffee Table */}
-      <group position={[1.5, 0, -1]}>
-        <mesh position={[0, 0.5, 0]} castShadow>
-          <boxGeometry args={[1.5, 0.1, 1.5]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.2} roughness={0.1} />
-        </mesh>
-        <mesh position={[0, 0.25, 0]} castShadow>
-          <cylinderGeometry args={[0.1, 0.1, 0.5, 16]} />
-          <meshStandardMaterial color="#d4af37" metalness={1} />
-        </mesh>
-      </group>
-
-      <Suspense fallback={null}>
-        <RealisticHand />
-      </Suspense>
+      <ModernSofa />
+      <MarbleTable />
+      <ArtisticHand />
     </group>
   );
 };
 
 const MiniRoom3D = () => {
   return (
-    <div className="w-full h-full min-h-[500px] md:min-h-[700px] cursor-grab active:cursor-grabbing bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-      <Canvas shadows dpr={[1, 1.5]}>
-        <PerspectiveCamera makeDefault position={[18, 18, 18]} fov={30} />
+    <div className="w-full h-full min-h-[500px] md:min-h-[750px] cursor-grab active:cursor-grabbing bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-white/5">
+      <Canvas shadows dpr={[1, 2]}>
+        <PerspectiveCamera makeDefault position={[18, 18, 18]} fov={28} />
         
-        <Suspense fallback={<Loader />}>
-          <CinematicRoom />
-          <Environment preset="city" />
-          <BakeShadows />
-        </Suspense>
-
+        <LuxuryDiorama />
+        
         <OrbitControls 
           enableZoom={false} 
           minPolarAngle={Math.PI / 6} 
           maxPolarAngle={Math.PI / 2.2}
           enablePan={false}
           autoRotate
-          autoRotateSpeed={0.4}
+          autoRotateSpeed={0.5}
         />
         
-        <ambientLight intensity={0.5} />
+        <ambientLight intensity={0.4} />
         <spotLight 
           position={[15, 25, 15]} 
-          angle={0.2} 
+          angle={0.25} 
           penumbra={1} 
-          intensity={1200} 
+          intensity={1500} 
           castShadow 
           shadow-mapSize={[1024, 1024]}
         />
+        <pointLight position={[-5, 5, 5]} intensity={100} color="#fcd34d" />
         
         <ContactShadows 
           position={[0, -0.01, 0]} 
-          opacity={0.5} 
-          scale={25} 
+          opacity={0.6} 
+          scale={30} 
           blur={2.5} 
           far={15} 
         />
+        
+        <Environment preset="city" />
+        <BakeShadows />
       </Canvas>
     </div>
   );

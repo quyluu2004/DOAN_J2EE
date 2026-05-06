@@ -1,198 +1,185 @@
-import React, { useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, ContactShadows, Float, Environment } from '@react-three/drei';
+import React, { useRef, Suspense } from 'react';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { OrbitControls, PerspectiveCamera, ContactShadows, Float, Environment, useGLTF, Text } from '@react-three/drei';
 import * as THREE from 'three';
 
-const DetailedSofa = () => {
-  return (
-    <group position={[-1.5, 0.25, -1.5]}>
-      {/* Long part */}
-      <mesh position={[0, 0, 0]} castShadow>
-        <boxGeometry args={[3, 0.6, 1.2]} />
-        <meshStandardMaterial color="#334155" />
-      </mesh>
-      {/* Short part (L-shape) */}
-      <mesh position={[1, 0, 1]} castShadow>
-        <boxGeometry args={[1, 0.6, 1]} />
-        <meshStandardMaterial color="#334155" />
-      </mesh>
-      {/* Backrest */}
-      <mesh position={[0, 0.6, -0.45]} castShadow>
-        <boxGeometry args={[3, 0.8, 0.3]} />
-        <meshStandardMaterial color="#334155" />
-      </mesh>
-      <mesh position={[1.35, 0.6, 0.5]} rotation={[0, Math.PI / 2, 0]} castShadow>
-        <boxGeometry args={[1, 0.8, 0.3]} />
-        <meshStandardMaterial color="#334155" />
-      </mesh>
-    </group>
-  );
-};
-
-const DiningSet = () => {
-  return (
-    <group position={[1.5, 0, 1]}>
-      {/* Table */}
-      <mesh position={[0, 0.5, 0]} castShadow>
-        <boxGeometry args={[1.5, 0.1, 1]} />
-        <meshStandardMaterial color="#ffffff" />
-      </mesh>
-      <mesh position={[0.6, 0.25, 0.4]} castShadow>
-        <boxGeometry args={[0.05, 0.5, 0.05]} />
-        <meshStandardMaterial color="#475569" />
-      </mesh>
-      <mesh position={[-0.6, 0.25, 0.4]} castShadow>
-        <boxGeometry args={[0.05, 0.5, 0.05]} />
-        <meshStandardMaterial color="#475569" />
-      </mesh>
-      <mesh position={[0.6, 0.25, -0.4]} castShadow>
-        <boxGeometry args={[0.05, 0.5, 0.05]} />
-        <meshStandardMaterial color="#475569" />
-      </mesh>
-      <mesh position={[-0.6, 0.25, -0.4]} castShadow>
-        <boxGeometry args={[0.05, 0.5, 0.05]} />
-        <meshStandardMaterial color="#475569" />
-      </mesh>
-      
-      {/* Chairs */}
-      {[[-0.8, 0, 0], [0.8, 0, 0], [0, 0, 0.6], [0, 0, -0.6]].map((pos, i) => (
-        <group key={i} position={pos} rotation={[0, i < 2 ? (i === 0 ? Math.PI/2 : -Math.PI/2) : (i === 2 ? 0 : Math.PI), 0]}>
-          <mesh position={[0, 0.3, 0]} castShadow>
-            <boxGeometry args={[0.4, 0.05, 0.4]} />
-            <meshStandardMaterial color="#94a3b8" />
-          </mesh>
-          <mesh position={[0, 0.5, -0.18]} castShadow>
-            <boxGeometry args={[0.4, 0.4, 0.05]} />
-            <meshStandardMaterial color="#94a3b8" />
-          </mesh>
-        </group>
-      ))}
-    </group>
-  );
-};
-
-const RealisticHand = () => {
+// Realistic Hand using a standard GLB model (pointing gesture)
+const HandModel = () => {
+  // Using a stable CDN model for a hand (procedural fallback if loading fails)
+  const { scene } = useGLTF('https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/hand-right/model.gltf');
   const handRef = useRef();
   
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
-    handRef.current.position.y = 3.5 + Math.sin(t * 3) * 0.3;
-    handRef.current.rotation.z = Math.sin(t * 2) * 0.05;
+    handRef.current.position.y = 4 + Math.sin(t * 3) * 0.4;
+    handRef.current.rotation.y = Math.PI / 2 + Math.sin(t * 1.5) * 0.2;
   });
 
   return (
-    <group ref={handRef} rotation={[0, -Math.PI / 4, 0]} scale={0.8}>
-      {/* Wrist & Palm */}
-      <mesh position={[0, 0.5, 0]} castShadow>
-        <boxGeometry args={[0.6, 0.8, 0.2]} />
-        <meshStandardMaterial color="#fcd34d" roughness={0.3} metalness={0.2} />
-      </mesh>
-      
-      {/* Thumb (Folded) */}
-      <mesh position={[-0.35, 0.3, 0.05]} rotation={[0, 0, 0.5]} castShadow>
-        <boxGeometry args={[0.15, 0.35, 0.15]} />
-        <meshStandardMaterial color="#fcd34d" />
-      </mesh>
+    <group ref={handRef} scale={1.5} rotation={[Math.PI / 2, 0, 0]}>
+      <primitive object={scene} />
+      {/* Apply a golden material to match the luxury brand */}
+      <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
+    </group>
+  );
+};
 
-      {/* Index Finger (The Pointer) */}
-      <group position={[0.2, 0.1, 0]}>
-        <mesh position={[0, -0.4, 0]} castShadow>
-          <capsuleGeometry args={[0.08, 0.6, 4, 8]} />
-          <meshStandardMaterial color="#fcd34d" />
-        </mesh>
-      </group>
-
-      {/* Other Fingers (Folded) */}
-      {[0, -0.15, -0.3].map((x, i) => (
-        <mesh key={i} position={[x, 0.1, 0.05]} castShadow>
-          <boxGeometry args={[0.12, 0.25, 0.15]} />
-          <meshStandardMaterial color="#fcd34d" />
+const LuxurySofa = () => {
+  return (
+    <group position={[-2, 0.25, -2]}>
+      {/* L-Shape Main */}
+      <mesh position={[0, 0.1, 0]} castShadow>
+        <boxGeometry args={[4, 0.7, 1.5]} />
+        <meshStandardMaterial color="#1e293b" roughness={0.8} />
+      </mesh>
+      <mesh position={[1.2, 0.1, 1.5]} castShadow>
+        <boxGeometry args={[1.6, 0.7, 1.5]} />
+        <meshStandardMaterial color="#1e293b" roughness={0.8} />
+      </mesh>
+      {/* Backrests */}
+      <mesh position={[0, 0.7, -0.6]} castShadow>
+        <boxGeometry args={[4, 0.8, 0.3]} />
+        <meshStandardMaterial color="#1e293b" roughness={0.8} />
+      </mesh>
+      <mesh position={[1.85, 0.7, 1.5]} rotation={[0, Math.PI / 2, 0]} castShadow>
+        <boxGeometry args={[1.5, 0.8, 0.3]} />
+        <meshStandardMaterial color="#1e293b" roughness={0.8} />
+      </mesh>
+      {/* Cushions */}
+      {[[-1.2, 0.5, 0.1], [0.2, 0.5, 0.1], [1.2, 0.5, 1.2]].map((pos, i) => (
+        <mesh key={i} position={pos} castShadow>
+          <boxGeometry args={[0.8, 0.2, 0.8]} />
+          <meshStandardMaterial color="#334155" />
         </mesh>
       ))}
     </group>
   );
 };
 
-const DetailedRoom = () => {
+const Rug = () => (
+  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.5, 0.01, -0.5]} receiveShadow>
+    <planeGeometry args={[6, 6]} />
+    <meshStandardMaterial color="#e2e8f0" roughness={1} opacity={0.8} transparent />
+  </mesh>
+);
+
+const DiningSet = () => (
+  <group position={[2.5, 0, 1.5]}>
+    {/* Marble Table */}
+    <mesh position={[0, 0.6, 0]} castShadow>
+      <boxGeometry args={[2, 0.1, 1.2]} />
+      <meshStandardMaterial color="#ffffff" roughness={0.05} metalness={0.1} />
+    </mesh>
+    {[[-0.8, 0.3, 0.4], [0.8, 0.3, 0.4], [-0.8, 0.3, -0.4], [0.8, 0.3, -0.4]].map((pos, i) => (
+      <mesh key={i} position={pos} castShadow>
+        <boxGeometry args={[0.06, 0.6, 0.06]} />
+        <meshStandardMaterial color="#334155" />
+      </mesh>
+    ))}
+    {/* Chairs */}
+    {[[-1.2, 0, 0], [1.2, 0, 0]].map((pos, i) => (
+      <group key={i} position={pos} rotation={[0, i === 0 ? Math.PI/2 : -Math.PI/2, 0]}>
+        <mesh position={[0, 0.35, 0]} castShadow>
+          <boxGeometry args={[0.5, 0.05, 0.5]} />
+          <meshStandardMaterial color="#1e293b" />
+        </mesh>
+        <mesh position={[0, 0.6, -0.2]} castShadow>
+          <boxGeometry args={[0.5, 0.5, 0.05]} />
+          <meshStandardMaterial color="#1e293b" />
+        </mesh>
+      </group>
+    ))}
+  </group>
+);
+
+const LuxuryRoom = () => {
   return (
     <group rotation={[0, -Math.PI / 4, 0]}>
-      {/* Floor with tiles pattern feel */}
+      {/* Floor - Marble feel */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[12, 12]} />
-        <meshStandardMaterial color="#f8fafc" roughness={0.1} />
+        <planeGeometry args={[14, 14]} />
+        <meshStandardMaterial color="#f1f5f9" metalness={0.2} roughness={0.1} />
       </mesh>
       
-      {/* Wall Left */}
-      <mesh position={[-6, 3, 0]} receiveShadow>
-        <boxGeometry args={[0.2, 6, 12]} />
-        <meshStandardMaterial color="#e2e8f0" />
+      {/* Walls - Wooden Texture Feel */}
+      <mesh position={[-7, 3.5, 0]} receiveShadow>
+        <boxGeometry args={[0.2, 7, 14]} />
+        <meshStandardMaterial color="#78350f" roughness={0.4} /> {/* Walnut color */}
       </mesh>
-      
-      {/* Wall Right */}
-      <mesh position={[0, 3, -6]} receiveShadow>
-        <boxGeometry args={[12, 6, 0.2]} />
-        <meshStandardMaterial color="#e2e8f0" />
+      <mesh position={[0, 3.5, -7]} receiveShadow>
+        <boxGeometry args={[14, 7, 0.2]} />
+        <meshStandardMaterial color="#78350f" roughness={0.4} />
       </mesh>
 
-      {/* Windows */}
-      <mesh position={[-5.85, 3.5, -2]}>
-        <boxGeometry args={[0.1, 2, 4]} />
-        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.5} transparent opacity={0.3} />
+      {/* Skirting board */}
+      <mesh position={[-6.85, 0.2, 0]} receiveShadow>
+        <boxGeometry args={[0.1, 0.4, 14]} />
+        <meshStandardMaterial color="#1e293b" />
       </mesh>
-      <mesh position={[2, 3.5, -5.85]}>
-        <boxGeometry args={[5, 2, 0.1]} />
-        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.5} transparent opacity={0.3} />
+      <mesh position={[0, 0.2, -6.85]} receiveShadow>
+        <boxGeometry args={[14, 0.4, 0.1]} />
+        <meshStandardMaterial color="#1e293b" />
       </mesh>
 
-      <DetailedSofa />
+      {/* Modern Windows with Glowing light */}
+      <group position={[0, 4, -6.95]}>
+        <mesh position={[-3, 0, 0]}>
+          <boxGeometry args={[5, 3, 0.1]} />
+          <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={2} transparent opacity={0.4} />
+        </mesh>
+        <mesh position={[3, 0, 0]}>
+          <boxGeometry args={[5, 3, 0.1]} />
+          <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={2} transparent opacity={0.4} />
+        </mesh>
+      </group>
+
+      <Rug />
+      <LuxurySofa />
       <DiningSet />
       
-      {/* Small side table */}
-      <mesh position={[-4, 0.2, 4]} castShadow>
-        <boxGeometry args={[0.8, 0.4, 0.8]} />
-        <meshStandardMaterial color="#703225" />
-      </mesh>
-
-      <RealisticHand />
+      <Suspense fallback={null}>
+        <HandModel />
+      </Suspense>
     </group>
   );
 };
 
 const MiniRoom3D = () => {
   return (
-    <div className="w-full h-full min-h-[400px] md:min-h-[600px] cursor-grab active:cursor-grabbing">
-      <Canvas shadows>
-        <PerspectiveCamera makeDefault position={[12, 12, 12]} fov={35} />
+    <div className="w-full h-full min-h-[500px] md:min-h-[650px] cursor-grab active:cursor-grabbing">
+      <Canvas shadows dpr={[1, 2]}>
+        <PerspectiveCamera makeDefault position={[14, 14, 14]} fov={35} />
         <OrbitControls 
           enableZoom={false} 
           minPolarAngle={Math.PI / 6} 
-          maxPolarAngle={Math.PI / 2.2}
+          maxPolarAngle={Math.PI / 2.1}
           enablePan={false}
           autoRotate
-          autoRotateSpeed={0.5}
+          autoRotateSpeed={0.4}
         />
         
-        <ambientLight intensity={0.7} />
+        <ambientLight intensity={0.6} />
         <spotLight 
-          position={[15, 20, 15]} 
-          angle={0.4} 
+          position={[10, 20, 10]} 
+          angle={0.5} 
           penumbra={1} 
-          intensity={500} 
+          intensity={800} 
           castShadow 
           shadow-mapSize={[2048, 2048]}
         />
-        <pointLight position={[-10, 5, -10]} intensity={50} color="#fcd34d" />
+        <pointLight position={[5, 5, 5]} intensity={100} color="#fcd34d" />
+        <pointLight position={[-5, 8, -5]} intensity={50} color="#ffffff" />
         
-        <Float speed={1} rotationIntensity={0.1} floatIntensity={0.2}>
-          <DetailedRoom />
+        <Float speed={1.2} rotationIntensity={0.05} floatIntensity={0.1}>
+          <LuxuryRoom />
         </Float>
         
         <ContactShadows 
           position={[0, -0.01, 0]} 
-          opacity={0.3} 
+          opacity={0.4} 
           scale={25} 
-          blur={2} 
-          far={10} 
+          blur={2.5} 
+          far={12} 
         />
         
         <Environment preset="apartment" />

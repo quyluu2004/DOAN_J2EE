@@ -164,7 +164,10 @@ const HomePage = () => {
                         <p className="text-gray-400 mb-8 max-w-md">
                             {t('home.studio.desc')}
                         </p>
-                        <button className="bg-white text-black px-8 py-3 rounded-full text-sm font-bold hover:bg-gray-200 transition shadow-lg">
+                        <button 
+                            onClick={() => navigate('/3d-designer')}
+                            className="bg-white text-black px-8 py-3 rounded-full text-sm font-bold hover:bg-gray-200 transition shadow-lg"
+                        >
                             {t('home.studio.cta')}
                         </button>
                     </div>

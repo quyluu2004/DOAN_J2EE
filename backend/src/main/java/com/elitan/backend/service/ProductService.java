@@ -25,8 +25,9 @@ public class ProductService {
             java.math.BigDecimal minPrice, java.math.BigDecimal maxPrice,
             org.springframework.data.domain.Pageable pageable) {
 
-        org.springframework.data.jpa.domain.Specification<Product> spec = org.springframework.data.jpa.domain.Specification.where(
-                com.elitan.backend.repository.ProductSpecification.hasName(name))
+        org.springframework.data.jpa.domain.Specification<Product> spec = org.springframework.data.jpa.domain.Specification
+                .where(
+                        com.elitan.backend.repository.ProductSpecification.hasName(name))
                 .and(com.elitan.backend.repository.ProductSpecification.hasCategory(category))
                 .and(com.elitan.backend.repository.ProductSpecification.hasMaterial(material))
                 .and(com.elitan.backend.repository.ProductSpecification.hasColor(color))
@@ -38,12 +39,13 @@ public class ProductService {
     public Product getProductById(Long id) {
         if (productCacheService != null) {
             Product cached = productCacheService.getCachedProduct(id);
-            if (cached != null) return cached;
+            if (cached != null)
+                return cached;
         }
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-        
+
         if (productCacheService != null) {
             productCacheService.cacheProduct(product);
         }
@@ -76,7 +78,7 @@ public class ProductService {
         product.setStock(productDetails.getStock());
         product.setThumbnailUrl(productDetails.getThumbnailUrl());
         product.setGlbUrl(productDetails.getGlbUrl());
-        
+
         // Update variants
         if (productDetails.getVariants() != null) {
             product.getVariants().clear();

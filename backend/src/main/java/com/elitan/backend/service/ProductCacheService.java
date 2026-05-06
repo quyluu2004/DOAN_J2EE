@@ -29,7 +29,7 @@ public class ProductCacheService {
         String key = PRODUCT_KEY_PREFIX + id;
         redisTemplate.delete(key);
     }
-    
+
     public void clearAllCaches() {
         redisTemplate.getConnectionFactory().getConnection().flushAll();
     }

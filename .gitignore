@@ -1,0 +1,43 @@
+# ========================
+# Root .gitignore - ÉLITAN
+# ========================
+
+# === Logs ===
+*.log
+
+# === Java / Maven (Backend) ===
+target/
+.mvn/
+
+# === Node.js (Frontend) ===
+node_modules/
+dist/
+
+# === Environment & Secrets ===
+.env
+.env.local
+.env.*.local
+
+# === IDE / Editor ===
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+Thumbs.db
+
+# === OS Files ===
+*.swp
+*.swo
+*~
+
+# === GitNexus ===
+.gitnexus/
+
+# === Docker ===
+.dockerignore
+
+# === Misc ===
+*.zip
+tmp_*.json

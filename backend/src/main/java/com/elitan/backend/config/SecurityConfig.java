@@ -48,7 +48,11 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/orders/send-otp", "/api/orders/verify-otp").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/analytics/visit").permitAll()
 
-                        // 2. ADMIN ACCESS (Must come before broader .authenticated() rules)
+                        // 2. WISHLIST — any authenticated user can toggle/view wishlist
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/wishlist", "/api/products/wishlist/**").authenticated()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/wishlist/**").authenticated()
+
+                        // 3. ADMIN ACCESS (Must come before broader .authenticated() rules)
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")

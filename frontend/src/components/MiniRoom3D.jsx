@@ -173,29 +173,29 @@ const MiniRoom3D = ({ onCtaClick }) => {
       <Canvas shadows dpr={[1, 2]}>
         <OrthographicCamera 
           makeDefault 
-          position={[15, 15, 15]} 
-          zoom={42} 
+          position={[20, 20, 20]} 
+          zoom={32} 
           near={0.1} 
-          far={1000} 
+          far={2000} 
         />
         
-        <group position={[0, -7, 0]}>
+        <group position={[0, -35, 0]}>
           <Scene />
           
-          <ambientLight intensity={0.6} />
+          <ambientLight intensity={0.7} />
           <directionalLight 
-            position={[10, 20, 10]} 
-            intensity={2} 
+            position={[20, 40, 20]} 
+            intensity={2.5} 
             castShadow 
             shadow-mapSize={[2048, 2048]}
           />
           <Environment preset="city" />
           <ContactShadows 
             position={[0, -0.01, 0]} 
-            opacity={0.4} 
-            scale={20} 
-            blur={2} 
-            far={4.5} 
+            opacity={0.5} 
+            scale={30} 
+            blur={2.5} 
+            far={10} 
           />
         </group>
         
@@ -206,7 +206,7 @@ const MiniRoom3D = ({ onCtaClick }) => {
           enablePan={false}
           autoRotate
           autoRotateSpeed={0.3}
-          target={[0, -5, 0]}
+          target={[0, -35, 0]}
         />
         
         <BakeShadows />

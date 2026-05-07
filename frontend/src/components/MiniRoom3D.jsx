@@ -164,19 +164,19 @@ const MiniRoom3D = ({ onCtaClick }) => {
       <Canvas shadows dpr={[1, 2]} style={{ pointerEvents: 'none' }}>
         <PerspectiveCamera 
           makeDefault 
-          position={[0, 0, 18]} 
-          fov={40} 
+          position={[0, 0, 10]} 
+          fov={50} 
         />
         
-        {/* Shift entire scene to the RIGHT side of the viewport */}
-        <group position={[4, -1, 0]}>
+        {/* Shift entire scene to the RIGHT side - scaled 3x */}
+        <group position={[5, 0, 0]} scale={3}>
           <Scene />
         </group>
         
         {/* Lighting */}
-        <ambientLight intensity={0.6} />
-        <spotLight position={[15, 15, 15]} angle={0.2} penumbra={1} intensity={3000} castShadow />
-        <pointLight position={[-10, 5, 10]} intensity={800} color="#3b82f6" />
+        <ambientLight intensity={0.7} />
+        <spotLight position={[20, 20, 20]} angle={0.3} penumbra={1} intensity={5000} castShadow />
+        <pointLight position={[-15, 5, 10]} intensity={1500} color="#3b82f6" />
         <pointLight position={[10, -5, 5]} intensity={400} color="#d4af37" />
         
         <Environment preset="city" />

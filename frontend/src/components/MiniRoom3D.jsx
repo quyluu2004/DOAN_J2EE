@@ -164,9 +164,10 @@ const Scene = () => {
 
 const MiniRoom3D = ({ onCtaClick }) => {
   return (
-    <div className="relative w-full h-full min-h-[600px] md:min-h-[850px] bg-slate-950 rounded-[3rem] overflow-hidden shadow-2xl border border-white/5 group">
-      {/* 3D Canvas - NO user interaction */}
-      <Canvas shadows dpr={[1, 2]} style={{ pointerEvents: 'none' }}>
+    <div className="relative w-full h-[600px] md:h-[850px] bg-slate-950 rounded-[3rem] overflow-hidden shadow-2xl border border-white/5 group">
+      {/* 3D Canvas - absolute fill, NO user interaction */}
+      <div className="absolute inset-0" style={{ pointerEvents: 'none' }}>
+        <Canvas shadows dpr={[1, 2]} style={{ width: '100%', height: '100%' }}>
         <PerspectiveCamera 
           makeDefault 
           position={[0, 0, 10]} 
@@ -184,7 +185,8 @@ const MiniRoom3D = ({ onCtaClick }) => {
         <pointLight position={[5, -10, 3]} intensity={500} color="#fbbf24" />
         
         <Environment preset="sunset" />
-      </Canvas>
+        </Canvas>
+      </div>
 
       {/* UI Overlay - text on LEFT */}
       <div className="absolute inset-0 pointer-events-none flex flex-col justify-center items-start p-12 md:p-24 bg-gradient-to-r from-slate-950 via-slate-950/60 to-transparent">

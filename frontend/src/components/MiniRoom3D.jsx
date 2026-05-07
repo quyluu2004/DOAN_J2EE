@@ -105,52 +105,54 @@ const FloatingLamp = () => (
 const Scene = () => {
   return (
     <>
-      {/* ---- CHAIR: center-right, biggest item ---- */}
-      <Float speed={1.2} rotationIntensity={0.15} floatIntensity={1.5}>
-        <SelfRotate speed={0.12}>
-          <group position={[3.5, -1, 0]} rotation={[0.1, -0.4, 0.05]}>
+      {/* ---- CHAIR: center of right half, hero piece ---- */}
+      <Float speed={1.2} rotationIntensity={0.12} floatIntensity={1.2}>
+        <SelfRotate speed={0.1}>
+          <group position={[1, 0, 0]} rotation={[0.08, -0.5, 0.03]}>
             <FloatingChair />
           </group>
         </SelfRotate>
       </Float>
 
-      {/* ---- TABLE: lower-left of cluster ---- */}
-      <Float speed={1.6} rotationIntensity={0.1} floatIntensity={2}>
-        <SelfRotate speed={-0.08}>
-          <group position={[-1, -3.5, -2]} rotation={[0, 0.6, 0]}>
+      {/* ---- TABLE: bottom-left of cluster ---- */}
+      <Float speed={1.6} rotationIntensity={0.08} floatIntensity={1.8}>
+        <SelfRotate speed={-0.07}>
+          <group position={[-2, -2.5, 0.5]} rotation={[0, 0.5, 0]}>
             <FloatingTable />
           </group>
         </SelfRotate>
       </Float>
 
       {/* ---- LAMP: upper-right of cluster ---- */}
-      <Float speed={1.4} rotationIntensity={0.1} floatIntensity={1.8}>
-        <SelfRotate speed={0.1}>
-          <group position={[7, 3, -3]} rotation={[0, -0.3, 0.05]}>
+      <Float speed={1.4} rotationIntensity={0.08} floatIntensity={1.5}>
+        <SelfRotate speed={0.08}>
+          <group position={[3.5, 2.5, -1]} rotation={[0, -0.2, 0.03]}>
             <FloatingLamp />
           </group>
         </SelfRotate>
       </Float>
 
-      {/* ---- Decorative accents ---- */}
-      <Float speed={2.5} floatIntensity={2.5}>
-        <mesh position={[0, 4, -5]}>
-          <sphereGeometry args={[0.7, 32, 32]} />
+      {/* ---- Decorative gold sphere ---- */}
+      <Float speed={2.5} floatIntensity={2}>
+        <mesh position={[-1.5, 3, -3]}>
+          <sphereGeometry args={[0.5, 32, 32]} />
           <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
         </mesh>
       </Float>
 
-      <Float speed={3} floatIntensity={1.5}>
-        <mesh position={[8, -5, -4]}>
-          <sphereGeometry args={[0.4, 32, 32]} />
-          <meshStandardMaterial color="#94a3b8" metalness={0.8} roughness={0.2} />
+      {/* ---- Small silver accent ---- */}
+      <Float speed={3} floatIntensity={1.2}>
+        <mesh position={[4, -2, -2]}>
+          <sphereGeometry args={[0.3, 32, 32]} />
+          <meshStandardMaterial color="#e2e8f0" metalness={0.8} roughness={0.15} />
         </mesh>
       </Float>
 
+      {/* ---- Wireframe accent ---- */}
       <Float speed={2} floatIntensity={1}>
-        <mesh position={[-3, 1, -6]}>
-          <icosahedronGeometry args={[0.5, 0]} />
-          <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.15} wireframe />
+        <mesh position={[-3, 1, -4]}>
+          <icosahedronGeometry args={[0.4, 0]} />
+          <meshStandardMaterial color="#f59e0b" metalness={0.9} roughness={0.15} wireframe />
         </mesh>
       </Float>
     </>
@@ -168,18 +170,24 @@ const MiniRoom3D = ({ onCtaClick }) => {
           fov={50} 
         />
         
-        {/* Shift entire scene to the RIGHT side - scaled 3x */}
-        <group position={[5, 0, 0]} scale={3}>
+        {/* Scene fills the RIGHT half - scale 2.5x, shifted right */}
+        <group position={[6, -0.5, 0]} scale={2.5}>
           <Scene />
         </group>
         
-        {/* Lighting */}
-        <ambientLight intensity={0.7} />
-        <spotLight position={[20, 20, 20]} angle={0.3} penumbra={1} intensity={5000} castShadow />
-        <pointLight position={[-15, 5, 10]} intensity={1500} color="#3b82f6" />
-        <pointLight position={[10, -5, 5]} intensity={400} color="#d4af37" />
+        {/* === SUNRISE LIGHTING === */}
+        {/* Warm ambient base */}
+        <ambientLight intensity={0.4} color="#fef3c7" />
+        {/* Main sunrise directional - warm orange from upper right */}
+        <directionalLight position={[15, 12, 8]} intensity={4} color="#fb923c" castShadow />
+        {/* Secondary warm fill - golden from the side */}
+        <pointLight position={[20, 0, 5]} intensity={2000} color="#f59e0b" distance={50} />
+        {/* Cool blue rim light from the left for contrast */}
+        <pointLight position={[-15, 5, 10]} intensity={600} color="#7dd3fc" />
+        {/* Warm accent from below */}
+        <pointLight position={[5, -10, 3]} intensity={300} color="#fbbf24" />
         
-        <Environment preset="city" />
+        <Environment preset="sunset" />
       </Canvas>
 
       {/* UI Overlay - text on LEFT */}

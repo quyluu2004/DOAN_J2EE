@@ -25,7 +25,7 @@ const useMaterials = () => {
 // --- Floating Furniture Components ---
 
 const FloatingChair = ({ materials }) => (
-  <group scale={1.2}>
+  <group scale={2.5}>
     {/* Base/Seat */}
     <mesh castShadow receiveShadow>
       <boxGeometry args={[1.5, 0.4, 1.4]} />
@@ -56,7 +56,7 @@ const FloatingChair = ({ materials }) => (
 );
 
 const FloatingTable = ({ materials }) => (
-  <group scale={0.8}>
+  <group scale={2}>
     <mesh castShadow receiveShadow position={[0, 0.1, 0]}>
       <cylinderGeometry args={[1, 1, 0.1, 32]} />
       <primitive object={materials.marble} attach="material" />
@@ -73,7 +73,7 @@ const FloatingTable = ({ materials }) => (
 );
 
 const FloatingLamp = ({ materials }) => (
-  <group scale={0.9}>
+  <group scale={2.2}>
     <mesh position={[0, 1.5, 0]} castShadow>
       <cylinderGeometry args={[0.4, 0.6, 0.6, 32]} />
       <primitive object={materials.lampShade} attach="material" />
@@ -94,38 +94,41 @@ const Scene = () => {
   const materials = useMaterials();
   
   return (
-    <group position={[3, 0, 0]}>
+    <group position={[4, -2, 0]}>
       {/* Dynamic Floating Elements */}
-      <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
-        <group position={[0, 0, 0]}>
+      <Float speed={1.5} rotationIntensity={0.4} floatIntensity={1.2}>
+        <group position={[0, 0, 0]} rotation={[0, -0.3, 0]}>
           <FloatingChair materials={materials} />
         </group>
       </Float>
 
-      <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-        <group position={[-2.5, -2, 2]} rotation={[0, Math.PI / 4, 0]}>
+      <Float speed={2} rotationIntensity={0.6} floatIntensity={1.5}>
+        <group position={[-3, -3, 1.5]} rotation={[0, Math.PI / 4, 0]}>
           <FloatingTable materials={materials} />
         </group>
       </Float>
 
-      <Float speed={1.8} rotationIntensity={0.8} floatIntensity={1.5}>
-        <group position={[2.5, 2, -2]} rotation={[0, -Math.PI / 6, 0]}>
+      <Float speed={1.8} rotationIntensity={0.5} floatIntensity={1.3}>
+        <group position={[3, 2.5, -1.5]} rotation={[0, -Math.PI / 6, 0]}>
           <FloatingLamp materials={materials} />
         </group>
       </Float>
 
-      {/* Abstract Background Shapes */}
-      <Float speed={3} floatIntensity={1}>
-        <mesh position={[-5, 4, -5]}>
-          <sphereGeometry args={[0.5, 32, 32]} />
+      {/* Decorative gold sphere */}
+      <Float speed={3} floatIntensity={1.5}>
+        <mesh position={[-2, 3, -4]}>
+          <sphereGeometry args={[0.6, 32, 32]} />
           <meshStandardMaterial color="#d4af37" metalness={1} roughness={0.1} />
         </mesh>
       </Float>
-      
-      <mesh position={[0, -5, -10]} scale={20}>
-        <sphereGeometry args={[1, 64, 64]} />
-        <MeshDistortMaterial color="#1e293b" speed={2} distort={0.2} radius={1} />
-      </mesh>
+
+      {/* Small accent sphere */}
+      <Float speed={2.5} floatIntensity={1}>
+        <mesh position={[4, -1, -3]}>
+          <sphereGeometry args={[0.35, 32, 32]} />
+          <meshStandardMaterial color="#94a3b8" metalness={0.8} roughness={0.2} />
+        </mesh>
+      </Float>
     </group>
   );
 };
@@ -137,8 +140,8 @@ const MiniRoom3D = ({ onCtaClick }) => {
       <Canvas shadows dpr={[1, 2]}>
         <PerspectiveCamera 
           makeDefault 
-          position={[0, 0, 12]} 
-          fov={35} 
+          position={[0, -1, 14]} 
+          fov={45} 
         />
         
         <Scene />

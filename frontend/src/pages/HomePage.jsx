@@ -159,35 +159,8 @@ const HomePage = () => {
             </section>
 
             {/* 5. 3D STUDIO BANNER */}
-            <section className="bg-[#111827] text-white py-0 relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center min-h-[600px]">
-                    <div className="py-12 z-10">
-                        <span className="text-gray-400 text-sm font-bold tracking-widest uppercase mb-4 block">
-                            {t('home.studio.sub')}
-                        </span>
-                        
-                        <SplitText 
-                            text={t('home.studio.title')} 
-                            className="text-5xl font-bold mb-8 leading-tight text-white"
-                        />
-                        
-                        <p className="text-gray-400 mb-10 max-w-md text-lg leading-relaxed">
-                            {t('home.studio.desc')}
-                        </p>
-                        
-                        <button 
-                            onClick={() => navigate('/3d-designer')}
-                            className="bg-white text-black px-10 py-4 rounded-full text-sm font-bold hover:bg-gray-200 transition shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-95 duration-200"
-                        >
-                            {t('home.studio.cta')}
-                        </button>
-                    </div>
-
-                    <div className="relative h-full min-h-[400px] md:min-h-[600px] flex items-center justify-center">
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#111827] via-transparent to-transparent z-10 pointer-events-none" />
-                        <MiniRoom3D />
-                    </div>
-                </div>
+            <section className="py-20 px-6 max-w-[1440px] mx-auto">
+                <MiniRoom3D onCtaClick={() => navigate('/3d-designer')} />
             </section>
 
             {/* FOOTER (Simple) */}

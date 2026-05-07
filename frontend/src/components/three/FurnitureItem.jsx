@@ -41,6 +41,7 @@ const FurnitureItem = ({ item, isActive, isGhost }) => {
   const isSelected = selectedId === item.id;
   const opacityValue = isActive ? 1 : (isGhost ? 0.15 : 0.4);
 
+  const isColliding = item.isColliding;
   const scale = item.scale || [1, 1, 1];
   const width = scale[0];
   const depth = scale[2];

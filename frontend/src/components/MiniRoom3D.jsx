@@ -173,13 +173,13 @@ const MiniRoom3D = ({ onCtaClick }) => {
       <Canvas shadows dpr={[1, 2]}>
         <OrthographicCamera 
           makeDefault 
-          position={[12, 12, 12]} 
-          zoom={65} 
+          position={[15, 15, 15]} 
+          zoom={55} 
           near={0.1} 
           far={1000} 
         />
         
-        <group position={[0, -1.5, 0]}>
+        <group position={[2, -4, 0]}>
           <Scene />
         </group>
         
@@ -190,7 +190,7 @@ const MiniRoom3D = ({ onCtaClick }) => {
           enablePan={false}
           autoRotate
           autoRotateSpeed={0.3}
-          target={[0, 0, 0]}
+          target={[2, -2, 0]}
         />
         
         <ambientLight intensity={0.5} />

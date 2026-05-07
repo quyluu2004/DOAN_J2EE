@@ -100,15 +100,27 @@ public class ProductService {
 
     @org.springframework.transaction.annotation.Transactional
     public void deleteProduct(Long id) {
-        // Clear foreign key constraints manually to allow deletion
-        jdbcTemplate.update("DELETE FROM reviews WHERE product_id = ?", id);
-        jdbcTemplate.update("DELETE FROM wishlist WHERE product_id = ?", id);
-        jdbcTemplate.update("DELETE FROM cart_items WHERE product_id = ?", id);
-        jdbcTemplate.update("DELETE FROM order_details WHERE product_id = ?", id);
+        // Kiểm tra sản phẩm tồn tại trước khi xóa
+        if (!productRepository.existsById(id)) {
+            throw new RuntimeException("Không tìm thấy sản phẩm với ID: " + id);
+        }
 
-        productRepository.deleteById(id);
-        if (productCacheService != null) {
-            productCacheService.evictProduct(id);
+        try {
+            // Xóa các bản ghi liên quan trước khi xóa sản phẩm
+            // LƯU Ý: Nếu thêm bảng mới liên kết với Product, phải thêm DELETE ở đây
+            jdbcTemplate.update("DELETE FROM reviews WHERE product_id = ?", id);
+            jdbcTemplate.update("DELETE FROM wishlist WHERE product_id = ?", id);
+            jdbcTemplate.update("DELETE FROM cart_items WHERE product_id = ?", id);
+            // Không xóa order_details để giữ lịch sử đơn hàng đã giao
+            // Thay vào đó, set product_id = NULL (nếu cột cho phép)
+            jdbcTemplate.update("UPDATE order_details SET product_id = NULL WHERE product_id = ?", id);
+
+            productRepository.deleteById(id);
+            if (productCacheService != null) {
+                productCacheService.evictProduct(id);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể xóa sản phẩm. Có thể do ràng buộc dữ liệu: " + e.getMessage());
         }
     }
 }

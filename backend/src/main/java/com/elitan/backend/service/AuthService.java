@@ -200,7 +200,14 @@ public class AuthService {
             Optional<User> userByEmail = userRepository.findByEmail(email);
             if (userByEmail.isPresent()) {
                 user = userByEmail.get();
-                if (user.getProviderId() == null || user.getProviderId().isEmpty()) {
+                // BẢO MẬT: Kiểm tra provider trước khi gộp tài khoản
+                // Nếu tài khoản cũ đăng ký LOCAL (bằng email/password), không cho social login gộp vào
+                if ("LOCAL".equals(user.getProvider()) && !provider.equals("LOCAL")) {
+                    throw new RuntimeException(
+                        "Email này đã được đăng ký bằng mật khẩu. Vui lòng đăng nhập bằng email và mật khẩu, hoặc sử dụng email khác.");
+                }
+                // Nếu cùng provider nhưng chưa có providerId (dữ liệu cũ) → cập nhật
+                if (user.getProvider().equals(provider) && (user.getProviderId() == null || user.getProviderId().isEmpty())) {
                     user.setProviderId(providerId);
                     userRepository.save(user);
                 }
@@ -218,10 +225,11 @@ public class AuthService {
 
         // Kiểm tra 2FA
         if (user.isTwoFactorEnabled()) {
-            if (user.getDiscordUserId() == null) {
-                // Nếu chưa liên kết thì cho vào luôn hoặc thông báo, 
-                // nhưng thường thì login social nên cho vào nếu chưa bắt buộc
-                // Tuy nhiên nếu đã bật (True) mà ko có ID thì có thể là lỗi dữ liệu
+            if (user.getDiscordUserId() == null || user.getDiscordUserId().isEmpty()) {
+                // BẢO MẬT: 2FA bật nhưng chưa liên kết Discord → từ chối đăng nhập
+                throw new RuntimeException(
+                    "Tài khoản này đã bật xác thực 2 lớp nhưng chưa liên kết Discord. " +
+                    "Vui lòng đăng nhập bằng mật khẩu và liên kết Discord trong phần cài đặt.");
             } else {
                 // Sinh mã OTP 6 số
                 String otp = String.format("%06d", new java.security.SecureRandom().nextInt(1000000));

@@ -37,7 +37,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         // 1. PUBLIC ACCESS
-                        .requestMatchers("/api/reviews/**").permitAll() 
+                        // Reviews: chỉ GET (xem) là công khai, POST (viết) cần đăng nhập
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/reviews", "/api/reviews/**").permitAll() 
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/search-by-image", "/api/products/sync-clarifai").permitAll()
@@ -45,7 +46,8 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/materials", "/api/materials/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/colors", "/api/colors/**").permitAll()
                         .requestMatchers("/uploads", "/uploads/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/orders/send-otp", "/api/orders/verify-otp").permitAll()
+                        // OTP: cần đăng nhập vì controller lấy email từ Authentication
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/orders/send-otp", "/api/orders/verify-otp").authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/analytics/visit").permitAll()
 
                         // 2. WISHLIST — any authenticated user can toggle/view wishlist
@@ -74,7 +76,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/api/users/profile").authenticated()
                         .requestMatchers("/api/upload", "/api/upload/**").authenticated()
-                        .requestMatchers("/api/reviews", "/api/reviews/**").authenticated()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/reviews", "/api/reviews/**").authenticated()
 
                         // 4. FRONTEND STATIC FILES + SPA ROUTES (React Router)
                         .requestMatchers(org.springframework.http.HttpMethod.GET,

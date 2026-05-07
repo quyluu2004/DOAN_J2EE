@@ -110,9 +110,13 @@ public class UserService {
     }
 
     public UserProfileResponse updateUserRole(Long userId, String role) {
+        // Validate role: chỉ chấp nhận USER hoặc ADMIN
+        if (role == null || !java.util.List.of("USER", "ADMIN").contains(role.toUpperCase())) {
+            throw new RuntimeException("Role không hợp lệ. Chỉ chấp nhận: USER, ADMIN");
+        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
-        user.setRole(role);
+        user.setRole(role.toUpperCase());
         userRepository.save(user);
         return UserProfileResponse.builder()
                 .id(user.getId())

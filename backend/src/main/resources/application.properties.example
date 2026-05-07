@@ -33,7 +33,9 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
 # --- JWT CONFIG ---
 # Tạo key mới: openssl rand -base64 64
 jwt.secret=${JWT_SECRET:YOUR_JWT_SECRET_KEY_HERE}
-jwt.expiration=86400000
+# BẢO MẬT: Giảm từ 24h (86400000) xuống 30 phút (1800000)
+# Refresh token trong HttpOnly cookie sẽ tự động cấp lại khi hết hạn
+jwt.expiration=1800000
 
 # --- SOCIAL LOGIN ---
 google.client-id=${GOOGLE_CLIENT_ID:YOUR_GOOGLE_CLIENT_ID_HERE}

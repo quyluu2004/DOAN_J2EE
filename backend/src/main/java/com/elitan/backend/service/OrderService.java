@@ -237,9 +237,8 @@ public class OrderService {
             throw new RuntimeException("Chỉ có thể hủy đơn hàng đang ở trạng thái chờ xác nhận");
         }
 
-        if (!"CANCELLED".equals(order.getStatus())) {
-            restockInventory(order);
-        }
+        // Đã biết status = PENDING (check ở trên), nên luôn cần hoàn kho
+        restockInventory(order);
         order.setStatus("CANCELLED");
         orderRepository.save(order);
 
@@ -259,12 +258,19 @@ public class OrderService {
     // Cập nhật trạng thái đơn hàng (cho Admin)
     @Transactional
     public OrderResponse updateOrderStatus(Long orderId, String status) {
+        // Validate status: chỉ chấp nhận các trạng thái hợp lệ
+        java.util.List<String> validStatuses = java.util.List.of(
+            "PENDING", "CONFIRMED", "SHIPPING", "DELIVERED", "CANCELLED"
+        );
+        if (status == null || !validStatuses.contains(status.toUpperCase())) {
+            throw new RuntimeException("Trạng thái không hợp lệ. Chấp nhận: " + String.join(", ", validStatuses));
+        }
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
-        if ("CANCELLED".equals(status) && !"CANCELLED".equals(order.getStatus())) {
+        if ("CANCELLED".equalsIgnoreCase(status) && !"CANCELLED".equals(order.getStatus())) {
             restockInventory(order);
         }
-        order.setStatus(status);
+        order.setStatus(status.toUpperCase());
         orderRepository.save(order);
         List<OrderDetail> details = orderDetailRepository.findByOrderId(order.getId());
         return mapToOrderResponse(order, details);

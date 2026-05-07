@@ -174,13 +174,29 @@ const MiniRoom3D = ({ onCtaClick }) => {
         <OrthographicCamera 
           makeDefault 
           position={[15, 15, 15]} 
-          zoom={55} 
+          zoom={42} 
           near={0.1} 
           far={1000} 
         />
         
-        <group position={[2, -4, 0]}>
+        <group position={[0, -7, 0]}>
           <Scene />
+          
+          <ambientLight intensity={0.6} />
+          <directionalLight 
+            position={[10, 20, 10]} 
+            intensity={2} 
+            castShadow 
+            shadow-mapSize={[2048, 2048]}
+          />
+          <Environment preset="city" />
+          <ContactShadows 
+            position={[0, -0.01, 0]} 
+            opacity={0.4} 
+            scale={20} 
+            blur={2} 
+            far={4.5} 
+          />
         </group>
         
         <OrbitControls 
@@ -190,30 +206,14 @@ const MiniRoom3D = ({ onCtaClick }) => {
           enablePan={false}
           autoRotate
           autoRotateSpeed={0.3}
-          target={[2, -2, 0]}
+          target={[0, -5, 0]}
         />
         
-        <ambientLight intensity={0.5} />
-        <directionalLight 
-          position={[5, 10, 5]} 
-          intensity={1.5} 
-          castShadow 
-          shadow-mapSize={[2048, 2048]}
-        />
-        
-        <Environment preset="city" />
-        <ContactShadows 
-          position={[0, -0.01, 0]} 
-          opacity={0.4} 
-          scale={20} 
-          blur={2} 
-          far={4.5} 
-        />
         <BakeShadows />
       </Canvas>
 
       {/* UI Overlay */}
-      <div className="absolute inset-0 pointer-events-none flex flex-col justify-center items-start p-12 md:p-20 bg-gradient-to-r from-slate-950/90 via-slate-950/40 to-transparent">
+      <div className="absolute inset-0 pointer-events-none flex flex-col justify-center items-start p-12 md:p-20 bg-gradient-to-r from-slate-950/80 via-slate-950/20 to-transparent">
         <div className="max-w-xl pointer-events-auto">
           <span className="text-amber-400 text-sm font-bold tracking-[0.3em] uppercase mb-4 block">
             Premium Interior Design

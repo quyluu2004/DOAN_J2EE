@@ -11,7 +11,8 @@
     "wishlist": "Wishlist",
     "orders": "Orders",
     "welcome": "Welcome",
-    "search_by_image": "Visual Search"
+    "search_by_image": "Visual Search",
+    "my_designs": "My Designs"
   },
   "shop": {
     "title": "The Collection",
@@ -123,10 +124,15 @@
     "featured": "FEATURED",
     "new_arrival": "NEW ARRIVAL",
     "studio": {
-      "sub": "The 3D Studio Experience",
-      "title": "VISUALIZE YOUR DREAM HOME. IN 3D.",
-      "desc": "Experience luxury interiors before you buy. Customize colors, materials and layout in our real-time 3D studio.",
       "cta": "TRY 3D STUDIO NOW"
+    },
+    "mini_studio": {
+      "sub": "ÉLITAN 3D STUDIO",
+      "title_part1": "CRAFT YOUR",
+      "title_part2": "DREAM SPACE",
+      "desc": "Floating concepts, grounded in reality. Experience our curated 3D furniture collection in motion.",
+      "cta_start": "START DESIGNING",
+      "cta_explore": "EXPLORE MODELS"
     }
   },
   "cart": {

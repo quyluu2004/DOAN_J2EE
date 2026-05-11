@@ -168,7 +168,7 @@ const Navbar = () => {
                                 {t('nav.orders')}
                             </Link>
                             <Link to="/my-designs" className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black transition">
-                                My Designs
+                                {t('nav.my_designs')}
                             </Link>
                             <button
                                 onClick={() => { logout(); navigate('/'); }}

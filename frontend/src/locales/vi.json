@@ -11,7 +11,8 @@
     "wishlist": "Yêu thích",
     "orders": "Đơn hàng",
     "welcome": "Xin chào",
-    "search_by_image": "Tìm kiếm bằng hình ảnh"
+    "search_by_image": "Tìm kiếm bằng hình ảnh",
+    "my_designs": "Thiết kế của tôi"
   },
   "shop": {
     "title": "Bộ sưu tập",
@@ -123,10 +124,15 @@
     "featured": "NỔI BẬT",
     "new_arrival": "MỚI VỀ",
     "studio": {
-      "sub": "Trải nghiệm 3D Studio",
-      "title": "HÌNH DUNG NGÔI NHÀ MƠ ƯỚC. TRONG KHÔNG GIAN 3D.",
-      "desc": "Trải nghiệm không gian nội thất sang trọng trước khi mua. Tùy chỉnh màu sắc, chất liệu và bố cục trong studio 3D thời gian thực của chúng tôi.",
       "cta": "THỬ NGHIỆM 3D STUDIO NGAY"
+    },
+    "mini_studio": {
+      "sub": "ÉLITAN 3D STUDIO",
+      "title_part1": "KIẾN TẠO",
+      "title_part2": "KHÔNG GIAN MƠ ƯỚC",
+      "desc": "Ý tưởng bay bổng, hiện thực hóa không gian. Trải nghiệm bộ sưu tập nội thất 3D chuyển động.",
+      "cta_start": "BẮT ĐẦU THIẾT KẾ",
+      "cta_explore": "KHÁM PHÁ MẪU"
     }
   },
   "cart": {
@@ -446,3 +452,5 @@
     }
   }
 }
+ 
+

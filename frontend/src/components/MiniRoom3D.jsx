@@ -1,4 +1,5 @@
 import React, { useRef, useMemo } from 'react';
+import { useLocalization } from '../context/LocalizationContext';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { 
   PerspectiveCamera, 
@@ -163,6 +164,8 @@ const Scene = () => {
 };
 
 const MiniRoom3D = ({ onCtaClick }) => {
+  const { t } = useLocalization();
+
   return (
     <div className="relative w-full h-[600px] md:h-[850px] bg-slate-950 rounded-[3rem] overflow-hidden shadow-2xl border border-white/5 group">
       {/* 3D Canvas - absolute fill, NO user interaction */}
@@ -192,26 +195,26 @@ const MiniRoom3D = ({ onCtaClick }) => {
       <div className="absolute inset-0 pointer-events-none flex flex-col justify-center items-start p-12 md:p-24 bg-gradient-to-r from-slate-950 via-slate-950/60 to-transparent">
         <div className="max-w-xl pointer-events-auto">
           <span className="text-amber-400 text-sm font-bold tracking-[0.4em] uppercase mb-6 block">
-            ÉLITAN 3D STUDIO
+            {t('home.mini_studio.sub')}
           </span>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight drop-shadow-2xl">
-            CRAFT YOUR <br/>
+            {t('home.mini_studio.title_part1')} <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-white/30">
-              DREAM SPACE
+              {t('home.mini_studio.title_part2')}
             </span>
           </h1>
           <p className="text-slate-400 text-xl mb-12 max-w-md leading-relaxed">
-            Floating concepts, grounded in reality. Experience our curated 3D furniture collection in motion.
+            {t('home.mini_studio.desc')}
           </p>
           <div className="flex flex-wrap gap-6">
             <button 
               onClick={onCtaClick}
               className="bg-white text-slate-950 px-10 py-5 rounded-full font-bold hover:bg-amber-400 hover:scale-110 transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.1)] active:scale-95"
             >
-              START DESIGNING
+              {t('home.mini_studio.cta_start')}
             </button>
             <button className="border border-white/10 text-white px-10 py-5 rounded-full font-bold hover:bg-white/5 transition-all duration-300 backdrop-blur-xl active:scale-95">
-              EXPLORE MODELS
+              {t('home.mini_studio.cta_explore')}
             </button>
           </div>
         </div>

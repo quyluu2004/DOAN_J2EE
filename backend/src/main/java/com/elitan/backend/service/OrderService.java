@@ -196,9 +196,19 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
 
         List<Order> orders = orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+        if (orders.isEmpty()) {
+            return new java.util.ArrayList<>();
+        }
+        
+        List<Long> orderIds = orders.stream().map(Order::getId).collect(Collectors.toList());
+        
+        // Optimize N+1: Fetch all details for these orders in one go
+        List<OrderDetail> allDetails = orderDetailRepository.findByOrderIdIn(orderIds);
+        java.util.Map<Long, List<OrderDetail>> detailsMap = allDetails.stream()
+                .collect(java.util.stream.Collectors.groupingBy(d -> d.getOrder().getId()));
 
         return orders.stream().map(order -> {
-            List<OrderDetail> details = orderDetailRepository.findByOrderId(order.getId());
+            List<OrderDetail> details = detailsMap.getOrDefault(order.getId(), java.util.Collections.emptyList());
             return mapToOrderResponse(order, details);
         }).collect(Collectors.toList());
     }
@@ -249,8 +259,20 @@ public class OrderService {
     // Lấy tất cả đơn hàng (cho Admin)
     @Transactional(readOnly = true)
     public List<OrderResponse> getAllOrders() {
-        return orderRepository.findAll().stream().map(order -> {
-            List<OrderDetail> details = orderDetailRepository.findByOrderId(order.getId());
+        List<Order> orders = orderRepository.findAll();
+        if (orders.isEmpty()) {
+            return new java.util.ArrayList<>();
+        }
+
+        List<Long> orderIds = orders.stream().map(Order::getId).collect(Collectors.toList());
+
+        // Optimize N+1: Fetch all details in one go
+        List<OrderDetail> allDetails = orderDetailRepository.findByOrderIdIn(orderIds);
+        java.util.Map<Long, List<OrderDetail>> detailsMap = allDetails.stream()
+                .collect(java.util.stream.Collectors.groupingBy(d -> d.getOrder().getId()));
+
+        return orders.stream().map(order -> {
+            List<OrderDetail> details = detailsMap.getOrDefault(order.getId(), java.util.Collections.emptyList());
             return mapToOrderResponse(order, details);
         }).collect(Collectors.toList());
     }

@@ -78,27 +78,28 @@ public class AdminService {
     }
 
     public List<Product> getLowStockProducts() {
-        // Threshold: less than 10 items
-        return productRepository.findAll().stream()
-                .filter(p -> p.getStock() != null && p.getStock() < 10)
-                .toList();
+        // Threshold: less than 10 items - Optimized to use DB query instead of in-memory stream
+        return productRepository.findByStockLessThan(10);
     }
 
     public Map<String, Object> getDashboardStats() {
         Map<String, Object> stats = new HashMap<>();
         
         // Basic Stats
-        stats.put("totalRevenue", getMonthlyRevenue().stream().mapToLong(m -> ((Number)m.get("revenue")).longValue()).sum());
         stats.put("totalProducts", productRepository.count());
         stats.put("totalUsers", entityManager.createNativeQuery("SELECT COUNT(*) FROM users").getSingleResult());
         stats.put("activeOrders", entityManager.createNativeQuery("SELECT COUNT(*) FROM orders WHERE status NOT IN ('DELIVERED', 'CANCELLED')").getSingleResult());
 
-        // Real-time Analytics (dữ liệu thực tế từ môi trường production)
+        // Real-time Analytics
         stats.put("totalVisits", websiteVisitRepository.count());
         stats.put("totalCompletedOrders", orderRepository.countValidOrders());
 
-        // Analytics Data
-        stats.put("revenueData", getMonthlyRevenue());
+        // Analytics Data (Optimized: fetch revenue once)
+        List<Map<String, Object>> revenueData = getMonthlyRevenue();
+        stats.put("revenueData", revenueData);
+        stats.put("totalRevenue", revenueData.stream()
+                .mapToLong(m -> m.get("revenue") != null ? ((Number)m.get("revenue")).longValue() : 0L).sum());
+        
         stats.put("topProducts", getTopSellingProducts());
         stats.put("newCustomers", getNewCustomersCount());
         stats.put("lowStock", getLowStockProducts());

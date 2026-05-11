@@ -13,6 +13,11 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
     List<Product> findByCategory(String category);
 
     @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"variants"})
+    org.springframework.data.domain.Page<Product> findAll(
+            org.springframework.data.jpa.domain.Specification<Product> spec,
+            org.springframework.data.domain.Pageable pageable);
+
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"variants"})
     @org.springframework.data.jpa.repository.Query("SELECT p FROM Product p WHERE " +
             "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
             "(:category IS NULL OR LOWER(p.category) = LOWER(:category))")

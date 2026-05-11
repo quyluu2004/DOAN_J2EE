@@ -70,13 +70,16 @@ public class ProductController {
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sort, // Support 'sort' parameter from frontend
             @RequestParam(defaultValue = "desc") String direction) {
+        
+        String finalSortBy = (sort != null) ? sort : (sortBy != null ? sortBy : "id");
         
         Sort.Direction dir = direction.equalsIgnoreCase("desc") ?
                 Sort.Direction.DESC : Sort.Direction.ASC;
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sortBy));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(dir, finalSortBy));
         
         return ResponseEntity.ok(productService.searchProducts(name, category, material, color, minPrice, maxPrice, pageable));
     }

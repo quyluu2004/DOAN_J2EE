@@ -1,19 +1,21 @@
 package com.elitan.backend.service;
 
-import com.elitan.backend.entity.Product;
-import com.elitan.backend.repository.ProductRepository;
-import com.elitan.backend.repository.WebsiteVisitRepository;
-import com.elitan.backend.repository.OrderRepository;
-import com.elitan.backend.repository.UserRepository;
-import com.elitan.backend.repository.OrderDetailRepository;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.elitan.backend.entity.Product;
+import com.elitan.backend.repository.OrderDetailRepository;
+import com.elitan.backend.repository.OrderRepository;
+import com.elitan.backend.repository.ProductRepository;
+import com.elitan.backend.repository.UserRepository;
+import com.elitan.backend.repository.WebsiteVisitRepository;
 
 @Service
 @Transactional(readOnly = true)

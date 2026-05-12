@@ -11,6 +11,7 @@ import { AlertTriangle, TrendingUp, Users, Package, DollarSign, Eye, ShoppingCar
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchStats();
@@ -18,19 +19,39 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
+      setLoading(true);
+      setError(null);
       const stats = await getDashboardStats();
       setData(stats);
     } catch (err) {
       console.error("Failed to load stats", err);
+      setError("Không thể tải dữ liệu thống kê. Vui lòng kiểm tra lại quyền truy cập hoặc đăng nhập lại.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading || !data) {
+  if (loading) {
     return (
-      <div className="w-full h-[60vh] flex items-center justify-center">
-         <div className="w-12 h-12 border-t-2 border-[#775a19] rounded-full animate-spin"></div>
+      <div className="w-full h-[60vh] flex flex-col items-center justify-center">
+         <div className="w-12 h-12 border-t-2 border-[#775a19] rounded-full animate-spin mb-4"></div>
+         <p className="text-[#775a19] text-xs font-serif italic animate-pulse">Waking up the digital atelier...</p>
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="w-full h-[60vh] flex flex-col items-center justify-center p-8 text-center">
+         <AlertTriangle size={48} className="text-red-500 mb-4" />
+         <h2 className="text-xl font-serif text-[#121212] mb-2">Access Denied or Connection Failed</h2>
+         <p className="text-[#777] mb-6 max-w-md">{error || "Dữ liệu không khả dụng."}</p>
+         <button 
+           onClick={fetchStats}
+           className="px-6 py-2 bg-[#121212] text-white text-[10px] uppercase tracking-widest hover:bg-[#2a2a2a] transition-colors"
+         >
+           Retry Request
+         </button>
       </div>
     );
   }

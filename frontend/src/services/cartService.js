@@ -5,10 +5,13 @@ const API_URL = `${API_BASE_URL}/api/cart`;
 // Helper to get auth headers
 const getHeaders = () => {
     const token = localStorage.getItem("token");
-    return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+    const headers = {
+        "Content-Type": "application/json"
     };
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+    return headers;
 };
 
 export const getCart = async () => {

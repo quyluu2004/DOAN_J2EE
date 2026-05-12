@@ -7,8 +7,8 @@
 - **Kiến trúc phân lớp (Layered Architecture):**
     - **Controller:** Các điểm cuối REST (ProductController, OrderController, v.v.)
     - **Service:** Logic nghiệp vụ (ProductService, AuthService, v.v.)
-    - **Repository:** Truy cập dữ liệu bằng Spring Data JPA (ProductRepository)
-    - **Entity:** Các mô hình cơ sở dữ liệu (Product, User, WebsiteVisit)
+    - **Repository:** Truy cập dữ liệu bằng Spring Data JPA (ProductRepository, OrderRepository, v.v.). Đã tối ưu hóa để thay thế các Native Query bằng các phương thức Repository chuẩn hóa cho các tính năng thống kê Admin.
+    - **Entity:** Các mô hình cơ sở dữ liệu (Product, User, WebsiteVisit, v.v.)
 - **Hiệu năng:**
     - Lớp đệm Redis cho các thực thể có lượt đọc cao (Product).
     - Các tác vụ bất đồng bộ cho các hoạt động không nằm trên luồng xử lý quan trọng.

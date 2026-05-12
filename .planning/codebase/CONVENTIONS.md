@@ -7,7 +7,7 @@
 ## Backend (Java/Spring)
 - **API REST:** Sử dụng các phương thức HTTP tiêu chuẩn (GET, POST, PUT, DELETE).
 - **Lombok:** Sử dụng `@Getter`, `@Setter`, `@Builder`, và `@Slf4j` để giảm mã lặp.
-- **Xử lý ngoại lệ:** Xử lý lỗi tập trung hoặc tại Controller, trả về phản hồi JSON nhất quán.
+- **Xử lý ngoại lệ:** Xử lý lỗi tập trung qua `GlobalExceptionHandler`. Trả về `400 Bad Request` cho lỗi xác thực và `500 Internal Server Error` cho các lỗi Runtime hệ thống (có kèm log lỗi chi tiết phía server).
 - **Lưu trữ:** Cân nhắc giữa tải dữ liệu Eager và Lazy (Sửa lỗi N+1).
 
 ## Frontend (React/JS)

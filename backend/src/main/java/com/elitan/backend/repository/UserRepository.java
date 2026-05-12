@@ -11,4 +11,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Tìm user theo nhà cung cấp social login
     Optional<User> findByProviderAndProviderId(String provider, String providerId);
+
+    long countByCreatedAtAfter(java.time.LocalDateTime start);
 }

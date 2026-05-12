@@ -67,7 +67,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/colors", "/api/colors/**").hasRole("ADMIN")
                         .requestMatchers("/api/users/all", "/api/users/*/role").hasRole("ADMIN")
                         .requestMatchers("/api/orders/all", "/api/orders/*/status").hasRole("ADMIN")
-                        .requestMatchers("/api/admin/**", "/api/v1/analytics/dashboard").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**", "/api/stats/**", "/api/v1/analytics/dashboard").hasRole("ADMIN")
                         .requestMatchers("/api/products/import-file", "/api/products/import-status/**").hasRole("ADMIN")
 
                         // 3. AUTHENTICATED ACCESS

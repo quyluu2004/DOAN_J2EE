@@ -12,4 +12,7 @@
 
 ## Ưu tiên thấp
 - **Tính nhất quán:** Một số thành phần sử dụng CSS thuần, một số khác có thể hưởng lợi từ một hệ thống thiết kế thống nhất.
-- **SEO:** Metadata và SSR/Pre-rendering có thể được cải thiện để tăng khả năng hiển thị trên công cụ tìm kiếm.
+- **Tính di động:** Việc lạm dụng Native SQL (như `DATE_FORMAT`) có thể gây lỗi khi chuyển đổi giữa các hệ quản trị DB khác nhau (ví dụ MySQL sang PostgreSQL).
+
+## Các vấn đề đã giải quyết
+- [x] **Lỗi Admin Dashboard 400:** Đã khắc phục bằng cách chuyển đổi Native Query sang Repository pattern và chuẩn hóa Exception Handling.

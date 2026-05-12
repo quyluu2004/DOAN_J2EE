@@ -17,4 +17,5 @@
 - **/api/wishlist:** Sản phẩm đã lưu của người dùng.
 - **/api/cart:** Quản lý giỏ hàng.
 - **/api/orders:** Xử lý đơn hàng bán hàng.
+- **/api/admin:** Thống kê quản trị và quản lý hệ thống.
 - **/api/upload:** Xử lý tải tệp lên Cloudinary.

@@ -4,8 +4,8 @@ import com.elitan.backend.entity.Product;
 import com.elitan.backend.repository.ProductRepository;
 import com.elitan.backend.repository.WebsiteVisitRepository;
 import com.elitan.backend.repository.OrderRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
+import com.elitan.backend.repository.UserRepository;
+import com.elitan.backend.repository.OrderDetailRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,28 +16,26 @@ import java.util.Map;
 
 @Service
 public class AdminService {
-    private final EntityManager entityManager;
     private final ProductRepository productRepository;
     private final WebsiteVisitRepository websiteVisitRepository;
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final OrderDetailRepository orderDetailRepository;
 
-    public AdminService(EntityManager entityManager, ProductRepository productRepository,
-                        WebsiteVisitRepository websiteVisitRepository, OrderRepository orderRepository) {
-        this.entityManager = entityManager;
+    public AdminService(ProductRepository productRepository,
+                        WebsiteVisitRepository websiteVisitRepository, 
+                        OrderRepository orderRepository,
+                        UserRepository userRepository,
+                        OrderDetailRepository orderDetailRepository) {
         this.productRepository = productRepository;
         this.websiteVisitRepository = websiteVisitRepository;
         this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
+        this.orderDetailRepository = orderDetailRepository;
     }
 
     public List<Map<String, Object>> getMonthlyRevenue() {
-        String sql = "SELECT DATE_FORMAT(created_at, '%Y-%m') as month, SUM(total_price) as revenue " +
-                     "FROM orders " +
-                     "WHERE status != 'CANCELLED' " +
-                     "GROUP BY month " +
-                     "ORDER BY month DESC " +
-                     "LIMIT 12";
-        Query query = entityManager.createNativeQuery(sql);
-        List<Object[]> results = query.getResultList();
+        List<Object[]> results = orderRepository.getMonthlyRevenueNative();
         
         List<Map<String, Object>> stats = new ArrayList<>();
         for (Object[] row : results) {
@@ -50,13 +48,7 @@ public class AdminService {
     }
 
     public List<Map<String, Object>> getTopSellingProducts() {
-        String sql = "SELECT product_id, product_name, SUM(quantity) as total_sold " +
-                     "FROM order_details " +
-                     "GROUP BY product_id, product_name " +
-                     "ORDER BY total_sold DESC " +
-                     "LIMIT 5";
-        Query query = entityManager.createNativeQuery(sql);
-        List<Object[]> results = query.getResultList();
+        List<Object[]> results = orderDetailRepository.getTopSellingProductsNative();
 
         List<Map<String, Object>> products = new ArrayList<>();
         for (Object[] row : results) {
@@ -71,14 +63,10 @@ public class AdminService {
 
     public long getNewCustomersCount() {
         LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0);
-        String sql = "SELECT COUNT(*) FROM users WHERE created_at >= :start";
-        Query query = entityManager.createNativeQuery(sql);
-        query.setParameter("start", startOfMonth);
-        return ((Number) query.getSingleResult()).longValue();
+        return userRepository.countByCreatedAtAfter(startOfMonth);
     }
 
     public List<Product> getLowStockProducts() {
-        // Threshold: less than 10 items - Optimized to use DB query instead of in-memory stream
         return productRepository.findByStockLessThan(10);
     }
 
@@ -87,22 +75,33 @@ public class AdminService {
         
         // Basic Stats
         stats.put("totalProducts", productRepository.count());
-        stats.put("totalUsers", entityManager.createNativeQuery("SELECT COUNT(*) FROM users").getSingleResult());
-        stats.put("activeOrders", entityManager.createNativeQuery("SELECT COUNT(*) FROM orders WHERE status NOT IN ('DELIVERED', 'CANCELLED')").getSingleResult());
+        stats.put("totalUsers", userRepository.count());
+        stats.put("activeOrders", orderRepository.countActiveOrders());
 
         // Real-time Analytics
         stats.put("totalVisits", websiteVisitRepository.count());
         stats.put("totalCompletedOrders", orderRepository.countValidOrders());
 
-        // Analytics Data (Optimized: fetch revenue once)
+        // Analytics Data
         List<Map<String, Object>> revenueData = getMonthlyRevenue();
-        stats.put("revenueData", revenueData);
-        stats.put("totalRevenue", revenueData.stream()
-                .mapToLong(m -> m.get("revenue") != null ? ((Number)m.get("revenue")).longValue() : 0L).sum());
+        stats.put("revenueData", revenueData != null ? revenueData : new ArrayList<>());
         
-        stats.put("topProducts", getTopSellingProducts());
+        long totalRevenue = 0L;
+        if (revenueData != null) {
+            for (Map<String, Object> m : revenueData) {
+                Object revObj = m.get("revenue");
+                if (revObj != null) {
+                    if (revObj instanceof Number) {
+                        totalRevenue += ((Number) revObj).longValue();
+                    }
+                }
+            }
+        }
+        stats.put("totalRevenue", totalRevenue);
+        
+        stats.put("topProducts", getTopSellingProducts() != null ? getTopSellingProducts() : new ArrayList<>());
         stats.put("newCustomers", getNewCustomersCount());
-        stats.put("lowStock", getLowStockProducts());
+        stats.put("lowStock", getLowStockProducts() != null ? getLowStockProducts() : new ArrayList<>());
         
         return stats;
     }

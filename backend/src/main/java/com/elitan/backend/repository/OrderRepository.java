@@ -21,6 +21,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @org.springframework.data.jpa.repository.Query(value = "SELECT DATE_FORMAT(created_at, '%Y-%m') as month, SUM(total_price) as revenue " +
             "FROM orders WHERE status != 'CANCELLED' " +
-            "GROUP BY month ORDER BY month DESC LIMIT 12", nativeQuery = true)
+            "GROUP BY DATE_FORMAT(created_at, '%Y-%m') " +
+            "ORDER BY month DESC LIMIT 12", nativeQuery = true)
     java.util.List<Object[]> getMonthlyRevenueNative();
 }

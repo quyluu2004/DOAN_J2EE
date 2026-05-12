@@ -355,18 +355,16 @@ export default function AdminProducts() {
   };
 
   // ===== IMPORT HANDLERS =====
-  const handleImportFile = useCallback(async (file) => {
-    if (!file) return;
-    const ext = file.name.toLowerCase();
-    if (!ext.endsWith('.xlsx') && !ext.endsWith('.csv')) {
-      toast.error('Only .xlsx and .csv files are supported');
-      return;
-    }
+  const handleImportFile = useCallback(async (files) => {
+    if (!files || files.length === 0) return;
 
     setIsImporting(true);
     setImportStatus(null);
     const formData = new FormData();
-    formData.append('file', file);
+    // Chuyển FileList thành Array và append tất cả vào formData
+    Array.from(files).forEach(f => {
+      formData.append('files', f);
+    });
 
     try {
       const token = localStorage.getItem('token');
@@ -375,7 +373,7 @@ export default function AdminProducts() {
       });
 
       const importId = res.data.importId;
-      toast.success('File accepted! Processing in background...');
+      toast.success('Files accepted! Processing in background...');
 
       // Polling: Kiểm tra trạng thái import mỗi 2 giây
       const pollInterval = setInterval(async () => {
@@ -405,13 +403,32 @@ export default function AdminProducts() {
       setIsImporting(false);
       toast.error(err.response?.data?.error || 'Import failed');
     }
-  }, []);
+  }, [fetchProducts]);
+
+  const handleDownloadTemplate = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/products/import-template', {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'product_import_template.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      toast.error('Failed to download template');
+    }
+  };
 
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    handleImportFile(file);
+    handleImportFile(e.dataTransfer.files);
   }, [handleImportFile]);
 
   const handleDragOver = useCallback((e) => {
@@ -489,8 +506,7 @@ export default function AdminProducts() {
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              onClick={() => !isImporting && importInputRef.current?.click()}
-              className={`relative border-2 border-dashed p-12 text-center cursor-pointer transition-all duration-300 ${
+              className={`relative border-2 border-dashed p-12 text-center transition-all duration-300 ${
                 isDragging
                   ? 'border-[#775a19] bg-[#fdfbf7] scale-[1.01]'
                   : 'border-[#e2e2e2] bg-white hover:border-[#775a19] hover:bg-[#fdfbf7]'
@@ -499,15 +515,16 @@ export default function AdminProducts() {
               <input
                 ref={importInputRef}
                 type="file"
-                accept=".xlsx,.csv"
+                multiple
+                accept=".xlsx,.csv,.glb,.jpg,.jpeg,.png"
                 className="hidden"
-                onChange={(e) => handleImportFile(e.target.files[0])}
+                onChange={(e) => handleImportFile(e.target.files)}
               />
 
               {isImporting ? (
                 <div className="flex flex-col items-center space-y-4">
                   <Loader2 className="w-10 h-10 text-[#775a19] animate-spin" />
-                  <p className="text-sm font-semibold text-[#121212]">Processing import...</p>
+                  <p className="text-sm font-semibold text-[#121212]">Processing import batch...</p>
                   {importStatus && (
                     <div className="text-[0.65rem] uppercase tracking-widest text-[#777777] space-y-1">
                       <p>Status: <span className="text-[#121212] font-semibold">{importStatus.status}</span></p>
@@ -525,25 +542,48 @@ export default function AdminProducts() {
                     {importStatus.successRows} products added successfully
                     {importStatus.failedRows > 0 && `, ${importStatus.failedRows} rows skipped`}
                   </p>
+                  <button 
+                    onClick={() => setImportStatus(null)}
+                    className="text-[0.65rem] text-[#775a19] underline uppercase tracking-widest mt-4"
+                  >
+                    Upload another batch
+                  </button>
                 </div>
               ) : importStatus?.status === 'FAILED' ? (
                 <div className="flex flex-col items-center space-y-3">
                   <AlertCircle className="w-10 h-10 text-red-500" />
                   <p className="text-sm font-semibold text-[#121212]">Import Failed</p>
                   {importStatus.errorLog && (
-                    <pre className="text-[0.65rem] text-left text-red-600 bg-red-50 p-4 max-h-32 overflow-y-auto w-full">
+                    <pre className="text-[0.65rem] text-left text-red-600 bg-red-50 p-4 max-h-32 overflow-y-auto w-full whitespace-pre-wrap">
                       {importStatus.errorLog}
                     </pre>
                   )}
+                  <button 
+                    onClick={() => setImportStatus(null)}
+                    className="text-[0.65rem] text-[#775a19] underline uppercase tracking-widest mt-4"
+                  >
+                    Try again
+                  </button>
                 </div>
               ) : (
-                <div className="flex flex-col items-center space-y-4">
-                  <FileSpreadsheet className="w-12 h-12 text-[#c6c6c6]" />
-                  <div>
-                    <p className="text-lg font-serif text-[#121212] mb-1">Drop your Excel or CSV file here</p>
-                    <p className="text-[0.65rem] uppercase tracking-widest text-[#777777]">
-                      Supported: .xlsx, .csv — Columns: name, category, price, stock, description, color, material, dimensions, imageUrl
-                    </p>
+                <div className="flex flex-col items-center space-y-6">
+                  <div className="flex flex-col items-center space-y-4" onClick={() => importInputRef.current?.click()}>
+                    <FileSpreadsheet className="w-12 h-12 text-[#c6c6c6]" />
+                    <div>
+                      <p className="text-lg font-serif text-[#121212] mb-1">Drop Excel + Assets (Images/3D) here</p>
+                      <p className="text-[0.65rem] uppercase tracking-widest text-[#777777] max-w-md mx-auto">
+                        Select your Excel file AND all corresponding .jpg, .png, and .glb files at the same time.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-4 border-t border-gray-100 w-full max-w-xs">
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); handleDownloadTemplate(); }}
+                      className="text-[0.65rem] font-bold text-[#775a19] uppercase tracking-widest hover:opacity-70 transition-opacity flex items-center justify-center space-x-2 mx-auto"
+                    >
+                      <span>Download Excel Template</span>
+                    </button>
                   </div>
                 </div>
               )}

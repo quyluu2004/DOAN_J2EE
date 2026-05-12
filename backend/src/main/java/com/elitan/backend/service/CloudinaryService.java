@@ -50,6 +50,33 @@ public class CloudinaryService {
             throw new IOException("Failed to upload file to Cloudinary: " + e.getMessage());
         }
     }
+    
+    public String uploadBytes(byte[] bytes, String fileName, String folderName, boolean isRaw) throws IOException {
+        try {
+            String resourceType = isRaw ? "raw" : "auto";
+            String extension = "";
+            if (fileName != null && fileName.lastIndexOf(".") > 0) {
+                extension = fileName.substring(fileName.lastIndexOf("."));
+            }
+            
+            String publicId = UUID.randomUUID().toString();
+            if (isRaw) {
+                publicId = publicId + extension;
+            }
+
+            Map<String, Object> uploadParams = ObjectUtils.asMap(
+                    "folder", folderName,
+                    "public_id", publicId,
+                    "resource_type", resourceType
+            );
+
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(bytes, uploadParams);
+            return uploadResult.get("secure_url").toString();
+        } catch (IOException e) {
+            log.error("Failed to upload bytes to Cloudinary", e);
+            throw new IOException("Failed to upload bytes to Cloudinary: " + e.getMessage());
+        }
+    }
 
     /**
      * Generate signed upload parameters for direct frontend-to-Cloudinary upload.

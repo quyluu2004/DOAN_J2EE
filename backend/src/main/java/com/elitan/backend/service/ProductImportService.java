@@ -98,8 +98,10 @@ public class ProductImportService {
                 row.createCell(5).setCellValue(product.getColor());
                 row.createCell(6).setCellValue(product.getMaterial());
                 row.createCell(7).setCellValue(product.getDimensions());
-                row.createCell(8).setCellValue(product.getImageUrl()); // Lưu URL hoặc tên file tùy nhu cầu
-                row.createCell(10).setCellValue(product.getGlbUrl());
+                
+                // Chỉ lấy tên file từ URL để hiển thị cho gọn (ví dụ: sofa.jpg)
+                row.createCell(8).setCellValue(extractFilename(product.getImageUrl())); 
+                row.createCell(10).setCellValue(extractFilename(product.getGlbUrl()));
             }
 
             // Nếu không có sản phẩm nào, thêm 1 dòng mẫu để người dùng biết cách nhập
@@ -239,12 +241,13 @@ public class ProductImportService {
         File excelFile = batchPath.resolve(excelFileName).toFile();
 
         // Map filename to its local path instead of reading bytes into memory
+        // Map filename (Lowercase) to its local path for case-insensitive matching
         Map<String, Path> assetPathMap = new HashMap<>();
         File[] allFiles = batchPath.toFile().listFiles();
         if (allFiles != null) {
             for (File f : allFiles) {
                 if (!f.getName().equals(excelFileName)) {
-                    assetPathMap.put(f.getName(), f.toPath());
+                    assetPathMap.put(f.getName().toLowerCase(), f.toPath());
                 }
             }
         }
@@ -254,48 +257,48 @@ public class ProductImportService {
         int failedRows = 0;
         StringBuilder errorLog = new StringBuilder();
 
-        try {
-            boolean isCsv = excelFileName.toLowerCase().endsWith(".csv");
-            List<String[]> allRows = isCsv ? readCsvFile(excelFile) : readExcelFile(excelFile);
-
-            if (allRows.isEmpty()) {
-                finalizeImport(history, "FAILED", 0, 0, 0, "File has no data rows.");
+        try (Workbook workbook = WorkbookFactory.create(excelFile)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            if (sheet == null) {
+                finalizeImport(history, "FAILED", 0, 0, 0, "Không tìm thấy sheet dữ liệu.");
                 return;
             }
+            int lastRow = sheet.getLastRowNum();
+            int totalRowsCount = lastRow;
 
-            totalRows = allRows.size();
-            List<Product> chunk = new ArrayList<>();
+            List<Product> productsToSave = new ArrayList<>();
 
-            for (int i = 0; i < allRows.size(); i++) {
-                String[] row = allRows.get(i);
-                int rowNumber = i + 2;
+            for (int i = 1; i <= lastRow; i++) {
+                Row row = sheet.getRow(i);
+                if (row == null || row.getCell(0) == null) continue;
 
-                try {
-                    Product product = processRowWithAssets(row, rowNumber, errorLog, assetPathMap);
-                    if (product != null) {
-                        chunk.add(product);
-                    } else {
-                        failedRows++;
-                    }
-                } catch (Exception e) {
+                String productName = safeTrim(row, 0);
+                if (productName == null || productName.isEmpty()) continue;
+
+                // Tìm sản phẩm cũ để cập nhật (Upsert - Case Insensitive)
+                Product existingProduct = productRepository.findByNameIgnoreCase(productName.trim()).orElse(null);
+                
+                Product product = processRowWithAssets(row, i, assetPathMap, errorLog, existingProduct);
+                if (product != null) {
+                    productsToSave.add(product);
+                } else {
                     failedRows++;
-                    errorLog.append("Row ").append(rowNumber).append(": ").append(e.getMessage()).append("\n");
                 }
 
-                if (chunk.size() >= CHUNK_SIZE) {
-                    productRepository.saveAll(chunk);
-                    successRows += chunk.size();
-                    chunk.clear();
-                    updateProgress(history, totalRows, successRows, failedRows, errorLog);
+                if (productsToSave.size() >= CHUNK_SIZE) {
+                    productRepository.saveAll(productsToSave);
+                    successRows += productsToSave.size();
+                    productsToSave.clear();
+                    updateProgress(history, totalRowsCount, successRows, failedRows, errorLog);
                 }
             }
 
-            if (!chunk.isEmpty()) {
-                productRepository.saveAll(chunk);
-                successRows += chunk.size();
+            if (!productsToSave.isEmpty()) {
+                productRepository.saveAll(productsToSave);
+                successRows += productsToSave.size();
             }
 
-            finalizeImport(history, "COMPLETED", totalRows, successRows, failedRows, errorLog.toString());
+            finalizeImport(history, "COMPLETED", totalRowsCount, successRows, failedRows, errorLog.toString());
         } catch (Exception e) {
             log.error("Import failed for history ID: {}", historyId, e);
             finalizeImport(history, "FAILED", totalRows, successRows, failedRows, "CRITICAL: " + e.getMessage());
@@ -332,95 +335,81 @@ public class ProductImportService {
         directoryToBeDeleted.delete();
     }
 
-    private Product processRowWithAssets(String[] row, int rowNumber, StringBuilder errorLog,
-            Map<String, Path> assetPathMap) {
-        if (row.length < 3) {
-            errorLog.append("Row ").append(rowNumber).append(": Not enough columns\n");
-            return null;
-        }
-
-        String name = safeTrim(row, 0);
-        String category = safeTrim(row, 1);
-        String priceStr = safeTrim(row, 2);
-
-        if (name == null || name.isEmpty()) {
-            errorLog.append("Row ").append(rowNumber).append(": Name is empty\n");
-            return null;
-        }
-
-        // Validate Category exists
-        if (category != null && !category.isEmpty()) {
-            boolean exists = collectionRepository.existsByName(category);
-            if (!exists) {
-                errorLog.append("Row ").append(rowNumber).append(": Category '").append(category)
-                        .append("' does not exist. Please create it first.\n");
-                return null;
-            }
-        }
-
-        BigDecimal price;
+    private Product processRowWithAssets(Row row, int rowNumber, Map<String, Path> assetPathMap, StringBuilder errorLog, Product existingProduct) {
         try {
-            price = new BigDecimal(priceStr != null ? priceStr : "0");
-        } catch (NumberFormatException e) {
-            errorLog.append("Row ").append(rowNumber).append(": Invalid price '").append(priceStr).append("'\n");
+            Product product = (existingProduct != null) ? existingProduct : new Product();
+            
+            product.setName(safeTrim(row, 0));
+            product.setCategory(safeTrim(row, 1));
+            
+            String priceStr = safeTrim(row, 2);
+            if (priceStr != null && !priceStr.isEmpty()) product.setPrice(new java.math.BigDecimal(priceStr));
+            
+            String stockStr = safeTrim(row, 3);
+            if (stockStr != null && !stockStr.isEmpty()) product.setStock(Integer.parseInt(stockStr.replace(".0", "")));
+            
+            product.setDescription(safeTrim(row, 4));
+            product.setColor(safeTrim(row, 5));
+            product.setMaterial(safeTrim(row, 6));
+            product.setDimensions(safeTrim(row, 7));
+
+            // Xử lý Ảnh chính (Nếu không có file mới, giữ URL cũ của existingProduct)
+            String mainImageFilename = safeTrim(row, 8);
+            String mainImageUrl = uploadAsset(mainImageFilename, assetPathMap, "products/main", false, 
+                                             rowNumber, "Ảnh chính", errorLog, product.getImageUrl());
+            product.setImageUrl(mainImageUrl);
+
+            // Xử lý 3D Model (Nếu không có file mới, giữ URL cũ của existingProduct)
+            String modelFilename = safeTrim(row, 10);
+            String modelUrl = uploadAsset(modelFilename, assetPathMap, "products/models", true, 
+                                         rowNumber, "File 3D", errorLog, product.getGlbUrl());
+            product.setGlbUrl(modelUrl);
+
+            return product;
+        } catch (Exception e) {
+            synchronized (errorLog) {
+                errorLog.append("Dòng ").append(rowNumber).append(": Lỗi dữ liệu hoặc định dạng không hợp lệ.\n");
+            }
             return null;
         }
-
-        int stock = 10;
-        String stockStr = safeTrim(row, 3);
-        if (stockStr != null && !stockStr.isEmpty()) {
-            try {
-                stock = Integer.parseInt(stockStr.replace(".0", ""));
-            } catch (NumberFormatException ignored) {
-            }
-        }
-
-        // --- Asset Processing (Parallelized for speed) ---
-        String mainImageFilename = safeTrim(row, 8);
-        String glbFilename = safeTrim(row, 10);
-
-        CompletableFuture<String> mainImageFuture = CompletableFuture.supplyAsync(() -> 
-            (mainImageFilename != null && !mainImageFilename.isEmpty()) ? 
-            uploadAsset(mainImageFilename, assetPathMap, "products/images", false, rowNumber, "Main Image", errorLog) : null
-        );
-
-        CompletableFuture<String> glbFuture = CompletableFuture.supplyAsync(() -> 
-            (glbFilename != null && !glbFilename.isEmpty()) ? 
-            uploadAsset(glbFilename, assetPathMap, "products/3d", true, rowNumber, "3D Model", errorLog) : null
-        );
-
-        // Chờ cả hai upload hoàn thành đồng thời
-        CompletableFuture.allOf(mainImageFuture, glbFuture).join();
-
-        String mainImageUrl = mainImageFuture.join();
-        String glbUrl = glbFuture.join();
-
-        // Additional Images logic could be added here if Product entity supported a
-        // List<String>
-        // For now, we'll focus on main image and GLB as per current entity structure.
-
-        return Product.builder()
-                .name(name)
-                .category(category)
-                .price(price)
-                .stock(stock)
-                .description(safeTrim(row, 4))
-                .color(safeTrim(row, 5))
-                .material(safeTrim(row, 6))
-                .dimensions(safeTrim(row, 7))
-                .imageUrl(mainImageUrl)
-                .glbUrl(glbUrl)
-                .build();
     }
 
     private String uploadAsset(String filename, Map<String, Path> assetPathMap, String folder, boolean isRaw,
-            int rowNumber, String assetType, StringBuilder errorLog) {
-        Path filePath = assetPathMap.get(filename);
+            int rowNumber, String assetType, StringBuilder errorLog, String existingUrl) {
+        if (filename == null || filename.isEmpty()) return existingUrl;
+
+        // Tìm kiếm không phân biệt chữ hoa thường
+        String lowerFilename = filename.toLowerCase();
+        Path filePath = assetPathMap.get(lowerFilename);
+        
+        // Nếu không thấy, thử tự động thêm các đuôi phổ biến (đề phòng người dùng quên nhập đuôi file)
+        if (filePath == null) {
+            String[] commonExts = isRaw ? new String[]{".glb"} : new String[]{".jpg", ".png", ".jpeg", ".webp"};
+            for (String ext : commonExts) {
+                Path p = assetPathMap.get(lowerFilename + ext);
+                if (p != null) {
+                    filePath = p;
+                    break;
+                }
+            }
+        }
+
         if (filePath == null || !Files.exists(filePath)) {
+            // Nếu là URL hoàn chỉnh (đã có trên Cloudinary), giữ nguyên
+            if (filename.startsWith("http")) {
+                return filename;
+            }
+            
+            // Nếu không có file upload kèm nhưng sản phẩm ĐÃ CÓ ảnh cũ -> Giữ nguyên ảnh cũ
+            if (existingUrl != null && !existingUrl.isEmpty()) {
+                return existingUrl;
+            }
+            
+            // Chỉ báo lỗi nếu đây là sản phẩm mới hoàn toàn và không tìm thấy file
             synchronized (errorLog) {
-                errorLog.append("Row ").append(rowNumber).append(": ").append(assetType).append(" file '")
+                errorLog.append("Dòng ").append(rowNumber).append(": ").append(assetType).append(" '")
                         .append(filename)
-                        .append("' not found in upload batch.\n");
+                        .append("' không tìm thấy (đã thử tìm cả file có đuôi mở rộng).\n");
             }
             return null;
         }
@@ -428,18 +417,32 @@ public class ProductImportService {
             return cloudinaryService.uploadFile(filePath.toFile(), folder, isRaw);
         } catch (IOException e) {
             synchronized (errorLog) {
-                errorLog.append("Row ").append(rowNumber).append(": Failed to upload ").append(filename)
-                        .append(" to Cloudinary.\n");
+                errorLog.append("Row ").append(rowNumber).append(": Lỗi khi tải file ").append(filename)
+                        .append(" lên Cloudinary.\n");
             }
             return null;
         }
     }
 
-    private String safeTrim(String[] arr, int index) {
-        if (index >= arr.length)
-            return null;
-        String val = arr[index];
-        return (val != null) ? val.trim() : null;
+    private String extractFilename(String url) {
+        if (url == null || url.isEmpty()) return "";
+        if (!url.startsWith("http")) return url;
+        try {
+            int lastSlash = url.lastIndexOf("/");
+            if (lastSlash != -1) {
+                return url.substring(lastSlash + 1);
+            }
+        } catch (Exception e) {
+            return url;
+        }
+        return url;
+    }
+
+    private String safeTrim(Row row, int index) {
+        if (row == null) return null;
+        Cell cell = row.getCell(index);
+        String val = getCellValueAsString(cell);
+        return (val != null) ? val.trim() : "";
     }
 
     // ===== ĐỌC FILE EXCEL (.xlsx) =====

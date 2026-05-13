@@ -35,4 +35,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
     org.springframework.data.domain.Page<Product> findAll(org.springframework.data.domain.Pageable pageable);
 
     List<Product> findByStockLessThan(Integer threshold);
+
+    java.util.Optional<Product> findByName(String name);
+
+    java.util.Optional<Product> findByNameIgnoreCase(String name);
 }

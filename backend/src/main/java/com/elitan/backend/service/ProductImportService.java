@@ -258,7 +258,21 @@ public class ProductImportService {
         StringBuilder errorLog = new StringBuilder();
 
         try (Workbook workbook = WorkbookFactory.create(excelFile)) {
-            Sheet sheet = workbook.getSheetAt(0);
+            // Ưu tiên tìm sheet dữ liệu đúng tên, tránh đọc nhầm sheet Hướng dẫn
+            Sheet sheet = workbook.getSheet("DANH_SACH_SAN_PHAM");
+            if (sheet == null) {
+                // Nếu không thấy sheet tên chuẩn, lấy sheet đầu tiên nhưng phải kiểm tra nội dung
+                sheet = workbook.getSheetAt(0);
+                if ("HUONG_DAN".equals(sheet.getSheetName())) {
+                    if (workbook.getNumberOfSheets() > 1) {
+                        sheet = workbook.getSheetAt(1);
+                    } else {
+                        finalizeImport(history, "FAILED", 0, 0, 0, "Không tìm thấy sheet dữ liệu sản phẩm.");
+                        return;
+                    }
+                }
+            }
+
             if (sheet == null) {
                 finalizeImport(history, "FAILED", 0, 0, 0, "Không tìm thấy sheet dữ liệu.");
                 return;

@@ -48,30 +48,71 @@ public class ProductImportService {
     /**
      * Tạo file Excel mẫu có sẵn các cột và Dropdown cho Category, Color, Material.
      */
+    /**
+     * Tạo file Excel mẫu có sẵn các cột và Dropdown cho Category, Color, Material (Tiếng Việt).
+     */
     public byte[] generateTemplate() throws IOException {
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            Sheet sheet = workbook.createSheet("Product Template");
+            
+            // --- SHEET 1: HƯỚNG DẪN SỬ DỤNG ---
+            Sheet guideSheet = workbook.createSheet("HUONG_DAN");
+            createGuideSheet(guideSheet, workbook);
 
-            // 1. Tạo Header
+            // --- SHEET 2: DANH SÁCH SẢN PHẨM ---
+            Sheet sheet = workbook.createSheet("DANH_SACH_SAN_PHAM");
+
+            // 1. Tạo Header Tiếng Việt
             Row headerRow = sheet.createRow(0);
-            String[] columns = { "Name", "Category", "Price", "Stock", "Description", "Color", "Material", "Dimensions",
-                    "Main Image Filename", "Additional Images (comma separated)", "3D Model Filename" };
+            String[] columns = { 
+                "Tên sản phẩm", "Danh mục", "Giá bán", "Tồn kho", 
+                "Mô tả chi tiết", "Màu sắc", "Chất liệu", "Kích thước (DxRxC)",
+                "Tên file ảnh chính", "Các file ảnh phụ (cách nhau bằng dấu phẩy)", "Tên file 3D (.glb)" 
+            };
 
             CellStyle headerStyle = workbook.createCellStyle();
             Font headerFont = workbook.createFont();
             headerFont.setBold(true);
+            headerFont.setColor(IndexedColors.WHITE.getIndex());
             headerStyle.setFont(headerFont);
-            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            headerStyle.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
             headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(columns[i]);
                 cell.setCellStyle(headerStyle);
-                sheet.setColumnWidth(i, 20 * 256);
+                sheet.setColumnWidth(i, 25 * 256);
             }
 
-            // 2. Thêm Data Validation (Dropdowns)
+            // 2. Thêm Toàn bộ Sản phẩm hiện có (Export)
+            List<Product> allProducts = productRepository.findAll();
+            int rowIndex = 1;
+            for (Product product : allProducts) {
+                Row row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(product.getName());
+                row.createCell(1).setCellValue(product.getCategory());
+                row.createCell(2).setCellValue(product.getPrice() != null ? product.getPrice().doubleValue() : 0);
+                row.createCell(3).setCellValue(product.getStock() != null ? product.getStock() : 0);
+                row.createCell(4).setCellValue(product.getDescription());
+                row.createCell(5).setCellValue(product.getColor());
+                row.createCell(6).setCellValue(product.getMaterial());
+                row.createCell(7).setCellValue(product.getDimensions());
+                row.createCell(8).setCellValue(product.getImageUrl()); // Lưu URL hoặc tên file tùy nhu cầu
+                row.createCell(10).setCellValue(product.getGlbUrl());
+            }
+
+            // Nếu không có sản phẩm nào, thêm 1 dòng mẫu để người dùng biết cách nhập
+            if (allProducts.isEmpty()) {
+                Row sampleRow = sheet.createRow(1);
+                sampleRow.createCell(0).setCellValue("Sản phẩm mẫu (Ví dụ: Ghế Sofa)");
+                sampleRow.createCell(1).setCellValue("Sofa");
+                sampleRow.createCell(2).setCellValue(1000000);
+                sampleRow.createCell(3).setCellValue(10);
+                sampleRow.createCell(8).setCellValue("image.jpg");
+            }
+
+            // 3. Thêm Data Validation (Dropdowns)
             DataValidationHelper validationHelper = sheet.getDataValidationHelper();
 
             // Category (Collection)
@@ -95,10 +136,46 @@ public class ProductImportService {
                 addDropdown(sheet, validationHelper, materials, 6); // Cột G
             }
 
-            // 3. Ghi ra stream
+            // Mở Sheet sản phẩm trước khi lưu
+            workbook.setActiveSheet(1);
+
+            // 4. Ghi ra stream
             workbook.write(out);
             return out.toByteArray();
         }
+    }
+
+    private void createGuideSheet(Sheet sheet, Workbook workbook) {
+        String[] instructions = {
+            "HƯỚNG DẪN SỬ DỤNG FILE IMPORT SẢN PHẨM",
+            "",
+            "1. Cột 'Tên sản phẩm': Bắt buộc nhập tên hiển thị của sản phẩm.",
+            "2. Cột 'Danh mục': Chọn từ danh sách thả xuống (Dropdown).",
+            "3. Cột 'Giá bán': Chỉ nhập số, không nhập ký tự tiền tệ (Ví dụ: 1500000).",
+            "4. Cột 'Tồn kho': Số lượng hàng có sẵn trong kho.",
+            "5. Cột 'Màu sắc' & 'Chất liệu': Chọn từ danh sách có sẵn để đảm bảo tính đồng nhất.",
+            "6. Cột 'Tên file ảnh chính': Tên chính xác của file ảnh bạn sẽ upload kèm (Ví dụ: sofa.jpg).",
+            "7. Cột 'Tên file 3D': Tên file định dạng .glb (Ví dụ: sofa_model.glb).",
+            "",
+            "LƯU Ý QUAN TRỌNG:",
+            "- KHÔNG thay đổi thứ tự các cột trong Sheet 'DANH_SACH_SAN_PHAM'.",
+            "- Khi thực hiện Import trên website, hãy chọn đồng thời FILE EXCEL NÀY và TẤT CẢ FILE ẢNH/3D đi kèm.",
+            "- Hệ thống sẽ dựa vào 'Tên file' trong Excel để khớp nối với file ảnh bạn upload lên."
+        };
+
+        CellStyle titleStyle = workbook.createCellStyle();
+        Font titleFont = workbook.createFont();
+        titleFont.setBold(true);
+        titleFont.setFontHeightInPoints((short) 14);
+        titleStyle.setFont(titleFont);
+
+        for (int i = 0; i < instructions.length; i++) {
+            Row row = sheet.createRow(i);
+            Cell cell = row.createCell(0);
+            cell.setCellValue(instructions[i]);
+            if (i == 0) cell.setCellStyle(titleStyle);
+        }
+        sheet.setColumnWidth(0, 100 * 256);
     }
 
     private void addDropdown(Sheet sheet, DataValidationHelper helper, String[] options, int colIndex) {
@@ -370,7 +447,11 @@ public class ProductImportService {
         List<String[]> rows = new ArrayList<>();
         try (FileInputStream fis = new FileInputStream(file);
                 Workbook workbook = new XSSFWorkbook(fis)) {
-            Sheet sheet = workbook.getSheetAt(0);
+            // Ưu tiên tìm sheet dữ liệu tiếng Việt, nếu không thấy thì lấy sheet đầu tiên
+            Sheet sheet = workbook.getSheet("DANH_SACH_SAN_PHAM");
+            if (sheet == null) {
+                sheet = workbook.getSheetAt(0);
+            }
             int lastColumn = 0;
 
             // Xác định số cột từ header row

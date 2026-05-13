@@ -44,6 +44,14 @@ export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   
+  // Pagination state
+  const [pagination, setPagination] = useState({
+    currentPage: 0,
+    totalPages: 0,
+    totalElements: 0,
+    pageSize: 12
+  });
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -65,10 +73,17 @@ export default function AdminProducts() {
     variants: []
   });
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page = 0) => {
+    setLoading(true);
     try {
-      const res = await axios.get('/api/products');
-      setProducts(res.data);
+      const res = await axios.get(`/api/products?page=${page}&size=${pagination.pageSize}`);
+      setProducts(res.data.content);
+      setPagination(prev => ({
+        ...prev,
+        currentPage: res.data.number,
+        totalPages: res.data.totalPages,
+        totalElements: res.data.totalElements
+      }));
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || err.message || "Failed to load products");
@@ -78,7 +93,7 @@ export default function AdminProducts() {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(0);
     fetchCategories();
     fetchColorsAndMaterials();
   }, []);
@@ -601,66 +616,92 @@ export default function AdminProducts() {
       ) : products.length === 0 ? (
         <div className="text-center py-20 text-[#777777] uppercase tracking-widest text-xs">No objects in catalog.</div>
       ) : (
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-          initial="hidden" animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: { opacity: 1, transition: { staggerChildren: 0.08 } }
-          }}
-        >
-          {products.map((product) => (
-            <motion.div
-              key={product.id}
-              variants={{
-                hidden: { opacity: 0, y: 30 },
-                visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
-              }}
-            >
-              <SpotlightCard className="h-full group cursor-pointer" onClick={() => handleOpenModal(product)}>
-                <div className="relative aspect-square w-full overflow-hidden bg-[#f3f3f3]">
-                  {product.imageUrl ? (
-                    <img 
-                      src={product.imageUrl} 
-                      alt={product.name} 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#c6c6c6]">
-                      <ImageIcon className="w-12 h-12" />
+        <>
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+            initial="hidden" animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.08 } }
+            }}
+          >
+            {products.map((product) => (
+              <motion.div
+                key={product.id}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+                }}
+              >
+                <SpotlightCard className="h-full group cursor-pointer" onClick={() => handleOpenModal(product)}>
+                  <div className="relative aspect-square w-full overflow-hidden bg-[#f3f3f3]">
+                    {product.imageUrl ? (
+                      <img 
+                        src={product.imageUrl} 
+                        alt={product.name} 
+                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[#c6c6c6]">
+                        <ImageIcon className="w-12 h-12" />
+                      </div>
+                    )}
+                    {/* Stock Indicator */}
+                    <div className={`absolute top-4 left-4 backdrop-blur-md px-3 py-1 text-[0.65rem] tracking-widest uppercase font-semibold ${product.stock > 0 ? 'bg-white/20 text-white border border-white/20' : 'bg-red-500/80 text-white border border-red-500/50'}`}>
+                      {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
                     </div>
-                  )}
-                  {/* Stock Indicator */}
-                  <div className={`absolute top-4 left-4 backdrop-blur-md px-3 py-1 text-[0.65rem] tracking-widest uppercase font-semibold ${product.stock > 0 ? 'bg-white/20 text-white border border-white/20' : 'bg-red-500/80 text-white border border-red-500/50'}`}>
-                    {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
+                    
+                    {/* Selection Checkbox */}
+                    <div className="absolute top-4 right-4 z-20 bg-white/50 backdrop-blur-sm p-1 rounded hover:bg-white transition-colors" onClick={(e) => e.stopPropagation()}>
+                      <input 
+                        type="checkbox" 
+                        className="w-5 h-5 accent-[#131313] cursor-pointer"
+                        checked={selectedProducts.has(product.id)}
+                        onChange={(e) => toggleSelection(e, product.id)}
+                      />
+                    </div>
                   </div>
                   
-                  {/* Selection Checkbox */}
-                  <div className="absolute top-4 right-4 z-20 bg-white/50 backdrop-blur-sm p-1 rounded hover:bg-white transition-colors" onClick={(e) => e.stopPropagation()}>
-                    <input 
-                      type="checkbox" 
-                      className="w-5 h-5 accent-[#131313] cursor-pointer"
-                      checked={selectedProducts.has(product.id)}
-                      onChange={(e) => toggleSelection(e, product.id)}
-                    />
+                  <div className="p-6 flex flex-col flex-grow justify-between bg-white z-10">
+                    <div>
+                      <p className="text-[#777777] text-[0.65rem] tracking-[0.2em] uppercase font-semibold mb-2">{product.category}</p>
+                      <h3 className="font-serif text-2xl text-[#1a1c1c] mb-2 group-hover:text-[#775a19] transition-colors line-clamp-1">{product.name}</h3>
+                      <p className="font-mono text-lg text-[#121212] mb-6">${product.price.toFixed(2)}</p>
+                    </div>
+                    <div className="flex justify-between items-center pt-5 border-t border-[#f3f3f3]">
+                      <span className="text-[#90702e] text-xs tracking-widest uppercase font-semibold transition-colors">Edit Asset</span>
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(product.id); }} className="text-[#93000a] hover:text-[#690005] opacity-0 group-hover:opacity-100 text-xs tracking-widest uppercase font-semibold transition-all">Delete</button>
+                    </div>
                   </div>
-                </div>
-                
-                <div className="p-6 flex flex-col flex-grow justify-between bg-white z-10">
-                  <div>
-                    <p className="text-[#777777] text-[0.65rem] tracking-[0.2em] uppercase font-semibold mb-2">{product.category}</p>
-                    <h3 className="font-serif text-2xl text-[#1a1c1c] mb-2 group-hover:text-[#775a19] transition-colors line-clamp-1">{product.name}</h3>
-                    <p className="font-mono text-lg text-[#121212] mb-6">${product.price.toFixed(2)}</p>
-                  </div>
-                  <div className="flex justify-between items-center pt-5 border-t border-[#f3f3f3]">
-                    <span className="text-[#90702e] text-xs tracking-widest uppercase font-semibold transition-colors">Edit Asset</span>
-                    <button onClick={(e) => { e.stopPropagation(); handleDelete(product.id); }} className="text-[#93000a] hover:text-[#690005] opacity-0 group-hover:opacity-100 text-xs tracking-widest uppercase font-semibold transition-all">Delete</button>
-                  </div>
-                </div>
-              </SpotlightCard>
-            </motion.div>
-          ))}
-        </motion.div>
+                </SpotlightCard>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Pagination UI */}
+          {pagination.totalPages > 1 && (
+            <div className="mt-20 flex flex-col items-center space-y-6">
+              <div className="flex items-center space-x-2">
+                {[...Array(pagination.totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => fetchProducts(i)}
+                    className={`w-10 h-10 text-[0.65rem] font-bold tracking-widest transition-all ${
+                      pagination.currentPage === i 
+                        ? 'bg-[#131313] text-white shadow-lg' 
+                        : 'bg-white border border-[#e2e2e2] text-[#777777] hover:border-[#131313] hover:text-[#131313]'
+                    }`}
+                  >
+                    {String(i + 1).padStart(2, '0')}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[0.6rem] uppercase tracking-[0.2em] text-[#777777]">
+                Showing <span className="text-[#131313] font-bold">{products.length}</span> of {pagination.totalElements} assets
+              </p>
+            </div>
+          )}
+        </>
       )}
 
       {/* Glassmorphic Modal */}

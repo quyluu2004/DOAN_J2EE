@@ -343,7 +343,15 @@ public class ProductImportService {
             product.setCategory(safeTrim(row, 1));
             
             String priceStr = safeTrim(row, 2);
-            if (priceStr != null && !priceStr.isEmpty()) product.setPrice(new java.math.BigDecimal(priceStr));
+            if (priceStr != null && !priceStr.isEmpty()) {
+                try {
+                    product.setPrice(new java.math.BigDecimal(priceStr));
+                } catch (Exception e) {
+                    product.setPrice(java.math.BigDecimal.ZERO);
+                }
+            } else if (product.getPrice() == null) {
+                product.setPrice(java.math.BigDecimal.ZERO);
+            }
             
             String stockStr = safeTrim(row, 3);
             if (stockStr != null && !stockStr.isEmpty()) product.setStock(Integer.parseInt(stockStr.replace(".0", "")));

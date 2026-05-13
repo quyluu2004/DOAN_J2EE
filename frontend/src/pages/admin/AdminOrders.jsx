@@ -152,7 +152,9 @@ export default function AdminOrders() {
                 {/* Volume */}
                 <div className="col-span-2 w-full md:text-right">
                   <p className="text-[0.65rem] text-[#777777] uppercase tracking-widest mb-1 md:hidden">Volume</p>
-                  <div className="font-serif text-xl text-[#121212]">${order.totalPrice.toFixed(2)}</div>
+                  <div className="font-serif text-xl text-[#121212]">
+                    ${order.totalPrice != null ? order.totalPrice.toFixed(2) : "0.00"}
+                  </div>
                 </div>
 
                 {/* Actions */}

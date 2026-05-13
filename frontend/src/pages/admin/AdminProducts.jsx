@@ -666,7 +666,9 @@ export default function AdminProducts() {
                     <div>
                       <p className="text-[#777777] text-[0.65rem] tracking-[0.2em] uppercase font-semibold mb-2">{product.category}</p>
                       <h3 className="font-serif text-2xl text-[#1a1c1c] mb-2 group-hover:text-[#775a19] transition-colors line-clamp-1">{product.name}</h3>
-                      <p className="font-mono text-lg text-[#121212] mb-6">${product.price.toFixed(2)}</p>
+                      <p className="font-mono text-lg text-[#121212] mb-6">
+                        ${product.price != null ? product.price.toFixed(2) : "0.00"}
+                      </p>
                     </div>
                     <div className="flex justify-between items-center pt-5 border-t border-[#f3f3f3]">
                       <span className="text-[#90702e] text-xs tracking-widest uppercase font-semibold transition-colors">Edit Asset</span>

@@ -5,6 +5,20 @@ import { API_BASE_URL } from '../config';
 // Set base URL cho tất cả axios requests (production: trỏ về backend domain)
 axios.defaults.baseURL = API_BASE_URL;
 
+// Add a request interceptor to attach the JWT token to every request
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Add a response interceptor to handle 401 Unauthorized globally
 axios.interceptors.response.use(
   (response) => response,

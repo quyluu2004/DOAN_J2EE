@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
@@ -20,10 +21,7 @@ public class CloudinaryService {
 
     public String uploadFile(MultipartFile file, String folderName, boolean isRaw) throws IOException {
         try {
-            // Xác định resource type (image, video, raw cho các file như .glb)
             String resourceType = isRaw ? "raw" : "auto";
-            
-            // Generate public_id (tên file trên Cloudinary) không chứa phần mở rộng
             String originalFilename = file.getOriginalFilename();
             String extension = "";
             if (originalFilename != null && originalFilename.lastIndexOf(".") > 0) {
@@ -32,7 +30,6 @@ public class CloudinaryService {
             
             String publicId = UUID.randomUUID().toString();
             if (isRaw) {
-                // Với resource_type: "raw", cần kèm theo extension trong public_id nếu muốn Cloudinary trả về đúng chuẩn
                 publicId = publicId + extension;
             }
 
@@ -42,12 +39,46 @@ public class CloudinaryService {
                     "resource_type", resourceType
             );
 
+            // Upload using bytes for MultipartFile
             Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadParams);
             return uploadResult.get("secure_url").toString();
             
         } catch (IOException e) {
-            log.error("Failed to upload file to Cloudinary", e);
+            log.error("Failed to upload MultipartFile to Cloudinary", e);
             throw new IOException("Failed to upload file to Cloudinary: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Upload directly from a java.io.File object. 
+     * More memory efficient for local files (like imports).
+     */
+    public String uploadFile(File file, String folderName, boolean isRaw) throws IOException {
+        try {
+            String resourceType = isRaw ? "raw" : "auto";
+            String fileName = file.getName();
+            String extension = "";
+            if (fileName.lastIndexOf(".") > 0) {
+                extension = fileName.substring(fileName.lastIndexOf("."));
+            }
+            
+            String publicId = UUID.randomUUID().toString();
+            if (isRaw) {
+                publicId = publicId + extension;
+            }
+
+            Map<String, Object> uploadParams = ObjectUtils.asMap(
+                    "folder", folderName,
+                    "public_id", publicId,
+                    "resource_type", resourceType
+            );
+
+            // Upload directly from File object (streaming)
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file, uploadParams);
+            return uploadResult.get("secure_url").toString();
+        } catch (IOException e) {
+            log.error("Failed to upload File to Cloudinary", e);
+            throw new IOException("Failed to upload file from disk: " + e.getMessage());
         }
     }
     

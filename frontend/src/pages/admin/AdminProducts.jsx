@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Plus, X, Image as ImageIcon, Upload, FileSpreadsheet, CheckCircle, AlertCircle, Loader2, Box, Eye, RotateCw } from 'lucide-react';
+import { Plus, X, Image as ImageIcon, Upload, FileSpreadsheet, CheckCircle, AlertCircle, Loader2, Box, Eye, RotateCw, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SplitText, SpotlightCard } from '../../components/ui/ReactBits';
 import { getAllCollections } from '../../services/collectionService';
@@ -465,6 +465,16 @@ export default function AdminProducts() {
             <Upload className="w-4 h-4" />
             <span className="font-semibold text-xs tracking-widest uppercase">Import Excel</span>
           </motion.button>
+
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleDownloadTemplate}
+            className="flex items-center space-x-3 border border-[#e2e2e2] text-[#474747] px-6 py-4 rounded-none hover:border-[#131313] hover:text-[#131313] transition-colors relative overflow-hidden group"
+          >
+            <Download className="w-4 h-4" />
+            <span className="font-semibold text-xs tracking-widest uppercase">Template</span>
+          </motion.button>
           <motion.button 
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -577,14 +587,7 @@ export default function AdminProducts() {
                     </div>
                   </div>
                   
-                  <div className="pt-4 border-t border-gray-100 w-full max-w-xs">
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); handleDownloadTemplate(); }}
-                      className="text-[0.65rem] font-bold text-[#775a19] uppercase tracking-widest hover:opacity-70 transition-opacity flex items-center justify-center space-x-2 mx-auto"
-                    >
-                      <span>Download Excel Template</span>
-                    </button>
-                  </div>
+                  
                 </div>
               )}
             </div>

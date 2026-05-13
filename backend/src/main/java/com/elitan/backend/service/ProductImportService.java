@@ -1,4 +1,5 @@
 package com.elitan.backend.service;
+
 import com.elitan.backend.entity.*;
 import com.elitan.backend.repository.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,12 +29,12 @@ public class ProductImportService {
     private final MaterialRepository materialRepository;
     private final CloudinaryService cloudinaryService;
 
-    public ProductImportService(ProductRepository productRepository, 
-                                ImportHistoryRepository importHistoryRepository,
-                                CollectionRepository collectionRepository,
-                                ColorRepository colorRepository,
-                                MaterialRepository materialRepository,
-                                CloudinaryService cloudinaryService) {
+    public ProductImportService(ProductRepository productRepository,
+            ImportHistoryRepository importHistoryRepository,
+            CollectionRepository collectionRepository,
+            ColorRepository colorRepository,
+            MaterialRepository materialRepository,
+            CloudinaryService cloudinaryService) {
         this.productRepository = productRepository;
         this.importHistoryRepository = importHistoryRepository;
         this.collectionRepository = collectionRepository;
@@ -52,8 +54,9 @@ public class ProductImportService {
 
             // 1. Tạo Header
             Row headerRow = sheet.createRow(0);
-            String[] columns = {"Name", "Category", "Price", "Stock", "Description", "Color", "Material", "Dimensions", "Main Image Filename", "Additional Images (comma separated)", "3D Model Filename"};
-            
+            String[] columns = { "Name", "Category", "Price", "Stock", "Description", "Color", "Material", "Dimensions",
+                    "Main Image Filename", "Additional Images (comma separated)", "3D Model Filename" };
+
             CellStyle headerStyle = workbook.createCellStyle();
             Font headerFont = workbook.createFont();
             headerFont.setBold(true);
@@ -72,19 +75,22 @@ public class ProductImportService {
             DataValidationHelper validationHelper = sheet.getDataValidationHelper();
 
             // Category (Collection)
-            String[] categories = collectionRepository.findAll().stream().map(com.elitan.backend.entity.Collection::getName).toArray(String[]::new);
+            String[] categories = collectionRepository.findAll().stream()
+                    .map(com.elitan.backend.entity.Collection::getName).toArray(String[]::new);
             if (categories.length > 0) {
                 addDropdown(sheet, validationHelper, categories, 1); // Cột B
             }
 
             // Color
-            String[] colors = colorRepository.findAll().stream().map(com.elitan.backend.entity.Color::getName).toArray(String[]::new);
+            String[] colors = colorRepository.findAll().stream().map(com.elitan.backend.entity.Color::getName)
+                    .toArray(String[]::new);
             if (colors.length > 0) {
                 addDropdown(sheet, validationHelper, colors, 5); // Cột F
             }
 
             // Material
-            String[] materials = materialRepository.findAll().stream().map(com.elitan.backend.entity.Material::getName).toArray(String[]::new);
+            String[] materials = materialRepository.findAll().stream().map(com.elitan.backend.entity.Material::getName)
+                    .toArray(String[]::new);
             if (materials.length > 0) {
                 addDropdown(sheet, validationHelper, materials, 6); // Cột G
             }
@@ -99,12 +105,12 @@ public class ProductImportService {
         CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, colIndex, colIndex);
         DataValidationConstraint constraint = helper.createExplicitListConstraint(options);
         DataValidation validation = helper.createValidation(constraint, addressList);
-        
+
         // Cấu hình hiển thị lỗi nếu nhập sai
         validation.setShowErrorBox(true);
         validation.setErrorStyle(DataValidation.ErrorStyle.STOP);
         validation.createErrorBox("Dữ liệu không hợp lệ", "Vui lòng chọn giá trị từ danh sách xổ xuống.");
-        
+
         sheet.addValidationData(validation);
     }
 
@@ -133,7 +139,7 @@ public class ProductImportService {
                 .createdAt(LocalDateTime.now())
                 .errorLog(batchFolder) // Tạm lưu đường dẫn folder vào errorLog để process sau
                 .build();
-        
+
         return importHistoryRepository.save(history);
     }
 
@@ -144,7 +150,8 @@ public class ProductImportService {
     @Async
     public void processImportAsync(Long historyId, String excelFileName) {
         ImportHistory history = importHistoryRepository.findById(historyId).orElse(null);
-        if (history == null) return;
+        if (history == null)
+            return;
 
         String batchFolder = history.getErrorLog(); // Lấy folder đã lưu ở bước trước
         history.setStatus("PROCESSING");
@@ -153,16 +160,14 @@ public class ProductImportService {
 
         Path batchPath = Paths.get(batchFolder);
         File excelFile = batchPath.resolve(excelFileName).toFile();
-        
-        // Load tất cả asset files vào Map để tìm kiếm nhanh
-        Map<String, byte[]> assetMap = new HashMap<>();
+
+        // Map filename to its local path instead of reading bytes into memory
+        Map<String, Path> assetPathMap = new HashMap<>();
         File[] allFiles = batchPath.toFile().listFiles();
         if (allFiles != null) {
             for (File f : allFiles) {
                 if (!f.getName().equals(excelFileName)) {
-                    try {
-                        assetMap.put(f.getName(), Files.readAllBytes(f.toPath()));
-                    } catch (IOException ignored) {}
+                    assetPathMap.put(f.getName(), f.toPath());
                 }
             }
         }
@@ -189,7 +194,7 @@ public class ProductImportService {
                 int rowNumber = i + 2;
 
                 try {
-                    Product product = processRowWithAssets(row, rowNumber, errorLog, assetMap);
+                    Product product = processRowWithAssets(row, rowNumber, errorLog, assetPathMap);
                     if (product != null) {
                         chunk.add(product);
                     } else {
@@ -250,7 +255,8 @@ public class ProductImportService {
         directoryToBeDeleted.delete();
     }
 
-    private Product processRowWithAssets(String[] row, int rowNumber, StringBuilder errorLog, Map<String, byte[]> assetMap) {
+    private Product processRowWithAssets(String[] row, int rowNumber, StringBuilder errorLog,
+            Map<String, Path> assetPathMap) {
         if (row.length < 3) {
             errorLog.append("Row ").append(rowNumber).append(": Not enough columns\n");
             return null;
@@ -264,12 +270,13 @@ public class ProductImportService {
             errorLog.append("Row ").append(rowNumber).append(": Name is empty\n");
             return null;
         }
-        
+
         // Validate Category exists
         if (category != null && !category.isEmpty()) {
             boolean exists = collectionRepository.existsByName(category);
             if (!exists) {
-                errorLog.append("Row ").append(rowNumber).append(": Category '").append(category).append("' does not exist. Please create it first.\n");
+                errorLog.append("Row ").append(rowNumber).append(": Category '").append(category)
+                        .append("' does not exist. Please create it first.\n");
                 return null;
             }
         }
@@ -285,25 +292,34 @@ public class ProductImportService {
         int stock = 10;
         String stockStr = safeTrim(row, 3);
         if (stockStr != null && !stockStr.isEmpty()) {
-            try { stock = Integer.parseInt(stockStr.replace(".0", "")); } catch (NumberFormatException ignored) {}
+            try {
+                stock = Integer.parseInt(stockStr.replace(".0", ""));
+            } catch (NumberFormatException ignored) {
+            }
         }
 
-        // --- Asset Processing ---
+        // --- Asset Processing (Parallelized for speed) ---
         String mainImageFilename = safeTrim(row, 8);
-        String additionalImagesStr = safeTrim(row, 9);
         String glbFilename = safeTrim(row, 10);
 
-        String mainImageUrl = null;
-        if (mainImageFilename != null && !mainImageFilename.isEmpty()) {
-            mainImageUrl = uploadAsset(mainImageFilename, assetMap, "products/images", false, rowNumber, "Main Image", errorLog);
-        }
+        CompletableFuture<String> mainImageFuture = CompletableFuture.supplyAsync(() -> 
+            (mainImageFilename != null && !mainImageFilename.isEmpty()) ? 
+            uploadAsset(mainImageFilename, assetPathMap, "products/images", false, rowNumber, "Main Image", errorLog) : null
+        );
 
-        String glbUrl = null;
-        if (glbFilename != null && !glbFilename.isEmpty()) {
-            glbUrl = uploadAsset(glbFilename, assetMap, "products/3d", true, rowNumber, "3D Model", errorLog);
-        }
+        CompletableFuture<String> glbFuture = CompletableFuture.supplyAsync(() -> 
+            (glbFilename != null && !glbFilename.isEmpty()) ? 
+            uploadAsset(glbFilename, assetPathMap, "products/3d", true, rowNumber, "3D Model", errorLog) : null
+        );
 
-        // Additional Images logic could be added here if Product entity supported a List<String>
+        // Chờ cả hai upload hoàn thành đồng thời
+        CompletableFuture.allOf(mainImageFuture, glbFuture).join();
+
+        String mainImageUrl = mainImageFuture.join();
+        String glbUrl = glbFuture.join();
+
+        // Additional Images logic could be added here if Product entity supported a
+        // List<String>
         // For now, we'll focus on main image and GLB as per current entity structure.
 
         return Product.builder()
@@ -320,22 +336,31 @@ public class ProductImportService {
                 .build();
     }
 
-    private String uploadAsset(String filename, Map<String, byte[]> assetMap, String folder, boolean isRaw, int rowNumber, String assetType, StringBuilder errorLog) {
-        byte[] bytes = assetMap.get(filename);
-        if (bytes == null) {
-            errorLog.append("Row ").append(rowNumber).append(": ").append(assetType).append(" file '").append(filename).append("' not found in upload batch.\n");
+    private String uploadAsset(String filename, Map<String, Path> assetPathMap, String folder, boolean isRaw,
+            int rowNumber, String assetType, StringBuilder errorLog) {
+        Path filePath = assetPathMap.get(filename);
+        if (filePath == null || !Files.exists(filePath)) {
+            synchronized (errorLog) {
+                errorLog.append("Row ").append(rowNumber).append(": ").append(assetType).append(" file '")
+                        .append(filename)
+                        .append("' not found in upload batch.\n");
+            }
             return null;
         }
         try {
-            return cloudinaryService.uploadBytes(bytes, filename, folder, isRaw);
+            return cloudinaryService.uploadFile(filePath.toFile(), folder, isRaw);
         } catch (IOException e) {
-            errorLog.append("Row ").append(rowNumber).append(": Failed to upload ").append(filename).append(" to Cloudinary.\n");
+            synchronized (errorLog) {
+                errorLog.append("Row ").append(rowNumber).append(": Failed to upload ").append(filename)
+                        .append(" to Cloudinary.\n");
+            }
             return null;
         }
     }
 
     private String safeTrim(String[] arr, int index) {
-        if (index >= arr.length) return null;
+        if (index >= arr.length)
+            return null;
         String val = arr[index];
         return (val != null) ? val.trim() : null;
     }
@@ -344,7 +369,7 @@ public class ProductImportService {
     private List<String[]> readExcelFile(File file) throws IOException {
         List<String[]> rows = new ArrayList<>();
         try (FileInputStream fis = new FileInputStream(file);
-             Workbook workbook = new XSSFWorkbook(fis)) {
+                Workbook workbook = new XSSFWorkbook(fis)) {
             Sheet sheet = workbook.getSheetAt(0);
             int lastColumn = 0;
 
@@ -357,23 +382,27 @@ public class ProductImportService {
             // Bỏ qua dòng header (dòng 0), đọc từ dòng 1
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
-                if (row == null) continue;
+                if (row == null)
+                    continue;
 
                 String[] values = new String[lastColumn];
                 boolean hasData = false;
                 for (int j = 0; j < lastColumn; j++) {
                     Cell cell = row.getCell(j, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
                     values[j] = getCellValueAsString(cell);
-                    if (values[j] != null && !values[j].isEmpty()) hasData = true;
+                    if (values[j] != null && !values[j].isEmpty())
+                        hasData = true;
                 }
-                if (hasData) rows.add(values);
+                if (hasData)
+                    rows.add(values);
             }
         }
         return rows;
     }
 
     private String getCellValueAsString(Cell cell) {
-        if (cell == null) return "";
+        if (cell == null)
+            return "";
         String type = cell.getCellType().name();
         switch (type) {
             case "STRING":
@@ -400,8 +429,12 @@ public class ProductImportService {
             String line;
             boolean isHeader = true;
             while ((line = reader.readLine()) != null) {
-                if (isHeader) { isHeader = false; continue; } // Bỏ qua header
-                if (line.trim().isEmpty()) continue;
+                if (isHeader) {
+                    isHeader = false;
+                    continue;
+                } // Bỏ qua header
+                if (line.trim().isEmpty())
+                    continue;
                 rows.add(line.split(",", -1));
             }
         }

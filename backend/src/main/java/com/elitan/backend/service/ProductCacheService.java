@@ -8,29 +8,46 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class ProductCacheService {
-    private final RedisTemplate<String, Object> redisTemplate;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private RedisTemplate<String, Object> redisTemplate;
     private static final String PRODUCT_KEY_PREFIX = "product:";
 
-    public ProductCacheService(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
-
     public void cacheProduct(Product product) {
-        String key = PRODUCT_KEY_PREFIX + product.getId();
-        redisTemplate.opsForValue().set(key, product, 1, TimeUnit.HOURS);
+        if (redisTemplate == null) return;
+        try {
+            String key = PRODUCT_KEY_PREFIX + product.getId();
+            redisTemplate.opsForValue().set(key, product, 1, TimeUnit.HOURS);
+        } catch (Exception e) {
+            // Log and ignore to keep app running
+        }
     }
 
     public Product getCachedProduct(Long id) {
-        String key = PRODUCT_KEY_PREFIX + id;
-        return (Product) redisTemplate.opsForValue().get(key);
+        if (redisTemplate == null) return null;
+        try {
+            String key = PRODUCT_KEY_PREFIX + id;
+            return (Product) redisTemplate.opsForValue().get(key);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void evictProduct(Long id) {
-        String key = PRODUCT_KEY_PREFIX + id;
-        redisTemplate.delete(key);
+        if (redisTemplate == null) return;
+        try {
+            String key = PRODUCT_KEY_PREFIX + id;
+            redisTemplate.delete(key);
+        } catch (Exception e) {
+            // Ignore
+        }
     }
 
     public void clearAllCaches() {
-        redisTemplate.getConnectionFactory().getConnection().flushAll();
+        if (redisTemplate == null) return;
+        try {
+            redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
+        } catch (Exception e) {
+            // Ignore
+        }
     }
 }

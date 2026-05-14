@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
-// @Service
+@Service
 public class ProductCacheService {
     private final RedisTemplate<String, Object> redisTemplate;
     private static final String PRODUCT_KEY_PREFIX = "product:";

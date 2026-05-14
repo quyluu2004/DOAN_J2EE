@@ -34,6 +34,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
     @Override
     org.springframework.data.domain.Page<Product> findAll(org.springframework.data.domain.Pageable pageable);
 
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"variants"})
+    @Override
+    java.util.Optional<Product> findById(Long id);
+
     List<Product> findByStockLessThan(Integer threshold);
 
     java.util.Optional<Product> findByName(String name);

@@ -185,8 +185,10 @@ const RoomDesigner = ({ isAdmin = false }) => {
 
   const fetchProducts = async () => {
     try {
-      const data = await getAllProducts();
-      setProducts(data.filter(p => p.glbUrl));
+      const data = await getAllProducts({ size: 1000 });
+      // Handle both array and paginated response
+      const productList = Array.isArray(data) ? data : (data.content || []);
+      setProducts(productList.filter(p => p.glbUrl));
     } catch (error) { console.error('Failed to fetch products:', error); }
   };
 

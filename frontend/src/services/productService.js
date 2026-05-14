@@ -15,7 +15,7 @@ export const getProductById = async (id) => {
   return response.data;
 };
 
-export const getAllProducts = async () => {
-    const response = await axios.get(`${BASE_URL}/products`);
+export const getAllProducts = async (params = {}) => {
+    const response = await axios.get(`${BASE_URL}/products`, { params });
     return response.data;
 };

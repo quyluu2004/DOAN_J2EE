@@ -212,11 +212,17 @@ export default function ProductDetail() {
     </div>
   );
 
-  const images = [
-    (selectedVariant?.imageUrl || product.imageUrl || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80'),
-    'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1567016432779-094069811ea2?auto=format&fit=crop&q=80'
-  ];
+  const baseImage = selectedVariant?.imageUrl || product.imageUrl || 'https://placehold.co/800x800?text=No+Image';
+  let images = [baseImage];
+
+  // Add variant images if available
+  if (product.variants && product.variants.length > 0) {
+    product.variants.forEach(v => {
+      if (v.imageUrl && !images.includes(v.imageUrl)) {
+        images.push(v.imageUrl);
+      }
+    });
+  }
 
   return (
     <div className="min-h-screen bg-[#fffcf9] text-[#221a0c] selection:bg-[#703225] selection:text-white pb-32 overflow-hidden relative">

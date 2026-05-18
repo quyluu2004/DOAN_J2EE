@@ -36,6 +36,10 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
 
                 .authorizeHttpRequests(auth -> auth
+                        // 2. WISHLIST — any authenticated user can toggle/view wishlist
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/wishlist", "/api/products/wishlist/**").authenticated()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/wishlist/**").authenticated()
+
                         // 1. PUBLIC ACCESS
                         // Reviews: chỉ GET (xem) là công khai, POST (viết) cần đăng nhập
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/reviews", "/api/reviews/**").permitAll() 
@@ -49,10 +53,6 @@ public class SecurityConfig {
                         // OTP: cần đăng nhập vì controller lấy email từ Authentication
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/orders/send-otp", "/api/orders/verify-otp").authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/analytics/visit").permitAll()
-
-                        // 2. WISHLIST — any authenticated user can toggle/view wishlist
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/wishlist", "/api/products/wishlist/**").authenticated()
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/wishlist/**").authenticated()
 
                         // 3. ADMIN ACCESS (Must come before broader .authenticated() rules)
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasRole("ADMIN")

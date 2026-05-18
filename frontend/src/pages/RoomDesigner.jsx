@@ -3,11 +3,11 @@ import RoomCanvas from '../components/three/RoomCanvas';
 import { useStore } from '../store/useStore';
 import { getAllProducts } from '../services/productService';
 import { saveDesign, uploadThumbnail } from '../services/designService';
-import { 
-  Plus, Save, Trash2, Box, Layers, Maximize, X, 
-  MousePointer, PenTool, DoorOpen, SquareStack, 
-  Palette, DollarSign, Eye, BoxSelect, Map, 
-  Ruler, Type, Image as LucideImage, Upload, 
+import {
+  Plus, Save, Trash2, Box, Layers, Maximize, X,
+  MousePointer, PenTool, DoorOpen, SquareStack,
+  Palette, DollarSign, Eye, BoxSelect, Map,
+  Ruler, Type, Image as LucideImage, Upload,
   ChevronRight, Layout, Sparkles, Home, ShoppingCart, Check, ArrowRight
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -104,15 +104,15 @@ const RoomDesigner = ({ isAdmin = false }) => {
     try {
       const itemsToBuy = allRoomItems.filter(i => selectedCheckoutIds.has(i.id));
       // Adding items to cart
-      
+
       // Thêm tuần tự để tránh race condition trên backend
       for (const item of itemsToBuy) {
         await addToCart(item.productId, null, 1);
       }
-      
+
       // Đồng bộ lại giỏ hàng trong context
       await fetchCart();
-      
+
       toast.success(`Đã thêm ${itemsToBuy.length} sản phẩm vào giỏ hàng`);
       setIsCheckoutModalOpen(false);
       openCart(); // Mở sidebar giỏ hàng để user thấy ngay
@@ -195,23 +195,23 @@ const RoomDesigner = ({ isAdmin = false }) => {
   const handleSave = async () => {
     if (!user) { toast.error('Vui lòng đăng nhập để lưu thiết kế'); return; }
     try {
-      const payload = { 
-        userId: user.id || user.userId, 
-        name: designName, 
-        designData: getDesignData(), 
-        thumbnailUrl: thumbnailUrl, 
+      const payload = {
+        userId: user.id || user.userId,
+        name: designName,
+        designData: getDesignData(),
+        thumbnailUrl: thumbnailUrl,
         template: isAdmin
       };
       if (isAdmin && designId) payload.id = designId;
-      
+
       const saved = await saveDesign(payload);
       if (isAdmin) setDesignId(saved.id);
-      
+
       toast.success('Đã lưu bản thiết kế!');
-    } catch (error) { 
+    } catch (error) {
       console.error(error);
       const errorMsg = error.response?.data?.error || error.response?.data?.message || error.message || 'Lỗi không xác định';
-      toast.error('Lỗi API: ' + errorMsg); 
+      toast.error('Lỗi API: ' + errorMsg);
     }
   };
 
@@ -336,17 +336,15 @@ const RoomDesigner = ({ isAdmin = false }) => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => useStore.getState().setTransformMode('translate')}
-                    className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${
-                      useStore.getState().transformMode === 'translate' ? 'bg-[#775a19] text-white' : 'bg-white text-gray-400 border'
-                    }`}
+                    className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${useStore.getState().transformMode === 'translate' ? 'bg-[#775a19] text-white' : 'bg-white text-gray-400 border'
+                      }`}
                   >
                     Di chuyển
                   </button>
                   <button
                     onClick={() => useStore.getState().setTransformMode('rotate')}
-                    className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${
-                      useStore.getState().transformMode === 'rotate' ? 'bg-[#775a19] text-white' : 'bg-white text-gray-400 border'
-                    }`}
+                    className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${useStore.getState().transformMode === 'rotate' ? 'bg-[#775a19] text-white' : 'bg-white text-gray-400 border'
+                      }`}
                   >
                     Xoay
                   </button>
@@ -431,7 +429,7 @@ const RoomDesigner = ({ isAdmin = false }) => {
                       <div className="relative aspect-video">
                         <img src={template.thumbnailUrl || 'https://via.placeholder.com/300x170?text=ÉLITAN+Space'} alt={template.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-3">
-                           <h4 className="text-white text-xs font-bold leading-tight">{template.name}</h4>
+                          <h4 className="text-white text-xs font-bold leading-tight">{template.name}</h4>
                           <p className="text-[9px] text-gray-300 mt-0.5">ÉLITAN Curator Edition</p>
                         </div>
                       </div>
@@ -614,11 +612,10 @@ const RoomDesigner = ({ isAdmin = false }) => {
               </div>
 
               {allRoomItems.map((item) => (
-                <div 
-                  key={item.id} 
-                  className={`flex items-center gap-4 p-3 rounded-2xl border-2 transition-all cursor-pointer ${
-                    selectedCheckoutIds.has(item.id) ? 'border-[#775a19] bg-[#775a19]/5' : 'border-gray-100 hover:border-gray-200'
-                  }`}
+                <div
+                  key={item.id}
+                  className={`flex items-center gap-4 p-3 rounded-2xl border-2 transition-all cursor-pointer ${selectedCheckoutIds.has(item.id) ? 'border-[#775a19] bg-[#775a19]/5' : 'border-gray-100 hover:border-gray-200'
+                    }`}
                   onClick={() => {
                     const next = new Set(selectedCheckoutIds);
                     if (next.has(item.id)) next.delete(item.id);
@@ -632,9 +629,8 @@ const RoomDesigner = ({ isAdmin = false }) => {
                     <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tight">{item.floorName}</p>
                     <p className="text-sm font-black text-[#775a19] mt-1">${item.price.toLocaleString()}</p>
                   </div>
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                    selectedCheckoutIds.has(item.id) ? 'bg-[#775a19] border-[#775a19]' : 'border-gray-300'
-                  }`}>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedCheckoutIds.has(item.id) ? 'bg-[#775a19] border-[#775a19]' : 'border-gray-300'
+                    }`}>
                     {selectedCheckoutIds.has(item.id) && <Check className="w-3 h-3 text-white" />}
                   </div>
                 </div>

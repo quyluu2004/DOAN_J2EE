@@ -24,7 +24,7 @@ public class ProductController {
     }
 
     private String getUserEmail(org.springframework.security.core.Authentication authentication) {
-        if (authentication == null) return null;
+        if (authentication == null || "anonymousUser".equals(authentication.getName())) return null;
         return authentication.getName();
     }
 

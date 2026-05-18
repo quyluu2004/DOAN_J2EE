@@ -30,7 +30,10 @@ const HomePage = () => {
                 if (!res.ok) throw new Error('Network response was not ok');
                 return res.json();
             })
-            .then(data => setProducts(Array.isArray(data) ? data.slice(0, 4) : []))
+            .then(data => {
+                const items = Array.isArray(data) ? data : (data.content || []);
+                setProducts(items.slice(0, 4));
+            })
             .catch(err => console.error('Error fetching best sellers:', err));
 
         // Fetch exactly 3 featured products for Hero

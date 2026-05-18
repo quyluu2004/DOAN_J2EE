@@ -40,7 +40,7 @@ const AdminTemplates = () => {
           <h1 className="text-2xl font-serif font-bold text-gray-900">Quản lý Mẫu Phòng</h1>
           <p className="text-sm text-gray-500 mt-1">Tạo và chỉnh sửa các thiết kế mẫu cho người dùng</p>
         </div>
-        <button 
+        <button
           onClick={() => {
             sessionStorage.removeItem('loadDesign');
             navigate('/admin/templates/create');
@@ -63,7 +63,7 @@ const AdminTemplates = () => {
                 </div>
               )}
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                <button 
+                <button
                   onClick={() => {
                     sessionStorage.setItem('loadDesign', JSON.stringify(template));
                     navigate('/admin/templates/create');
@@ -72,7 +72,7 @@ const AdminTemplates = () => {
                 >
                   <Edit className="w-4 h-4 text-gray-900" />
                 </button>
-                <button 
+                <button
                   onClick={() => handleDelete(template.id)}
                   className="p-2 bg-white rounded-full hover:scale-110 transition-transform"
                 >

@@ -106,21 +106,17 @@ public class ProductService {
         }
 
         try {
-            // Xóa các bản ghi liên quan trước khi xóa sản phẩm
-            // LƯU Ý: Nếu thêm bảng mới liên kết với Product, phải thêm DELETE ở đây
-            jdbcTemplate.update("DELETE FROM reviews WHERE product_id = ?", id);
-            jdbcTemplate.update("DELETE FROM wishlist WHERE product_id = ?", id);
-            jdbcTemplate.update("DELETE FROM cart_items WHERE product_id = ?", id);
-            // Không xóa order_details để giữ lịch sử đơn hàng đã giao
-            // Thay vào đó, set product_id = NULL (nếu cột cho phép)
+            // Ngắt kết nối với order_details để giữ lịch sử đơn hàng
             jdbcTemplate.update("UPDATE order_details SET product_id = NULL WHERE product_id = ?", id);
 
+            // Xóa sản phẩm (JPA sẽ tự động cascade xóa reviews, wishlist, cart_items)
             productRepository.deleteById(id);
+            
             if (productCacheService != null) {
                 productCacheService.evictProduct(id);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Không thể xóa sản phẩm. Có thể do ràng buộc dữ liệu: " + e.getMessage());
+            throw new RuntimeException("Không thể xóa sản phẩm: " + e.getMessage());
         }
     }
 }

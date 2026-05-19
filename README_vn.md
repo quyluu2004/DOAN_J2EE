@@ -17,7 +17,7 @@ Một giải pháp thương mại điện tử Full-stack tích hợp tính năn
 [![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](#)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](#)
 
-[Xem Live Demo](#) <!-- USER: Thêm link website thật của bạn vào đây -->
+[Xem Live Demo](https://elitan.vercel.app/)
 
 [🇺🇸 View English Version](README.md)
 

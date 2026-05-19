@@ -17,7 +17,7 @@ A robust, full-stack e-commerce solution integrating interactive 3D room design,
 [![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](#)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](#)
 
-[View Live Demo](#) <!-- USER: Add your live deployment URL here -->
+[View Live Demo](https://elitan.vercel.app/)
 
 [🇻🇳 Xem phiên bản Tiếng Việt](README_vn.md)
 

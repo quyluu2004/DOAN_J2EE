@@ -42,11 +42,12 @@ Bên cạnh trải nghiệm 3D đột phá, Etalian còn là một hệ thống 
 
 ## Tính Năng Bảng (Features)
 
-| Phân Hệ | Chức Năng |
+| Phân Loại | Các Tính Năng Chi Tiết |
 | :--- | :--- |
-| **Trải Nghiệm Khách Hàng** | <li>Xác thực JWT (Đăng nhập, Đăng ký, Quên mật khẩu)</li><li>Tích hợp Google OAuth2</li><li>Danh mục sản phẩm với bộ lọc & tìm kiếm động</li><li>Hệ thống Wishlist và Đánh giá (Review)</li><li>Quy trình Giỏ hàng & Thanh toán bảo mật</li> |
-| **Thiết Kế Phòng 3D** | <li>Canvas tương tác bằng `react-three/fiber`</li><li>Kéo thả mô hình 3D định dạng `.glb`/`.gltf`</li><li>Mô phỏng vật lý thực (va chạm) qua Rapier</li><li>Lưu trữ và quản lý các thiết kế phòng tùy chỉnh</li> |
-| **Admin Dashboard** | <li>Biểu đồ tương tác doanh thu và lượt truy cập (Recharts)</li><li>Quản lý CRUD cho Sản phẩm, Đơn hàng, Danh mục</li><li>Import/Export sản phẩm hàng loạt qua Excel (`Apache POI`)</li><li>Tự động tạo hóa đơn PDF (`OpenHTMLToPDF`)</li> |
+| **Bảo mật & Tài khoản** | <li>Xác thực JWT & Đăng nhập Google OAuth2</li><li>Bảo mật 2 lớp (Two-Factor Authentication - 2FA)</li><li>Liên kết tài khoản Discord</li><li>Quy trình Khôi phục mật khẩu qua Email</li> |
+| **Trải nghiệm Mua sắm** | <li>Danh mục sản phẩm với bộ lọc động & Tìm kiếm</li><li>Hệ thống Đánh giá (Review) và Yêu thích (Wishlist)</li><li>Quản lý Giỏ hàng bảo mật</li><li>Xác thực Đơn hàng bằng Mã OTP qua Email</li> |
+| **Công cụ Thiết kế 3D** | <li>Không gian 3D tương tác qua `react-three/fiber`</li><li>Kéo thả mô hình 3D nội thất chuẩn `.glb`/`.gltf`</li><li>Tương tác vật lý thực (chống xuyên thấu) qua Rapier</li><li>Lưu trữ và quản lý các thiết kế phòng cá nhân</li> |
+| **Quản trị (Admin CMS)** | <li>Báo cáo doanh thu & truy cập tương tác (Recharts)</li><li>Quản lý phân loại sâu (Màu sắc/Chất liệu)</li><li>Nhập liệu Sản phẩm hàng loạt qua Excel (`Apache POI`)</li><li>Tự động xuất Hóa đơn điện tử PDF (`OpenHTMLToPDF`)</li><li>Phân quyền (RBAC) và Khóa tài khoản rủi ro</li> |
 
 ---
 

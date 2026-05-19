@@ -44,9 +44,10 @@ Beyond the 3D experience, Etalian is a robust, production-ready system featuring
 
 | Category | Features |
 | :--- | :--- |
-| **Customer Experience** | <li>JWT Authentication (Login, Register, Password Reset)</li><li>Google OAuth2 Integration</li><li>Product catalog with dynamic filtering & search</li><li>Wishlist and Review system</li><li>Cart and Secure Checkout process</li> |
+| **Security & Account** | <li>JWT Authentication & Google OAuth2</li><li>Two-Factor Authentication (2FA) Toggle</li><li>Discord Account Linking</li><li>Password Reset Workflow</li> |
+| **Customer Experience** | <li>Dynamic Product Catalog (Search & Filter)</li><li>Product Wishlist & User Reviews</li><li>Secure Cart Management</li><li>Order Verification via Email OTP</li> |
 | **3D Room Designer** | <li>Interactive Canvas via `react-three/fiber`</li><li>Drag-and-drop `.glb`/`.gltf` 3D model placement</li><li>Real-time physics (collisions) via Rapier</li><li>Save and manage custom room layouts</li> |
-| **Admin Dashboard** | <li>Interactive sales and visitor analytics (Recharts)</li><li>CRUD management for Products, Orders, Categories</li><li>Bulk product import/export via Excel (`Apache POI`)</li><li>Automated PDF Invoice generation (`OpenHTMLToPDF`)</li> |
+| **Admin Dashboard** | <li>Interactive sales & visitor analytics (Recharts)</li><li>Advanced Product Variants (Color/Material)</li><li>Bulk product import/export via Excel (`Apache POI`)</li><li>Automated PDF Invoice generation (`OpenHTMLToPDF`)</li><li>Role-Based Access Control (RBAC) & Account Locks</li> |
 
 ---
 

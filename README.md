@@ -113,11 +113,33 @@ Below are some of the core endpoints implemented in this project:
 - 🖼️ **UI Screenshot:** *(USER: Insert a beautiful screenshot of your Shop or Product Detail page here)*
 ![Storefront UI](docs/screenshots/storefront.png)
 
-### 3. Comprehensive Admin Dashboard
-- **What it does:** Provides real-time interactive analytics via Recharts, full CRUD management, and automated bulk product import/export through Excel.
-- **Business Value:** Saves store managers hours of manual work by centralizing data, generating automated PDF invoices, and visualizing revenue trends intuitively.
-- 🖼️ **Dashboard Screenshot:** *(USER: Insert a screenshot of the Admin analytics charts here)*
-![Admin Dashboard](docs/screenshots/admin.png)
+### 3. Comprehensive Admin Dashboard & Content Management (CMS)
+- **What it does:** A centralized control panel providing real-time interactive analytics via Recharts, full CRUD management, and complex data handling (bulk imports, 3D assets).
+- **Business Value:** Saves store managers hours of manual work by centralizing data, automating inventory processes, and visualizing revenue trends intuitively.
+
+#### 👑 Admin Features & User Guide
+> **⚠️ Critical Note:** The Admin CMS is the backbone of the platform. Actions performed here directly dictate what appears on the Storefront and the 3D Room Designer.
+
+* **A. Analytics & Dashboard:**
+  * Displays real-time revenue, order status distribution, and top-selling products using interactive charts.
+  * 🖼️ **Screenshot:** *(USER: Insert your `admin-dashboard.png` here)*
+  * ![Dashboard Analytics](docs/screenshots/admin-dashboard.png)
+
+* **B. Advanced Product & Asset Management:**
+  * **Variants (Color/Material):** Must be configured *before* adding products. Defines the exact attributes customers can filter by on the storefront.
+  * **3D Model Uploads (.glb/.gltf):** Directly powers the 3D Room Designer. When a 3D model is uploaded to a product via Cloudinary, that product automatically becomes available in the 3D canvas.
+  * **Excel Bulk Import:** Allows importing hundreds of products instantly via Apache POI. Ensure prices and stock data are properly formatted to prevent storefront errors.
+  * 🎬 **Video/GIF:** *(USER: Insert `admin-products.gif` showing the creation of a product and uploading a 3D model here)*
+  * ![Product Management](docs/screenshots/admin-products.gif)
+
+* **C. Order Fulfillment & Invoice Generation:**
+  * Track order lifecycles (Pending -> Processing -> Shipped -> Delivered).
+  * Automatically generates downloadable PDF Invoices using `OpenHTMLToPDF` when orders are processed.
+  * 🖼️ **Screenshot:** *(USER: Insert your `admin-orders.png` here)*
+  * ![Order Management](docs/screenshots/admin-orders.png)
+
+* **D. User & Access Control:**
+  * Manage customer accounts and enforce Role-Based Access Control (RBAC) to ensure security across the platform.
 
 ---
 

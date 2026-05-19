@@ -113,11 +113,33 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 - 🖼️ **Hình Ảnh Giao Diện:** *(USER: Chèn ảnh trang Shop, hoặc trang Chi Tiết Sản Phẩm tại đây)*
 ![Giao diện Cửa Hàng](docs/screenshots/storefront.png)
 
-### 3. Bảng Điều Khiển Quản Trị Hệ Thống (Admin Dashboard)
-- **Hoạt động:** Cung cấp báo cáo thống kê qua biểu đồ Recharts, xử lý Import/Export sản phẩm hàng loạt (Excel) tự động, và quản trị đơn hàng, người dùng toàn diện.
-- **Giá trị cốt lõi:** Giúp nhà bán hàng tiết kiệm hàng chục giờ thao tác thủ công, quản trị mọi mặt của cửa hàng tại một nơi duy nhất.
-- 🖼️ **Hình Ảnh Thống Kê:** *(USER: Chèn ảnh biểu đồ Admin Dashboard tại đây)*
-![Admin Dashboard](docs/screenshots/admin.png)
+### 3. Hệ Thống Quản Trị Trung Tâm (Admin Dashboard & CMS)
+- **Tính năng:** Cung cấp bảng điều khiển tập trung với các biểu đồ phân tích thời gian thực (Recharts), quản lý toàn diện (CRUD) và xử lý dữ liệu phức tạp (nhập file Excel, quản lý file 3D).
+- **Giá trị cốt lõi:** Tiết kiệm hàng giờ thao tác thủ công cho người quản lý bằng cách tự động hóa quy trình kho hàng và trực quan hóa doanh thu.
+
+#### 👑 Các Tính Năng & Hướng Dẫn Sử Dụng (User Guide)
+> **⚠️ Lưu ý quan trọng:** Hệ thống Admin là xương sống của nền tảng. Mọi thao tác tại đây sẽ định hình trực tiếp dữ liệu hiển thị ở giao diện mua sắm và công cụ Thiết kế 3D.
+
+* **A. Bảng Điều Khiển Phân Tích (Analytics):**
+  * Theo dõi doanh thu thời gian thực, trạng thái đơn hàng và sản phẩm bán chạy nhất qua các biểu đồ tương tác.
+  * 🖼️ **Ảnh chụp:** *(USER: Chèn ảnh `admin-dashboard.png` của bạn vào đây)*
+  * ![Dashboard Analytics](docs/screenshots/admin-dashboard.png)
+
+* **B. Quản Lý Sản Phẩm & Tài Nguyên 3D Tiên Tiến:**
+  * **Quản lý Thuộc tính (Màu sắc/Vật liệu):** Cần được thiết lập *trước khi* tạo sản phẩm. Quyết định các bộ lọc mà khách hàng dùng trên Storefront.
+  * **Tải lên Mô hình 3D (.glb/.gltf):** Cấp dữ liệu trực tiếp cho 3D Room Designer. Khi sản phẩm được đính kèm file 3D qua Cloudinary, nó sẽ tự động xuất hiện trong công cụ vẽ phòng ảo.
+  * **Nhập liệu hàng loạt (Excel Bulk Import):** Thêm hàng trăm sản phẩm chỉ trong 1 giây thông qua thư viện Apache POI.
+  * 🎬 **Video/GIF:** *(USER: Chèn `admin-products.gif` quay cảnh thêm sản phẩm và upload file 3D vào đây)*
+  * ![Product Management](docs/screenshots/admin-products.gif)
+
+* **C. Xử Lý Đơn Hàng & Xuất Hóa Đơn:**
+  * Quản lý vòng đời đơn hàng (Chờ duyệt -> Đang xử lý -> Đang giao -> Hoàn thành).
+  * Tự động xuất Hóa đơn PDF (PDF Invoice) thông qua thư viện `OpenHTMLToPDF`.
+  * 🖼️ **Ảnh chụp:** *(USER: Chèn ảnh `admin-orders.png` của bạn vào đây)*
+  * ![Order Management](docs/screenshots/admin-orders.png)
+
+* **D. Quản Lý Người Dùng & Phân Quyền (RBAC):**
+  * Quản lý tài khoản khách hàng, khóa/mở khóa tài khoản và phân quyền bảo mật chặt chẽ cho toàn hệ thống.
 
 ---
 

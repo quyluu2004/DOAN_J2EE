@@ -132,13 +132,13 @@ Below are some of the core endpoints implemented in this project:
 #### 👑 Admin Features & User Guide
 > **⚠️ Critical Note:** The Admin CMS is the backbone of the platform. Actions performed here directly dictate what appears on the Storefront and the 3D Room Designer.
 
-* **A. Analytics & Dashboard:**
+* **1. Analytics & Dashboard:**
   * **What it does:** Displays real-time revenue, order status distribution, and top-selling products using interactive charts.
   * 📝 **How to Use:** Login as Admin -> View the default Dashboard page -> Hover over the charts to see exact revenue numbers -> Use the date filters to analyze specific periods.
   * 🖼️ **Screenshot:** *(USER: Insert your `admin-dashboard.png` here)*
   * ![Dashboard Analytics](docs/screenshots/admin-dashboard.png)
 
-* **B. Advanced Product & Asset Management:**
+* **2. Advanced Product & Asset Management:**
   * **What it does:** Complete control over catalog, inventory, Excel bulk operations, and 3D assets.
   * 📝 **How to Use:**
     1. **Setup Attributes:** Navigate to *Colors* & *Materials* menus first. Create necessary variants.
@@ -148,13 +148,13 @@ Below are some of the core endpoints implemented in this project:
   * 🎬 **Video/GIF:** *(USER: Insert `admin-products.gif` showing the creation of a product and uploading a 3D model here)*
   * ![Product Management](docs/screenshots/admin-products.gif)
 
-* **C. Order Fulfillment & Invoice Generation:**
+* **3. Order Fulfillment & Invoice Generation:**
   * **What it does:** Manages customer orders and automated billing.
   * 📝 **How to Use:** Go to *Orders* -> Click on a Pending order to view details -> Update status to 'Processing' -> Click the **Generate Invoice** button to download the automated PDF -> Update to 'Shipped' when handled.
   * 🖼️ **Screenshot:** *(USER: Insert your `admin-orders.png` here)*
   * ![Order Management](docs/screenshots/admin-orders.png)
 
-* **D. User & Access Control (RBAC):**
+* **4. User & Access Control (RBAC):**
   * **What it does:** Manages system security and staff access.
   * 📝 **How to Use:** Go to *Users* -> View all registered accounts -> Use the toggle to lock/unlock suspicious accounts -> Assign 'Admin' or 'User' roles to specific emails.
 

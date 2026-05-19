@@ -196,10 +196,16 @@ cp src/main/resources/application.properties.example src/main/resources/applicat
   * `CLOUDINARY_URL`: Set your Cloudinary API credentials for uploading 3D assets & images.
   * `spring.mail.*`: Set your Gmail SMTP application password for OTP email dispatch.
 * Boot up the Backend using the Maven wrapper:
-```sh
-./mvnw spring-boot:run
-```
-*(The schema tables will automatically generate using JPA Entity mappings via `ddl-auto: update`)*
+  * **On Windows (CMD/PowerShell):**
+    ```cmd
+    mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev
+    ```
+  * **On macOS/Linux:**
+    ```sh
+    chmod +x mvnw
+    ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+    ```
+*(The schema tables will automatically generate using JPA Entity mappings. Appending `-Dspring-boot.run.profiles=dev` activates the `DataSeeder.java` component to pre-populate Colors, Materials, and Collections into your local database so the storefront displays correctly)*
 
 #### 4. Configure & Run Frontend
 * Open a new terminal window, navigate to the frontend directory, and create the environment file:
@@ -217,6 +223,25 @@ npm install
 npm run dev
 ```
 * Open your browser and navigate to `http://localhost:5173` to explore!
+
+---
+
+### 💡 Developer Pro-Tips
+
+To fully experience all features of the application locally without any issues, keep these helpful tips in mind:
+
+#### 1. Creating a Local Admin Account
+For security reasons, the platform does not seed a default hardcoded administrator account. To access the **Admin Dashboard**:
+1. Register a standard user account on your local website (`http://localhost:5173`).
+2. Open your MySQL client and execute this simple SQL command to elevate your account role:
+   ```sql
+   UPDATE users SET role = 'ADMIN' WHERE email = 'your_registered_email@example.com';
+   ```
+3. Log out and log back in on the storefront. The Admin CMS navigation links will instantly appear!
+
+#### 2. Caching & OTP Verification Details
+* **Redis Caching:** Redis is configured as optional by default in `application.properties` so the server **will not crash** if you do not have a local Redis server installed. If you wish to enable performance-caching, launch a local Redis instance and configure the properties.
+* **OTP Code Access:** If you have not configured a real Gmail app password in `application.properties` for sending verification emails, you can simply view the generated OTP directly in the Backend terminal logs when signing up or resetting passwords.
 
 ---
 

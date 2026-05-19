@@ -196,10 +196,16 @@ cp src/main/resources/application.properties.example src/main/resources/applicat
   * `CLOUDINARY_URL`: Cấu hình URL Cloudinary của bạn để lưu trữ/upload ảnh & file 3D.
   * `spring.mail.*`: Cấu hình tài khoản email gửi mã OTP (sử dụng mật khẩu ứng dụng Gmail).
 * Khởi chạy Backend bằng Maven Wrapper:
-```sh
-./mvnw spring-boot:run
-```
-*(Backend sẽ tự động sinh các bảng database dựa trên JPA Entities thông qua cấu hình `ddl-auto: update`)*
+  * **Hệ điều hành Windows (CMD/PowerShell):**
+    ```cmd
+    mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev
+    ```
+  * **Hệ điều hành macOS/Linux:**
+    ```sh
+    chmod +x mvnw
+    ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+    ```
+*(Backend sẽ tự động sinh các bảng database dựa trên JPA Entities. Việc thêm tham số `-Dspring-boot.run.profiles=dev` sẽ giúp kích hoạt `DataSeeder.java` tự động nạp trước danh sách Màu sắc (Colors), Chất liệu (Materials), và Bộ sưu tập (Collections) vào database để hiển thị đầy đủ trên Storefront)*
 
 #### 4. Thiết Lập & Khởi Chạy Frontend
 * Mở một terminal mới, chuyển hướng đến thư mục frontend và tạo file môi trường:
@@ -217,6 +223,25 @@ npm install
 npm run dev
 ```
 * Mở trình duyệt và truy cập: `http://localhost:5173` để trải nghiệm!
+
+---
+
+### 💡 Mẹo Nhà Phát Triển (Developer Pro-Tips)
+
+Để trải nghiệm toàn bộ tính năng của dự án trên máy cá nhân mà không gặp rào cản nào, hãy lưu ý hai mẹo nhỏ sau:
+
+#### 1. Tạo Tài Khoản Admin Đầy Đủ Quyền (Admin CMS Access)
+Vì lý do bảo mật, hệ thống không tự động tạo sẵn một tài khoản Admin mặc định với mật khẩu cố định. Để truy cập **Admin Dashboard**:
+1. Đăng ký một tài khoản thông thường (chọn Đăng Ký trên trang web `http://localhost:5173`).
+2. Mở MySQL client và thực hiện câu lệnh SQL sau để nâng cấp quyền lên `ADMIN`:
+   ```sql
+   UPDATE users SET role = 'ADMIN' WHERE email = 'email_dang_ky_cua_ban@example.com';
+   ```
+3. Đăng xuất và đăng nhập lại trên trang web. Bạn sẽ thấy tùy chọn truy cập trang quản trị Admin CMS xuất hiện!
+
+#### 2. Về Cấu Hình Caching & OTP
+* **Redis Caching:** Hệ thống đã được cấu hình loại trừ (exclude) tự động trong file `application.properties` để **không bị lỗi crash** nếu máy của bạn chưa cài đặt Redis. Nếu muốn kích hoạt Caching tối ưu hiệu năng, hãy chạy Redis cục bộ và cấu hình lại biến `REDIS_EXCLUDE` trong file cấu hình.
+* **Gửi Mã OTP:** Khi đăng ký hoặc quên mật khẩu, hệ thống sẽ gửi OTP qua email. Nếu chưa cấu hình mật khẩu ứng dụng Gmail thực tế trong `application.properties`, bạn có thể kiểm tra trực tiếp mã OTP được in ra trong cửa sổ log console của Backend.
 
 ---
 

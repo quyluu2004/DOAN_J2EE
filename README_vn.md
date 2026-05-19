@@ -167,6 +167,13 @@ Dự án được phân tách rõ ràng để tối ưu hóa việc lưu trữ c
 1. Kết nối Github repository của bạn với Render.
 2. Sử dụng `render.yaml` Blueprint để hệ thống tự động khởi tạo các dịch vụ tương ứng.
 
+### ⚠️ Lưu ý về Môi trường Triển khai (Demo/Portfolio Purpose)
+Việc triển khai hiện tại (Render Free Tier + Vercel + Managed Cloud DBs) được thiết lập chủ yếu nhằm mục đích **Demo dự án và Portfolio**, giúp nhà tuyển dụng có thể trải nghiệm trực tiếp hệ thống. Nó **không** phải là một hệ thống thiết lập cho Production chịu tải cao do có một số hạn chế (Trade-offs) sau:
+
+- **Khởi động lạnh (Cold Starts):** Dịch vụ Backend trên Render (bản Free) sẽ tự động "ngủ" sau 15 phút không có request. Do đó, request đầu tiên có thể mất từ 30 - 50 giây để server khởi động lại.
+- **Giới hạn tài nguyên (Rate/Storage Limits):** Các dịch vụ như Cloudinary (chứa ảnh/model 3D), MySQL và Redis đang sử dụng gói miễn phí. Hệ thống sẽ không thể xử lý lượng lớn kết nối đồng thời hoặc băng thông tải các mô hình 3D dung lượng cao.
+- **Thiếu tính khả dụng cao (High Availability):** Để đưa lên Production thực tế, kiến trúc này cần được bổ sung thêm Load Balancer, các Replica cho Database, và sử dụng dịch vụ lưu trữ Object Storage chuyên dụng (như AWS S3) kết hợp CDN thay vì Cloudinary Free.
+
 ---
 
 ## Liên Hệ (Contact)

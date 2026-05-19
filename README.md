@@ -154,18 +154,25 @@ Follow these steps to run the project locally.
 
 ## Deployment
 
-Etalian is designed to be easily deployable using modern PaaS providers and containerization.
+Etalian is designed to be easily deployable using modern PaaS providers and Docker containerization.
 
 ### Using Render, Vercel & Docker
-The repository is structured to separate concerns, allowing optimal hosting for each tier.
-1. **Frontend:** The React SPA is deployed on **Vercel** for lightning-fast global CDN delivery and CI/CD via GitHub integration.
-2. **Backend:** Deployed as a Web Service on **Render.com** using Docker (via the provided `render.yaml` and `.dockerignore`).
-3. **Database:** Connected to a managed MySQL instance (e.g., Aiven, AWS RDS, or Render MySQL/PostgreSQL).
+The project is deliberately split to optimize hosting for each environment:
+1. **Frontend:** React SPA deployed on **Vercel** to take advantage of global CDN delivery and automated CI/CD from GitHub.
+2. **Backend:** Deployed as a Web Service on **Render.com** via Docker (using the provided `render.yaml` and `.dockerignore`).
+3. **Database:** Connected to a managed MySQL instance (e.g., Aiven, AWS RDS, or Render MySQL).
 4. **Cache:** Connected to a managed Redis instance (e.g., Upstash, Render Redis).
 
-To deploy via Render blueprint:
+To deploy via Render Blueprint:
 1. Connect your GitHub repository to Render.
-2. Use the `render.yaml` Blueprint to automatically provision the services.
+2. Use the provided `render.yaml` Blueprint to auto-provision the services.
+
+### ⚠️ Deployment Disclaimer (Demo/Portfolio Purpose)
+The current deployment architecture (Render Free Tier + Vercel + Managed Cloud DBs) is specifically configured for **Demo and Portfolio purposes**, allowing recruiters and peers to interact with the system live. It is **not** a high-traffic production setup due to the following trade-offs and limitations:
+
+- **Cold Starts:** The Backend service on Render (Free Tier) spins down after 15 minutes of inactivity. As a result, the very first request might take 30-50 seconds as the server wakes up.
+- **Resource Limits:** External services like Cloudinary (for images/3D models), MySQL, and Redis are on free tiers. They cannot sustain large spikes in concurrent connections or high-bandwidth 3D model streaming.
+- **Lack of High Availability:** A true production environment for this application would require Load Balancers, Database Replicas, and a dedicated Object Storage service (like AWS S3) with a robust CDN instead of the current free tier services.
 
 ---
 

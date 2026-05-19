@@ -132,25 +132,30 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 > **⚠️ Lưu ý quan trọng:** Hệ thống Admin là xương sống của nền tảng. Mọi thao tác tại đây sẽ định hình trực tiếp dữ liệu hiển thị ở giao diện mua sắm và công cụ Thiết kế 3D.
 
 * **A. Bảng Điều Khiển Phân Tích (Analytics):**
-  * Theo dõi doanh thu thời gian thực, trạng thái đơn hàng và sản phẩm bán chạy nhất qua các biểu đồ tương tác.
+  * **Tính năng:** Theo dõi doanh thu thời gian thực, trạng thái đơn hàng và sản phẩm bán chạy nhất qua các biểu đồ tương tác.
+  * 📝 **Hướng dẫn sử dụng:** Đăng nhập tài khoản Admin -> Xem trang Dashboard mặc định -> Rê chuột vào các biểu đồ Recharts để xem số liệu doanh thu chi tiết.
   * 🖼️ **Ảnh chụp:** *(USER: Chèn ảnh `admin-dashboard.png` của bạn vào đây)*
   * ![Dashboard Analytics](docs/screenshots/admin-dashboard.png)
 
 * **B. Quản Lý Sản Phẩm & Tài Nguyên 3D Tiên Tiến:**
-  * **Quản lý Thuộc tính (Màu sắc/Vật liệu):** Cần được thiết lập *trước khi* tạo sản phẩm. Quyết định các bộ lọc mà khách hàng dùng trên Storefront.
-  * **Tải lên Mô hình 3D (.glb/.gltf):** Cấp dữ liệu trực tiếp cho 3D Room Designer. Khi sản phẩm được đính kèm file 3D qua Cloudinary, nó sẽ tự động xuất hiện trong công cụ vẽ phòng ảo.
-  * **Nhập liệu hàng loạt (Excel Bulk Import):** Thêm hàng trăm sản phẩm chỉ trong 1 giây thông qua thư viện Apache POI.
+  * **Tính năng:** Kiểm soát toàn bộ danh mục, tồn kho, thao tác file Excel và quản lý file 3D.
+  * 📝 **Hướng dẫn sử dụng:**
+    1. **Thiết lập Thuộc tính:** Vào menu *Colors* & *Materials* để tạo màu sắc/chất liệu trước.
+    2. **Thêm Sản phẩm:** Vào menu *Products* -> Thêm mới -> Điền thông tin và chọn Color/Material đã tạo.
+    3. **Tích hợp 3D:** Trong trang chỉnh sửa sản phẩm, upload file `.glb/.gltf` qua widget Cloudinary. Sản phẩm này sẽ tự động xuất hiện trong công cụ vẽ 3D ở trang chủ.
+    4. **Nhập liệu hàng loạt:** Nhấn nút *Import Excel*, chọn file `.xlsx`. Hệ thống sẽ tự động quét và thêm hàng trăm sản phẩm cùng lúc.
   * 🎬 **Video/GIF:** *(USER: Chèn `admin-products.gif` quay cảnh thêm sản phẩm và upload file 3D vào đây)*
   * ![Product Management](docs/screenshots/admin-products.gif)
 
 * **C. Xử Lý Đơn Hàng & Xuất Hóa Đơn:**
-  * Quản lý vòng đời đơn hàng (Chờ duyệt -> Đang xử lý -> Đang giao -> Hoàn thành).
-  * Tự động xuất Hóa đơn PDF (PDF Invoice) thông qua thư viện `OpenHTMLToPDF`.
+  * **Tính năng:** Quản lý vòng đời đơn hàng và thanh toán tự động.
+  * 📝 **Hướng dẫn sử dụng:** Vào menu *Orders* -> Bấm vào một đơn hàng 'Pending' để xem chi tiết -> Đổi trạng thái sang 'Processing' -> Bấm nút **Xuất Hóa Đơn** (Generate Invoice) để tải file PDF tự động -> Cập nhật sang 'Shipped' khi đã giao cho vận chuyển.
   * 🖼️ **Ảnh chụp:** *(USER: Chèn ảnh `admin-orders.png` của bạn vào đây)*
   * ![Order Management](docs/screenshots/admin-orders.png)
 
 * **D. Quản Lý Người Dùng & Phân Quyền (RBAC):**
-  * Quản lý tài khoản khách hàng, khóa/mở khóa tài khoản và phân quyền bảo mật chặt chẽ cho toàn hệ thống.
+  * **Tính năng:** Quản lý tài khoản khách hàng và bảo mật hệ thống.
+  * 📝 **Hướng dẫn sử dụng:** Vào menu *Users* -> Xem danh sách tài khoản -> Dùng nút gạt (toggle) để khóa/mở khóa các tài khoản đáng ngờ -> Phân quyền 'Admin' hoặc 'User' cho từng người.
 
 ---
 

@@ -167,12 +167,16 @@ To deploy via Render Blueprint:
 1. Connect your GitHub repository to Render.
 2. Use the provided `render.yaml` Blueprint to auto-provision the services.
 
-### ⚠️ Deployment Disclaimer & Technical Mitigations
-The current deployment architecture (Render Free Tier + Vercel + Managed Cloud DBs) is designed for **Demo and Portfolio purposes**. However, to demonstrate production-readiness, several engineering mitigations have been implemented in the codebase:
+### ⚙️ Production Readiness & Technical Mitigations
 
-- **Cold Starts (100% Mitigated):** Render's Free Tier normally spins down after 15 minutes of inactivity, causing a 30-50s cold start. **Mitigation:** We implemented a GitHub Actions cron job (`.github/workflows/keep-render-alive.yml`) that pings the server every 10 minutes, keeping the instance continuously warm.
-- **Resource/Rate Limits (70% Mitigated):** Free tiers for MySQL and Redis have strict connection limits. **Mitigation:** The codebase heavily utilizes Redis caching (e.g., `ProductCacheService.java` with 1-hour TTL) and JPA query optimizations to drastically reduce database hits. However, Cloudinary bandwidth limits for large 3D `.glb` files cannot be bypassed on a free tier.
-- **High Availability (100% Architecturally Ready):** While currently running on single free nodes, the system is fundamentally designed for High Availability (HA). The backend is completely stateless (using JWT for Auth) and caching is centralized (Redis). Moving to a true production environment only requires infrastructure scaling (adding Load Balancers, Database Replicas, AWS S3 + CDN), with **zero codebase changes required**.
+> **Note:** The live demo is hosted on free-tier infrastructure (Render, Vercel, Cloud DBs) for portfolio purposes. However, the codebase is engineered to handle production-scale challenges.
+
+| Infrastructure Limitation | Free-Tier Constraint | Engineering Mitigation (Codebase Level) | Readiness |
+| :--- | :--- | :--- | :---: |
+| ❄️ **Cold Starts** | Render spins down after 15 mins of inactivity | Implemented GitHub Actions Cron (`keep-render-alive.yml`) to automatically ping and keep the server warm | 🟢 **100%** |
+| 🗄️ **Database Overload** | Free MySQL/Redis have strict connection limits | Applied **Redis Caching** (`ProductCacheService` with TTL) and JPA optimizations to drastically reduce DB hits | 🟡 **70%** |
+| ⚖️ **High Availability (HA)**| Currently running on a single free node | Architecture is fully **Stateless** (JWT Auth) with centralized caching. Ready to scale horizontally (Load Balancers, Replicas) with zero code changes | 🟢 **100%** |
+| 📦 **Asset Bandwidth** | Cloudinary limits large 3D `.glb` streaming | *Physical limitation of free tier.* Production scale requires migrating to AWS S3 + CloudFront CDN | 🔴 **Pending** |
 
 ---
 

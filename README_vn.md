@@ -167,12 +167,16 @@ Dự án được phân tách rõ ràng để tối ưu hóa việc lưu trữ c
 1. Kết nối Github repository của bạn với Render.
 2. Sử dụng `render.yaml` Blueprint để hệ thống tự động khởi tạo các dịch vụ tương ứng.
 
-### ⚠️ Lưu ý Triển khai & Giải pháp Khắc phục (Technical Mitigations)
-Việc triển khai hiện tại (Render Free Tier + Vercel + Managed Cloud DBs) được thiết lập chủ yếu cho mục đích **Demo dự án và Portfolio**. Tuy nhiên, để chứng minh tư duy kỹ thuật cấp Production, dự án đã triển khai các giải pháp khắc phục (mitigations) trực tiếp trong source code:
+### ⚙️ Tính Khả Thi Production & Giải Pháp Kỹ Thuật
 
-- **Khởi động lạnh - Cold Starts (Đã giải quyết 100%):** Dịch vụ Render Free thường "ngủ" sau 15 phút, gây ra delay 30-50s cho request đầu tiên. **Giải pháp:** Đã thiết lập một luồng tự động qua GitHub Actions (`.github/workflows/keep-render-alive.yml`) để ping server mỗi 10 phút, giữ cho backend luôn thức.
-- **Giới hạn tài nguyên - Rate/Storage Limits (Đã giải quyết 70%):** Cơ sở dữ liệu miễn phí có giới hạn kết nối nghiêm ngặt. **Giải pháp:** Hệ thống đã tích hợp Redis Caching (`ProductCacheService.java` với TTL 1 giờ) và tối ưu truy vấn JPA để giảm tải tối đa cho MySQL. Tuy nhiên, giới hạn băng thông của Cloudinary khi tải các file 3D `.glb` nặng là giới hạn vật lý của gói Free không thể vượt qua bằng code.
-- **Tính khả dụng cao - High Availability (Sẵn sàng 100% về mặt Kiến trúc):** Dù đang chạy trên các node đơn lẻ miễn phí, kiến trúc codebase đã hoàn toàn sẵn sàng cho HA. Backend hoàn toàn phi trạng thái (Stateless) nhờ sử dụng JWT, và bộ nhớ đệm được tập trung hóa (Redis). Để nâng cấp lên môi trường Production thực tế chịu tải lớn, chỉ cần mở rộng hạ tầng (thêm Load Balancers, Database Replicas, AWS S3 + CDN) mà **không cần sửa đổi bất kỳ dòng code nào**.
+> **Lưu ý:** Website hiện đang chạy trên hạ tầng miễn phí (Render, Vercel) nhằm mục đích Demo. Tuy nhiên, codebase đã được tối ưu hóa ở mức độ hệ thống để sẵn sàng cho môi trường Production thực tế.
+
+| Thách Thức Hệ Thống | Giới Hạn Hạ Tầng (Free Tier) | Giải Pháp Kỹ Thuật (Mitigation in Code) | Độ Hoàn Thiện |
+| :--- | :--- | :--- | :---: |
+| ❄️ **Khởi Động Lạnh (Cold Starts)** | Render tắt server sau 15 phút không hoạt động | Tự động hóa bằng GitHub Actions Cron (`keep-render-alive.yml`) để ping và giữ server luôn thức | 🟢 **100%** |
+| 🗄️ **Quá Tải Cơ Sở Dữ Liệu** | MySQL miễn phí giới hạn nghiêm ngặt số kết nối | Triển khai **Redis Caching** (`ProductCacheService` với TTL) và tối ưu JPA để giảm tải tối đa cho DB | 🟡 **70%** |
+| ⚖️ **Tính Khả Dụng Cao (HA)** | Đang chạy trên 1 node duy nhất (Single Node) | Kiến trúc hoàn toàn **Stateless** (JWT Auth). Dễ dàng scale ngang (Thêm Load Balancer, Replica) mà không cần sửa code | 🟢 **100%** |
+| 📦 **Giới Hạn Băng Thông** | Cloudinary giới hạn tải file 3D `.glb` nặng | *Giới hạn vật lý của bản Free.* Cần nâng cấp lên kiến trúc AWS S3 + CloudFront CDN cho quy mô doanh nghiệp | 🔴 **Pending** |
 
 ---
 

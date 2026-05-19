@@ -190,11 +190,20 @@ CREATE DATABASE etalian_website CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 cd backend
 cp src/main/resources/application.properties.example src/main/resources/application.properties
 ```
-* Mở file `src/main/resources/application.properties` mới tạo và điền các cấu hình của bạn:
-  * `spring.datasource.password`: Mật khẩu tài khoản MySQL của bạn.
-  * `jwt.secret`: Điền mã bảo mật JWT (ví dụ: `YOUR_SECRET_KEY_WITH_AT_LEAST_256_BITS`).
-  * `CLOUDINARY_URL`: Cấu hình URL Cloudinary của bạn để lưu trữ/upload ảnh & file 3D.
-  * `spring.mail.*`: Cấu hình tài khoản email gửi mã OTP (sử dụng mật khẩu ứng dụng Gmail).
+* Mở file `src/main/resources/application.properties` mới tạo và điền các thông số cấu hình. Dưới đây là phân tích chi tiết về các trường bắt buộc và tùy chọn để hệ thống vận hành hoàn hảo:
+
+  | Tham số cấu hình | Trạng thái | Giá trị mặc định (Fallback) | Ý nghĩa & Cách lấy thông tin |
+  | :--- | :--- | :--- | :--- |
+  | **`spring.datasource.url`** | 🟡 **Khuyến nghị đổi** | Cổng DB đám mây hoạt động sẵn | **Kết nối CSDL MySQL.** Mặc định dự án kết nối đến Cloud DB được cung cấp sẵn để chạy thử nghiệm ngay. Để chạy độc lập dưới local, hãy cài đặt MySQL Server và đổi thành: `jdbc:mysql://127.0.0.1:3306/etalian_website?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC` |
+  | **`spring.datasource.username`** | 🟡 **Khuyến nghị đổi** | `your_db_username` | **Tên đăng nhập MySQL.** (Thường là `root` khi chạy dưới máy cá nhân) |
+  | **`spring.datasource.password`** | 🟡 **Khuyến nghị đổi** | `your_db_password` | **Mật khẩu MySQL.** Điền mật khẩu MySQL local của bạn nếu đổi sang database cá nhân. |
+  | **`cloudinary.url`** | 🔴 **BẮT BUỘC để dùng 3D** | *(Để trống)* | **URL kết nối Cloudinary.** Dùng để lưu trữ hình ảnh sản phẩm và upload/truy xuất file 3D (.glb). <br>👉 *Cách lấy:* Đăng ký tài khoản miễn phí tại [Cloudinary](https://cloudinary.com/) -> Vào Dashboard -> Copy giá trị **API Environment variable** (dạng `cloudinary://API_KEY:API_SECRET@CLOUD_NAME`). |
+  | **`jwt.secret`** | 🟢 **Không bắt buộc** | `your_jwt_secret_key` | **Khóa bảo mật mã hóa JWT.** Dùng để tạo token đăng nhập. Đã cấu hình sẵn khóa an toàn, bạn có thể giữ nguyên hoặc đổi thành chuỗi ngẫu nhiên bằng cách chạy lệnh `openssl rand -base64 64` trên terminal. |
+  | **`spring.mail.username`** <br> `spring.mail.password` | 🟢 **Không bắt buộc** | `your_email@gmail.com` <br> `your_app_password` | **Cấu hình SMTP gửi email OTP.** Nhập tài khoản Gmail và Mật khẩu ứng dụng (App Password) của bạn để chạy gửi email. <br>👉 *Cách lấy:* Vào tài khoản Google cá nhân -> Bảo mật -> Bật xác minh 2 bước -> Tạo mật khẩu ứng dụng (App Password) và điền vào đây. |
+  | **`google.client-id`** <br> `facebook.app-id` | 🟢 **Không bắt buộc** | `your_google_client_id` <br> `your_facebook_app_id` | **Đăng nhập nhanh bằng MXH (Google & Facebook).** Điền thông tin Client ID và App ID của bạn để dùng tính năng đăng nhập nhanh. <br>👉 *Cách lấy:* Tạo ứng dụng trên Google Cloud Console & Meta for Developers để lấy ID mới. |
+  | **`discord.bot.token`** | 🟢 **Không bắt buộc** | `your_discord_bot_token` | **Gửi thông báo & OTP qua Discord bot.** Điền Token bot Discord của bạn nếu dùng tính năng này. |
+  | **`spring.autoconfigure.exclude`** | 🟢 **Không bắt buộc** | Loại trừ Redis Auto-Configuration | **Cấu hình Redis.** Theo mặc định, để tránh dự án bị lỗi tắt (crash) khi local không có Redis, cấu hình này đã loại trừ các class tự động khởi động của Redis. Nếu muốn kích hoạt Caching, hãy xóa giá trị này và chạy Redis cục bộ. |
+
 * Khởi chạy Backend bằng Maven Wrapper:
   * **Hệ điều hành Windows (CMD/PowerShell):**
     ```cmd

@@ -190,11 +190,20 @@ CREATE DATABASE etalian_website CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 cd backend
 cp src/main/resources/application.properties.example src/main/resources/application.properties
 ```
-* Open the newly created `src/main/resources/application.properties` file and configure your credentials:
-  * `spring.datasource.password`: Your local MySQL password.
-  * `jwt.secret`: Set a custom JWT secret (e.g. `YOUR_SECRET_KEY_WITH_AT_LEAST_256_BITS`).
-  * `CLOUDINARY_URL`: Set your Cloudinary API credentials for uploading 3D assets & images.
-  * `spring.mail.*`: Set your Gmail SMTP application password for OTP email dispatch.
+* Open the newly created `src/main/resources/application.properties` file and configure your credentials. Below is a detailed breakdown of mandatory and optional parameters required for local execution:
+
+  | Property | Status | Default Fallback Value | Purpose & Setup Instructions |
+  | :--- | :--- | :--- | :--- |
+  | **`spring.datasource.url`** | 🟡 **Recommended to change** | Pre-configured cloud DB | **MySQL Database Connection.** By default, the project connects to a cloud-hosted database so you can boot it instantly. To run in isolated local mode, install MySQL Server and set this to: `jdbc:mysql://127.0.0.1:3306/etalian_website?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC` |
+  | **`spring.datasource.username`** | 🟡 **Recommended to change** | `your_db_username` | **MySQL Username.** (Typically `root` on local machines) |
+  | **`spring.datasource.password`** | 🟡 **Recommended to change** | `your_db_password` | **MySQL Password.** Update this with your local MySQL password when shifting to a local DB. |
+  | **`cloudinary.url`** | 🔴 **MANDATORY for 3D** | *(Empty)* | **Cloudinary Connection URL.** Required to save product images and upload/stream `.glb`/`.gltf` 3D files dynamically. <br>👉 *How to get:* Register a free account on [Cloudinary](https://cloudinary.com/) -> Go to Dashboard -> Copy the **API Environment variable** value (looks like `cloudinary://API_KEY:API_SECRET@CLOUD_NAME`). |
+  | **`jwt.secret`** | 🟢 **Optional** | `your_jwt_secret_key` | **JWT Token Signature Secret Key.** Used to secure user login sessions. Pre-filled with a secure default key. You can generate a new one using the terminal command: `openssl rand -base64 64`. |
+  | **`spring.mail.username`** <br> `spring.mail.password` | 🟢 **Optional** | `your_email@gmail.com` <br> `your_app_password` | **Gmail SMTP OTP Dispatch Configuration.** Enter your Gmail account and Gmail App Password to enable OTP email dispatch. <br>👉 *To customize:* Go to Gmail -> Account Security -> Enable 2-Step Verification -> Create an App Password and insert credentials here. |
+  | **`google.client-id`** <br> `facebook.app-id` | 🟢 **Optional** | `your_google_client_id` <br> `your_facebook_app_id` | **Social Fast Authentication (Google & Facebook).** Enter your custom client ID and App ID to enable fast social logins. <br>👉 *To customize:* Create developer apps in Google Cloud Console & Meta for Developers to generate your custom credentials. |
+  | **`discord.bot.token`** | 🟢 **Optional** | `your_discord_bot_token` | **Discord Bot notifications & 2FA.** Enter your Discord Bot token if you wish to enable notifications. |
+  | **`spring.autoconfigure.exclude`** | 🟢 **Optional** | Redis Auto-Config classes excluded | **Redis Configuration.** Excluded by default to prevent application boot-crashes if Redis is not installed locally. To enable Redis catalog caching, clear this value and run a local Redis service. |
+
 * Boot up the Backend using the Maven wrapper:
   * **On Windows (CMD/PowerShell):**
     ```cmd

@@ -6,8 +6,16 @@ A robust, full-stack e-commerce solution integrating interactive 3D room design,
 
 [![Java 17](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](#)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4.3-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](#)
+[![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)](#)
+[![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](#)
+<br>
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](#)
+[![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](#)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](#)
 [![Three.js](https://img.shields.io/badge/Three.js-black?style=for-the-badge&logo=threedotjs&logoColor=white)](#)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](#)
+[![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](#)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](#)
 
 [View Live Demo](#) <!-- USER: Add your live deployment URL here -->
 
@@ -129,6 +137,23 @@ Follow these steps to run the project locally.
    npm install
    npm run dev
    ```
+
+---
+
+## Deployment
+
+Etalian is designed to be easily deployable using modern PaaS providers and containerization.
+
+### Using Render, Vercel & Docker
+The repository is structured to separate concerns, allowing optimal hosting for each tier.
+1. **Frontend:** The React SPA is deployed on **Vercel** for lightning-fast global CDN delivery and CI/CD via GitHub integration.
+2. **Backend:** Deployed as a Web Service on **Render.com** using Docker (via the provided `render.yaml` and `.dockerignore`).
+3. **Database:** Connected to a managed MySQL instance (e.g., Aiven, AWS RDS, or Render MySQL/PostgreSQL).
+4. **Cache:** Connected to a managed Redis instance (e.g., Upstash, Render Redis).
+
+To deploy via Render blueprint:
+1. Connect your GitHub repository to Render.
+2. Use the `render.yaml` Blueprint to automatically provision the services.
 
 ---
 

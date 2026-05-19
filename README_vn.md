@@ -6,8 +6,16 @@ Một giải pháp thương mại điện tử Full-stack tích hợp tính năn
 
 [![Java 17](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](#)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4.3-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](#)
+[![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)](#)
+[![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](#)
+<br>
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](#)
+[![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](#)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](#)
 [![Three.js](https://img.shields.io/badge/Three.js-black?style=for-the-badge&logo=threedotjs&logoColor=white)](#)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](#)
+[![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](#)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](#)
 
 [Xem Live Demo](#) <!-- USER: Thêm link website thật của bạn vào đây -->
 
@@ -129,6 +137,23 @@ Các bước để chạy dự án tại máy cá nhân (local).
    npm install
    npm run dev
    ```
+
+---
+
+## Triển Khai (Deployment)
+
+Etalian được thiết kế để dễ dàng triển khai bằng các nhà cung cấp PaaS hiện đại và công nghệ container hóa (Docker).
+
+### Sử Dụng Render, Vercel & Docker
+Dự án được phân tách rõ ràng để tối ưu hóa việc lưu trữ cho từng môi trường:
+1. **Frontend:** Ứng dụng React SPA được triển khai trên **Vercel** để tận dụng tốc độ phân phối qua CDN toàn cầu và tự động hóa CI/CD qua GitHub.
+2. **Backend:** Triển khai dưới dạng Web Service trên **Render.com** thông qua Docker (dựa vào file `render.yaml` và `.dockerignore` đã cung cấp).
+3. **Database:** Kết nối với một hệ quản trị MySQL (ví dụ: Aiven, AWS RDS, hoặc Render MySQL).
+4. **Cache:** Kết nối với Redis được quản lý (ví dụ: Upstash, Render Redis).
+
+Để triển khai qua Render Blueprint:
+1. Kết nối Github repository của bạn với Render.
+2. Sử dụng `render.yaml` Blueprint để hệ thống tự động khởi tạo các dịch vụ tương ứng.
 
 ---
 

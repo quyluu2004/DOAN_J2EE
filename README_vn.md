@@ -132,31 +132,31 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 #### 👑 Các Tính Năng & Hướng Dẫn Sử Dụng (User Guide)
 > **⚠️ Lưu ý quan trọng:** Hệ thống Admin là xương sống của nền tảng. Mọi thao tác tại đây sẽ định hình trực tiếp dữ liệu hiển thị ở giao diện mua sắm và công cụ Thiết kế 3D.
 
-* **1. Bảng Điều Khiển Phân Tích (Analytics):**
-  * **Tính năng:** Theo dõi doanh thu thời gian thực, trạng thái đơn hàng và sản phẩm bán chạy nhất qua các biểu đồ tương tác.
-  * 📝 **Hướng dẫn sử dụng:** Đăng nhập tài khoản Admin -> Xem trang Dashboard mặc định -> Rê chuột vào các biểu đồ Recharts để xem số liệu doanh thu chi tiết.
-  * 🖼️ **Ảnh chụp:** *(USER: Chèn ảnh `admin-dashboard.png` của bạn vào đây)*
-  * ![Dashboard Analytics](docs/screenshots/admin-dashboard.png)
+1. **Bảng Điều Khiển Phân Tích (Analytics):**
+   * **Tính năng:** Theo dõi doanh thu thời gian thực, trạng thái đơn hàng và sản phẩm bán chạy nhất qua các biểu đồ tương tác.
+   * 📝 **Hướng dẫn sử dụng:** Đăng nhập tài khoản Admin -> Xem trang Dashboard mặc định -> Rê chuột vào các biểu đồ Recharts để xem số liệu doanh thu chi tiết.
+   * 🖼️ **Ảnh chụp:** *(USER: Chèn ảnh `admin-dashboard.png` của bạn vào đây)*
+   * ![Dashboard Analytics](docs/screenshots/admin-dashboard.png)
 
-* **2. Quản Lý Sản Phẩm & Tài Nguyên 3D Tiên Tiến:**
-  * **Tính năng:** Kiểm soát toàn bộ danh mục, tồn kho, thao tác file Excel và quản lý file 3D.
-  * 📝 **Hướng dẫn sử dụng:**
-    1. **Thiết lập Thuộc tính:** Vào menu *Colors* & *Materials* để tạo màu sắc/chất liệu trước.
-    2. **Thêm Sản phẩm:** Vào menu *Products* -> Thêm mới -> Điền thông tin và chọn Color/Material đã tạo.
-    3. **Tích hợp 3D:** Trong trang chỉnh sửa sản phẩm, upload file `.glb/.gltf` qua widget Cloudinary. Sản phẩm này sẽ tự động xuất hiện trong công cụ vẽ 3D ở trang chủ.
-    4. **Nhập liệu hàng loạt:** Nhấn nút *Import Excel*, chọn file `.xlsx`. Hệ thống sẽ tự động quét và thêm hàng trăm sản phẩm cùng lúc.
-  * 🎬 **Video/GIF:** *(USER: Chèn `admin-products.gif` quay cảnh thêm sản phẩm và upload file 3D vào đây)*
-  * ![Product Management](docs/screenshots/admin-products.gif)
+2. **Quản Lý Sản Phẩm & Tài Nguyên 3D Tiên Tiến:**
+   * **Tính năng:** Kiểm soát toàn bộ danh mục, tồn kho, thao tác file Excel và quản lý file 3D.
+   * 📝 **Hướng dẫn sử dụng:**
+     1. **Thiết lập Thuộc tính:** Vào menu *Colors* & *Materials* để tạo màu sắc/chất liệu trước.
+     2. **Thêm Sản phẩm:** Vào menu *Products* -> Thêm mới -> Điền thông tin và chọn Color/Material đã tạo.
+     3. **Tích hợp 3D:** Trong trang chỉnh sửa sản phẩm, upload file `.glb/.gltf` qua widget Cloudinary. Sản phẩm này sẽ tự động xuất hiện trong công cụ vẽ 3D ở trang chủ.
+     4. **Nhập liệu hàng loạt:** Nhấn nút *Import Excel*, chọn file `.xlsx`. Hệ thống sẽ tự động quét và thêm hàng trăm sản phẩm cùng lúc.
+   * 🎬 **Video/GIF:** *(USER: Chèn `admin-products.gif` quay cảnh thêm sản phẩm và upload file 3D vào đây)*
+   * ![Product Management](docs/screenshots/admin-products.gif)
 
-* **3. Xử Lý Đơn Hàng & Xuất Hóa Đơn:**
-  * **Tính năng:** Quản lý vòng đời đơn hàng và thanh toán tự động.
-  * 📝 **Hướng dẫn sử dụng:** Vào menu *Orders* -> Bấm vào một đơn hàng 'Pending' để xem chi tiết -> Đổi trạng thái sang 'Processing' -> Bấm nút **Xuất Hóa Đơn** (Generate Invoice) để tải file PDF tự động -> Cập nhật sang 'Shipped' khi đã giao cho vận chuyển.
-  * 🖼️ **Ảnh chụp:** *(USER: Chèn ảnh `admin-orders.png` của bạn vào đây)*
-  * ![Order Management](docs/screenshots/admin-orders.png)
+3. **Xử Lý Đơn Hàng & Xuất Hóa Đơn:**
+   * **Tính năng:** Quản lý vòng đời đơn hàng và thanh toán tự động.
+   * 📝 **Hướng dẫn sử dụng:** Vào menu *Orders* -> Bấm vào một đơn hàng 'Pending' để xem chi tiết -> Đổi trạng thái sang 'Processing' -> Bấm nút **Xuất Hóa Đơn** (Generate Invoice) để tải file PDF tự động -> Cập nhật sang 'Shipped' khi đã giao cho vận chuyển.
+   * 🖼️ **Ảnh chụp:** *(USER: Chèn ảnh `admin-orders.png` của bạn vào đây)*
+   * ![Order Management](docs/screenshots/admin-orders.png)
 
-* **4. Quản Lý Người Dùng & Phân Quyền (RBAC):**
-  * **Tính năng:** Quản lý tài khoản khách hàng và bảo mật hệ thống.
-  * 📝 **Hướng dẫn sử dụng:** Vào menu *Users* -> Xem danh sách tài khoản -> Dùng nút gạt (toggle) để khóa/mở khóa các tài khoản đáng ngờ -> Phân quyền 'Admin' hoặc 'User' cho từng người.
+4. **Quản Lý Người Dùng & Phân Quyền (RBAC):**
+   * **Tính năng:** Quản lý tài khoản khách hàng và bảo mật hệ thống.
+   * 📝 **Hướng dẫn sử dụng:** Vào menu *Users* -> Xem danh sách tài khoản -> Dùng nút gạt (toggle) để khóa/mở khóa các tài khoản đáng ngờ -> Phân quyền 'Admin' hoặc 'User' cho từng người.
 
 ---
 

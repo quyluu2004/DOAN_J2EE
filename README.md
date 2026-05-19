@@ -132,31 +132,31 @@ Below are some of the core endpoints implemented in this project:
 #### 👑 Admin Features & User Guide
 > **⚠️ Critical Note:** The Admin CMS is the backbone of the platform. Actions performed here directly dictate what appears on the Storefront and the 3D Room Designer.
 
-* **1. Analytics & Dashboard:**
-  * **What it does:** Displays real-time revenue, order status distribution, and top-selling products using interactive charts.
-  * 📝 **How to Use:** Login as Admin -> View the default Dashboard page -> Hover over the charts to see exact revenue numbers -> Use the date filters to analyze specific periods.
-  * 🖼️ **Screenshot:** *(USER: Insert your `admin-dashboard.png` here)*
-  * ![Dashboard Analytics](docs/screenshots/admin-dashboard.png)
+1. **Analytics & Dashboard:**
+   * **What it does:** Displays real-time revenue, order status distribution, and top-selling products using interactive charts.
+   * 📝 **How to Use:** Login as Admin -> View the default Dashboard page -> Hover over the charts to see exact revenue numbers -> Use the date filters to analyze specific periods.
+   * 🖼️ **Screenshot:** *(USER: Insert your `admin-dashboard.png` here)*
+   * ![Dashboard Analytics](docs/screenshots/admin-dashboard.png)
 
-* **2. Advanced Product & Asset Management:**
-  * **What it does:** Complete control over catalog, inventory, Excel bulk operations, and 3D assets.
-  * 📝 **How to Use:**
-    1. **Setup Attributes:** Navigate to *Colors* & *Materials* menus first. Create necessary variants.
-    2. **Single Product:** Go to *Products* -> Add New. Fill in details, select the pre-defined Color/Material.
-    3. **3D Integration:** While editing a product, upload a `.glb`/`.gltf` file via the Cloudinary widget. This product will instantly sync with the Storefront's 3D Room Designer.
-    4. **Bulk Import:** Click *Import Excel*, upload your `.xlsx` file. The system will automatically parse and insert hundreds of products.
-  * 🎬 **Video/GIF:** *(USER: Insert `admin-products.gif` showing the creation of a product and uploading a 3D model here)*
-  * ![Product Management](docs/screenshots/admin-products.gif)
+2. **Advanced Product & Asset Management:**
+   * **What it does:** Complete control over catalog, inventory, Excel bulk operations, and 3D assets.
+   * 📝 **How to Use:**
+     1. **Setup Attributes:** Navigate to *Colors* & *Materials* menus first. Create necessary variants.
+     2. **Single Product:** Go to *Products* -> Add New. Fill in details, select the pre-defined Color/Material.
+     3. **3D Integration:** While editing a product, upload a `.glb`/`.gltf` file via the Cloudinary widget. This product will instantly sync with the Storefront's 3D Room Designer.
+     4. **Bulk Import:** Click *Import Excel*, upload your `.xlsx` file. The system will automatically parse and insert hundreds of products.
+   * 🎬 **Video/GIF:** *(USER: Insert `admin-products.gif` showing the creation of a product and uploading a 3D model here)*
+   * ![Product Management](docs/screenshots/admin-products.gif)
 
-* **3. Order Fulfillment & Invoice Generation:**
-  * **What it does:** Manages customer orders and automated billing.
-  * 📝 **How to Use:** Go to *Orders* -> Click on a Pending order to view details -> Update status to 'Processing' -> Click the **Generate Invoice** button to download the automated PDF -> Update to 'Shipped' when handled.
-  * 🖼️ **Screenshot:** *(USER: Insert your `admin-orders.png` here)*
-  * ![Order Management](docs/screenshots/admin-orders.png)
+3. **Order Fulfillment & Invoice Generation:**
+   * **What it does:** Manages customer orders and automated billing.
+   * 📝 **How to Use:** Go to *Orders* -> Click on a Pending order to view details -> Update status to 'Processing' -> Click the **Generate Invoice** button to download the automated PDF -> Update to 'Shipped' when handled.
+   * 🖼️ **Screenshot:** *(USER: Insert your `admin-orders.png` here)*
+   * ![Order Management](docs/screenshots/admin-orders.png)
 
-* **4. User & Access Control (RBAC):**
-  * **What it does:** Manages system security and staff access.
-  * 📝 **How to Use:** Go to *Users* -> View all registered accounts -> Use the toggle to lock/unlock suspicious accounts -> Assign 'Admin' or 'User' roles to specific emails.
+4. **User & Access Control (RBAC):**
+   * **What it does:** Manages system security and staff access.
+   * 📝 **How to Use:** Go to *Users* -> View all registered accounts -> Use the toggle to lock/unlock suspicious accounts -> Assign 'Admin' or 'User' roles to specific emails.
 
 ---
 

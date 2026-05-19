@@ -294,6 +294,6 @@ To deploy via Render Blueprint:
 
 ## Contact
 
-**Your Name** - [LinkedIn](https://linkedin.com/in/your-profile) - your.email@example.com
+**Lưu Phú Quý** - [LinkedIn](https://linkedin.com/in/your-profile) - luuphuquyaa@gmail.com
 
 Project Link: [https://github.com/your-username/etalian-website](https://github.com/your-username/etalian-website)

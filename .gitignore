@@ -7,7 +7,7 @@
 
 # === Java / Maven (Backend) ===
 target/
-.mvn/
+
 
 # === Node.js (Frontend) ===
 node_modules/

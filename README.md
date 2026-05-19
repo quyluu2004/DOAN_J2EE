@@ -93,17 +93,29 @@ Below are some of the core endpoints implemented in this project:
 
 ---
 
-## Screenshots
+## 📸 Key Features & Showcases
 
-> **Note for USER:** Please add your real screenshots or GIF/Video demonstrations into a `docs/screenshots/` folder and link them here to impress HR.
+> 💡 **NOTE FOR YOU (USER):**
+> 1. **Video/GIF:** Use an animated `.gif` or a short video for the **3D Room Designer** to properly showcase the drag-and-drop and spatial interaction. Place the file in `docs/screenshots/`.
+> 2. **Static Images:** Use high-quality screenshots (`.png`/`.jpg`) for the **Storefront** and **Admin Dashboard** to highlight UI/UX and functionalities. Place the files in `docs/screenshots/`.
 
-### Storefront & 3D Designer
-![3D Designer Demo](docs/screenshots/designer.gif) <!-- Replace with real image/video path -->
-*The interactive 3D Room Designer where users customize layouts.*
+### 1. Interactive 3D Room Designer
+- **What it does:** Allows users to dynamically drag, drop, and rotate 3D furniture models (`.gltf`/`.glb`) in a virtual room using `react-three/fiber` and the Rapier physics engine.
+- **Business Value:** Empowers customers to visualize furniture in their space before buying. Dramatically increases conversion rates and reduces return rates by offering a unique, gamified shopping experience.
+- 🎬 **Video/GIF Demo:** *(USER: Insert your GIF/Video showing the 3D interaction here)*
+![3D Feature Demo](docs/screenshots/3d-demo.gif)
 
-### Admin Dashboard
-![Admin Dashboard](docs/screenshots/admin.png) <!-- Replace with real image/video path -->
-*Comprehensive analytics and inventory management.*
+### 2. Seamless E-Commerce Experience
+- **What it does:** A complete shopping flow including dynamic filtering, wishlists, cart state management, and a secure checkout process utilizing JWT authentication.
+- **Business Value:** Delivers a frictionless, highly responsive UI (optimized with Tailwind & Framer Motion) that keeps users engaged and drives sales.
+- 🖼️ **UI Screenshot:** *(USER: Insert a beautiful screenshot of your Shop or Product Detail page here)*
+![Storefront UI](docs/screenshots/storefront.png)
+
+### 3. Comprehensive Admin Dashboard
+- **What it does:** Provides real-time interactive analytics via Recharts, full CRUD management, and automated bulk product import/export through Excel.
+- **Business Value:** Saves store managers hours of manual work by centralizing data, generating automated PDF invoices, and visualizing revenue trends intuitively.
+- 🖼️ **Dashboard Screenshot:** *(USER: Insert a screenshot of the Admin analytics charts here)*
+![Admin Dashboard](docs/screenshots/admin.png)
 
 ---
 

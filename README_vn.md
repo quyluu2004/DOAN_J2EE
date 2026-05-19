@@ -93,17 +93,29 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 
 ---
 
-## Hình Ảnh Thực Tế (Screenshots)
+## 📸 Tính Năng Nổi Bật & Demo Thực Tế (Key Features & Showcases)
 
-> **Lưu ý cho bạn (USER):** Hãy thêm hình ảnh hoặc Video/GIF demo thực tế của bạn vào thư mục `docs/screenshots/` và thay link dưới đây để HR thấy được giao diện thật.
+> 💡 **LƯU Ý DÀNH CHO BẠN (USER):**
+> 1. **Video/GIF:** Sử dụng định dạng ảnh động `.gif` hoặc video ngắn gọn cho phần **Thiết Kế 3D** để lột tả được tính năng kéo/thả, xoay mô hình không gian. Đặt file vào `docs/screenshots/`.
+> 2. **Hình ảnh (Image):** Sử dụng ảnh chụp màn hình rõ nét (`.png`/`.jpg`) cho phần **Cửa Hàng** và **Admin Dashboard** để thể hiện tư duy thiết kế UI/UX và chức năng. Đặt file vào `docs/screenshots/`.
 
-### Cửa Hàng & Thiết Kế 3D
-![3D Designer Demo](docs/screenshots/designer.gif) <!-- Thay bằng đường dẫn ảnh/video thật -->
-*Công cụ Thiết kế Phòng 3D tương tác giúp khách hàng tùy chỉnh không gian.*
+### 1. Công Cụ Thiết Kế Phòng 3D (3D Room Designer)
+- **Hoạt động:** Cho phép người dùng trực tiếp kéo thả, sắp xếp mô hình 3D (gltf/glb) vào không gian phòng ảo thông qua thư viện `react-three/fiber` và engine vật lý Rapier.
+- **Giá trị cốt lõi:** Trực quan hóa sản phẩm nội thất tại nhà khách hàng trước khi mua. Giúp tăng tỷ lệ chuyển đổi (CR) và giảm tỷ lệ hoàn trả hàng (Return Rate), mang lại trải nghiệm độc đáo vượt trội so với các nền tảng e-commerce thông thường.
+- 🎬 **Video/GIF Demo:** *(USER: Chèn link ảnh GIF/Video demo tính năng tương tác 3D tại đây)*
+![Demo Tính năng 3D](docs/screenshots/3d-demo.gif)
 
-### Bảng Điều Khiển Admin
-![Admin Dashboard](docs/screenshots/admin.png) <!-- Thay bằng đường dẫn ảnh/video thật -->
-*Quản lý kho hàng và thống kê doanh thu toàn diện.*
+### 2. Trải Nghiệm Mua Sắm Xuyên Suốt (Seamless E-Commerce)
+- **Hoạt động:** Luồng mua hàng từ tìm kiếm, bộ lọc động, thêm giỏ hàng, áp mã giảm giá đến thanh toán tích hợp xác thực JWT bảo mật.
+- **Giá trị cốt lõi:** Mang lại giao diện mượt mà (tối ưu bằng Tailwind & Framer Motion), tăng độ uy tín với hệ thống đánh giá và danh sách yêu thích, giữ chân khách hàng lâu hơn trên website.
+- 🖼️ **Hình Ảnh Giao Diện:** *(USER: Chèn ảnh trang Shop, hoặc trang Chi Tiết Sản Phẩm tại đây)*
+![Giao diện Cửa Hàng](docs/screenshots/storefront.png)
+
+### 3. Bảng Điều Khiển Quản Trị Hệ Thống (Admin Dashboard)
+- **Hoạt động:** Cung cấp báo cáo thống kê qua biểu đồ Recharts, xử lý Import/Export sản phẩm hàng loạt (Excel) tự động, và quản trị đơn hàng, người dùng toàn diện.
+- **Giá trị cốt lõi:** Giúp nhà bán hàng tiết kiệm hàng chục giờ thao tác thủ công, quản trị mọi mặt của cửa hàng tại một nơi duy nhất.
+- 🖼️ **Hình Ảnh Thống Kê:** *(USER: Chèn ảnh biểu đồ Admin Dashboard tại đây)*
+![Admin Dashboard](docs/screenshots/admin.png)
 
 ---
 

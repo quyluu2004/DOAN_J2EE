@@ -162,34 +162,61 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 
 ## Hướng Dẫn Cài Đặt (Getting Started)
 
-Các bước để chạy dự án tại máy cá nhân (local).
+Các bước để khởi chạy dự án hoàn chỉnh trên môi trường local của bạn.
 
-### Yêu Cầu Cài Đặt
-* Java 17+
-* Node.js v18+
-* MySQL Server
-* Redis Server
+### Yêu Cầu Hệ Thống (Prerequisites)
+* **Java 17+** (OpenJDK khuyến nghị)
+* **Node.js v18+** & **npm**
+* **MySQL Server 8.0+**
+* **Redis Server** (Để caching & lưu OTP, có thể bỏ qua nếu cấu hình vô hiệu hóa)
 
-### Khởi Chạy
+### Hướng Dẫn Chi Tiết (Step-by-Step Installation)
 
-1. **Clone dự án**
-   ```sh
-   git clone https://github.com/your-username/etalian-website.git
-   ```
+#### 1. Clone Dự Án
+```sh
+git clone https://github.com/your-username/etalian-website.git
+cd etalian-website
+```
 
-2. **Cài đặt Backend**
-   ```sh
-   cd backend
-   # Nhớ cấu hình application.yml/properties với DB, Redis, và Cloudinary keys của bạn
-   ./mvnw spring-boot:run
-   ```
+#### 2. Khởi Tạo Cơ Sở Dữ Liệu
+* Mở MySQL Client hoặc công cụ quản trị (như DBeaver, Navicat) và tạo một database mới:
+```sql
+CREATE DATABASE etalian_website CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-3. **Cài đặt Frontend**
-   ```sh
-   cd frontend
-   npm install
-   npm run dev
-   ```
+#### 3. Thiết Lập & Khởi Chạy Backend
+* Truy cập thư mục backend và copy file cấu hình mẫu:
+```sh
+cd backend
+cp src/main/resources/application.properties.example src/main/resources/application.properties
+```
+* Mở file `src/main/resources/application.properties` mới tạo và điền các cấu hình của bạn:
+  * `spring.datasource.password`: Mật khẩu tài khoản MySQL của bạn.
+  * `jwt.secret`: Điền mã bảo mật JWT (ví dụ: `YOUR_SECRET_KEY_WITH_AT_LEAST_256_BITS`).
+  * `CLOUDINARY_URL`: Cấu hình URL Cloudinary của bạn để lưu trữ/upload ảnh & file 3D.
+  * `spring.mail.*`: Cấu hình tài khoản email gửi mã OTP (sử dụng mật khẩu ứng dụng Gmail).
+* Khởi chạy Backend bằng Maven Wrapper:
+```sh
+./mvnw spring-boot:run
+```
+*(Backend sẽ tự động sinh các bảng database dựa trên JPA Entities thông qua cấu hình `ddl-auto: update`)*
+
+#### 4. Thiết Lập & Khởi Chạy Frontend
+* Mở một terminal mới, chuyển hướng đến thư mục frontend và tạo file môi trường:
+```sh
+cd frontend
+cp .env.example .env
+```
+* Mở file `.env` và cấu hình cổng API trỏ đến Backend:
+```env
+VITE_API_URL=http://localhost:8080
+```
+* Cài đặt các thư viện phụ thuộc và chạy môi trường Development:
+```sh
+npm install
+npm run dev
+```
+* Mở trình duyệt và truy cập: `http://localhost:5173` để trải nghiệm!
 
 ---
 

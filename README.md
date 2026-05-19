@@ -165,31 +165,58 @@ Below are some of the core endpoints implemented in this project:
 Follow these steps to run the project locally.
 
 ### Prerequisites
-* Java 17+
-* Node.js v18+
-* MySQL Server
-* Redis Server
+* **Java 17+** (OpenJDK recommended)
+* **Node.js v18+** & **npm**
+* **MySQL Server 8.0+**
+* **Redis Server** (For catalog caching & OTP handling, can be disabled if config is modified)
 
-### Installation
+### Step-by-Step Installation
 
-1. **Clone the repo**
-   ```sh
-   git clone https://github.com/your-username/etalian-website.git
-   ```
+#### 1. Clone the Repository
+```sh
+git clone https://github.com/your-username/etalian-website.git
+cd etalian-website
+```
 
-2. **Setup Backend**
-   ```sh
-   cd backend
-   # Configure your application.yml with DB, Redis, and Cloudinary credentials
-   ./mvnw spring-boot:run
-   ```
+#### 2. Create the Database
+* Open your MySQL Client or Database Management tool (e.g. DBeaver, Navicat) and execute:
+```sql
+CREATE DATABASE etalian_website CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-3. **Setup Frontend**
-   ```sh
-   cd frontend
-   npm install
-   npm run dev
-   ```
+#### 3. Configure & Run Backend
+* Navigate to the backend directory and copy the default properties configuration:
+```sh
+cd backend
+cp src/main/resources/application.properties.example src/main/resources/application.properties
+```
+* Open the newly created `src/main/resources/application.properties` file and configure your credentials:
+  * `spring.datasource.password`: Your local MySQL password.
+  * `jwt.secret`: Set a custom JWT secret (e.g. `YOUR_SECRET_KEY_WITH_AT_LEAST_256_BITS`).
+  * `CLOUDINARY_URL`: Set your Cloudinary API credentials for uploading 3D assets & images.
+  * `spring.mail.*`: Set your Gmail SMTP application password for OTP email dispatch.
+* Boot up the Backend using the Maven wrapper:
+```sh
+./mvnw spring-boot:run
+```
+*(The schema tables will automatically generate using JPA Entity mappings via `ddl-auto: update`)*
+
+#### 4. Configure & Run Frontend
+* Open a new terminal window, navigate to the frontend directory, and create the environment file:
+```sh
+cd frontend
+cp .env.example .env
+```
+* Open the `.env` file and set the API endpoint pointing to your local backend:
+```env
+VITE_API_URL=http://localhost:8080
+```
+* Install dependencies and start the Vite local development server:
+```sh
+npm install
+npm run dev
+```
+* Open your browser and navigate to `http://localhost:5173` to explore!
 
 ---
 

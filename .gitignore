@@ -42,3 +42,20 @@ Thumbs.db
 *.zip
 tmp_*.json
 .planning/
+
+# === AI Agents & Logs ===
+.claude/
+.gitnexus_backup*/
+err.txt
+out.txt
+out.log
+err.log
+
+# === Markdown Files ===
+# Ignore all .md files by default
+*.md
+# But keep these essential documentation files
+!README.md
+!README_vn.md
+!frontend/README.md
+!backend/HELP.md

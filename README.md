@@ -104,13 +104,24 @@ Below are some of the core endpoints implemented in this project:
 ### 1. Interactive 3D Room Designer
 - **What it does:** Allows users to dynamically drag, drop, and rotate 3D furniture models (`.gltf`/`.glb`) in a virtual room using `react-three/fiber` and the Rapier physics engine.
 - **Business Value:** Empowers customers to visualize furniture in their space before buying. Dramatically increases conversion rates and reduces return rates by offering a unique, gamified shopping experience.
-- 🎬 **Video/GIF Demo:** *(USER: Insert your GIF/Video showing the 3D interaction here)*
+- 📝 **How to Use:** 
+  1. Navigate to the 3D Designer page via the main navigation.
+  2. Select a pre-built room template or start from an empty canvas.
+  3. Drag furniture items from the side catalog and drop them into the 3D space.
+  4. Use the mouse to rotate, move, or remove objects (collision detection prevents items from overlapping).
+  5. Save your customized room design to your account.
+- 🎬 **Video/GIF Demo:** *(USER: Replace `3d-demo.gif` in `docs/screenshots/` with a video/GIF showing you dragging/dropping 3D furniture)*
 ![3D Feature Demo](docs/screenshots/3d-demo.gif)
 
 ### 2. Seamless E-Commerce Experience
 - **What it does:** A complete shopping flow including dynamic filtering, wishlists, cart state management, and a secure checkout process utilizing JWT authentication.
 - **Business Value:** Delivers a frictionless, highly responsive UI (optimized with Tailwind & Framer Motion) that keeps users engaged and drives sales.
-- 🖼️ **UI Screenshot:** *(USER: Insert a beautiful screenshot of your Shop or Product Detail page here)*
+- 📝 **How to Use:** 
+  1. Browse the catalog and use the left-sidebar to filter by category, material, or price.
+  2. Click the "Heart" icon to save items to your Wishlist (requires login).
+  3. Add items to your Cart and proceed to checkout to enter shipping details.
+  4. Track your order status from your User Profile page.
+- 🖼️ **UI Screenshot:** *(USER: Replace `storefront.png` in `docs/screenshots/` with a beautiful screenshot of your Shop or Product Detail page)*
 ![Storefront UI](docs/screenshots/storefront.png)
 
 ### 3. Comprehensive Admin Dashboard & Content Management (CMS)

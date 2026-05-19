@@ -101,16 +101,27 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 > 1. **Video/GIF:** Sử dụng định dạng ảnh động `.gif` hoặc video ngắn gọn cho phần **Thiết Kế 3D** để lột tả được tính năng kéo/thả, xoay mô hình không gian. Đặt file vào `docs/screenshots/`.
 > 2. **Hình ảnh (Image):** Sử dụng ảnh chụp màn hình rõ nét (`.png`/`.jpg`) cho phần **Cửa Hàng** và **Admin Dashboard** để thể hiện tư duy thiết kế UI/UX và chức năng. Đặt file vào `docs/screenshots/`.
 
-### 1. Công Cụ Thiết Kế Phòng 3D (3D Room Designer)
-- **Hoạt động:** Cho phép người dùng trực tiếp kéo thả, sắp xếp mô hình 3D (gltf/glb) vào không gian phòng ảo thông qua thư viện `react-three/fiber` và engine vật lý Rapier.
-- **Giá trị cốt lõi:** Trực quan hóa sản phẩm nội thất tại nhà khách hàng trước khi mua. Giúp tăng tỷ lệ chuyển đổi (CR) và giảm tỷ lệ hoàn trả hàng (Return Rate), mang lại trải nghiệm độc đáo vượt trội so với các nền tảng e-commerce thông thường.
-- 🎬 **Video/GIF Demo:** *(USER: Chèn link ảnh GIF/Video demo tính năng tương tác 3D tại đây)*
-![Demo Tính năng 3D](docs/screenshots/3d-demo.gif)
+### 1. Công Cụ Thiết Kế Phòng 3D Tương Tác
+- **Tính năng:** Cho phép người dùng kéo, thả, và xoay các mô hình nội thất 3D (`.gltf`/`.glb`) trong không gian ảo bằng `react-three/fiber` và engine vật lý Rapier.
+- **Giá trị cốt lõi:** Tăng tỷ lệ chuyển đổi và giảm tỷ lệ hoàn hàng bằng cách mang lại trải nghiệm mua sắm độc đáo, giúp khách hàng "ướm thử" nội thất trước khi mua.
+- 📝 **Hướng dẫn sử dụng:**
+  1. Truy cập trang 3D Room Designer trên thanh menu.
+  2. Chọn một phòng mẫu (template) hoặc bắt đầu với phòng trống.
+  3. Kéo thả đồ nội thất từ danh mục bên trái vào không gian 3D.
+  4. Dùng chuột để di chuyển, xoay hoặc xóa đồ vật (Hệ thống vật lý Rapier sẽ ngăn không cho đồ vật đâm xuyên nhau).
+  5. Lưu lại thiết kế phòng vào tài khoản cá nhân.
+- 🎬 **Video/GIF Demo:** *(USER: Thay thế file `3d-demo.gif` trong thư mục `docs/screenshots/` bằng video/GIF quay cảnh bạn thao tác kéo thả 3D nhé)*
+![3D Feature Demo](docs/screenshots/3d-demo.gif)
 
-### 2. Trải Nghiệm Mua Sắm Xuyên Suốt (Seamless E-Commerce)
-- **Hoạt động:** Luồng mua hàng từ tìm kiếm, bộ lọc động, thêm giỏ hàng, áp mã giảm giá đến thanh toán tích hợp xác thực JWT bảo mật.
-- **Giá trị cốt lõi:** Mang lại giao diện mượt mà (tối ưu bằng Tailwind & Framer Motion), tăng độ uy tín với hệ thống đánh giá và danh sách yêu thích, giữ chân khách hàng lâu hơn trên website.
-- 🖼️ **Hình Ảnh Giao Diện:** *(USER: Chèn ảnh trang Shop, hoặc trang Chi Tiết Sản Phẩm tại đây)*
+### 2. Trải Nghiệm Mua Sắm Xuyên Suốt
+- **Tính năng:** Cung cấp luồng mua sắm hoàn chỉnh: Lọc động, danh sách yêu thích (wishlist), quản lý giỏ hàng, và quy trình thanh toán an toàn qua JWT Auth.
+- **Giá trị cốt lõi:** Giao diện mượt mà, phản hồi siêu tốc (tối ưu bằng Tailwind) giúp giữ chân người dùng và thúc đẩy doanh số.
+- 📝 **Hướng dẫn sử dụng:**
+  1. Duyệt sản phẩm và sử dụng bộ lọc bên trái (theo danh mục, chất liệu, giá tiền).
+  2. Nhấn biểu tượng "Trái tim" để lưu vào Wishlist (cần đăng nhập).
+  3. Thêm vào Giỏ hàng (Cart) và tiến hành Thanh toán (Checkout) điền thông tin giao hàng.
+  4. Theo dõi tiến độ giao hàng tại trang Hồ sơ cá nhân (Profile).
+- 🖼️ **Hình Ảnh Giao Diện:** *(USER: Thay thế file `storefront.png` trong `docs/screenshots/` bằng ảnh chụp thật đẹp trang Shop của bạn)*
 ![Giao diện Cửa Hàng](docs/screenshots/storefront.png)
 
 ### 3. Hệ Thống Quản Trị Trung Tâm (Admin Dashboard & CMS)

@@ -122,10 +122,10 @@ const HomePage = () => {
                     <div className="flex justify-between items-center mb-12">
                         <h2 className="text-3xl font-bold uppercase tracking-tight">{t('home.best_sellers')}</h2>
                         <div className="flex gap-2">
-                            <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition">
+                            <button aria-label="Previous products" className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition">
                                 <ChevronLeft className="w-5 h-5" />
                             </button>
-                            <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition">
+                            <button aria-label="Next products" className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition">
                                 <ChevronRight className="w-5 h-5" />
                             </button>
                         </div>
@@ -168,7 +168,7 @@ const HomePage = () => {
 
             {/* FOOTER (Simple) */}
             <footer className="bg-[#111827] text-white py-12 border-t border-gray-800">
-                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
                     <p>&copy; 2026 ÉLITAN. {t('footer.rights')}</p>
                     <div className="flex space-x-6 mt-4 md:mt-0">
                         <a href="#" className="hover:text-white">Privacy Policy</a>

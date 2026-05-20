@@ -58,7 +58,7 @@ const Footer = () => {
                         <Globe size={20} className="hover:text-gray-300 cursor-pointer" />
                     </div>
                     <div className="text-4xl font-serif">ÉLITAN</div>
-                    <p className="text-gray-500 text-xs mt-2">© 2026 ÉLITAN. {t('footer.rights')}</p>
+                    <p className="text-gray-400 text-xs mt-2">© 2026 ÉLITAN. {t('footer.rights')}</p>
                 </div>
             </div>
         </footer>

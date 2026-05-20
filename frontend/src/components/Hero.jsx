@@ -54,7 +54,7 @@ const Hero = ({ featuredProducts = [] }) => {
         <div className="w-full h-full bg-white p-5 rounded-[2rem] flex flex-col">
             {/* Header with label and dot - exact original */}
             <div className="flex justify-between items-center mb-4 px-2">
-                <h3 className="text-sm font-bold text-gray-900 tracking-wide">{card.label}</h3>
+                <span className="text-sm font-bold text-gray-900 tracking-wide">{card.label}</span>
                 <span className="w-2 h-2 rounded-full bg-black"></span>
             </div>
 
@@ -96,9 +96,9 @@ const Hero = ({ featuredProducts = [] }) => {
 
                 {/* Main Text Content - Centered */}
                 <div className="flex flex-col items-center text-center mt-[-50px] relative z-20">
-                    <h2 className="text-[10px] font-bold uppercase tracking-[0.5em] text-[#703225] mb-6 animate-pulse">
+                    <span className="block text-[10px] font-bold uppercase tracking-[0.5em] text-[#703225] mb-6 animate-pulse">
                         {t('home.hero_sub')}
-                    </h2>
+                    </span>
                     <h1 className="text-6xl md:text-8xl lg:text-[9rem] font-serif leading-[0.85] tracking-[-0.04em] text-[#221a0c] mb-12 uppercase text-center max-w-4xl">
                         {t('home.hero_title')}
                     </h1>

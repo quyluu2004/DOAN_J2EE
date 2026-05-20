@@ -53,6 +53,7 @@ public class SecurityConfig {
                         // OTP: cần đăng nhập vì controller lấy email từ Authentication
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/orders/send-otp", "/api/orders/verify-otp").authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/analytics/visit").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/health").permitAll()
 
                         // 3. ADMIN ACCESS (Must come before broader .authenticated() rules)
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasRole("ADMIN")

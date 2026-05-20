@@ -15,7 +15,7 @@ jobs:
         run: |
           # TODO: Thay đổi URL bên dưới thành URL backend thật của bạn sau khi deploy lên Render
           # Ví dụ: https://elitan-backend.onrender.com/api/health
-          BACKEND_URL="https://your-app-name.onrender.com/api/health"
+          BACKEND_URL="https://elitan.onrender.com/api/health"
           
           echo "Pinging $BACKEND_URL..."
           HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" $BACKEND_URL)

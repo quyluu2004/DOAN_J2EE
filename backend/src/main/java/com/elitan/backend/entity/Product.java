@@ -49,16 +49,16 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    @JsonIgnoreProperties("product")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    @JsonIgnoreProperties("product")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Wishlist> wishlists = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    @JsonIgnoreProperties("product")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<CartItem> cartItems = new ArrayList<>();
 }

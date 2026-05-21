@@ -111,8 +111,10 @@ Below are some of the core endpoints implemented in this project:
   3. Drag furniture items from the side catalog and drop them into the 3D space.
   4. Use the mouse to rotate, move, or remove objects (collision detection prevents items from overlapping).
   5. Save your customized room design to your account.
-- 🎬 **Video/GIF Demo:** *(USER: Replace `3d-demo.gif` in `docs/screenshots/` with a video/GIF showing you dragging/dropping 3D furniture)*
-![3D Feature Demo](docs/screenshots/3d-demo.gif)
+- 🎬 **Video Demo:**
+  
+  <video src="docs/screenshots/3d-demo.mp4" width="100%" controls></video>
+
 
 ### 2. Seamless E-Commerce Experience
 - **What it does:** A complete shopping flow including dynamic filtering, wishlists, cart state management, and a secure checkout process utilizing JWT authentication.

@@ -59,3 +59,7 @@ err.log
 !README_vn.md
 !frontend/README.md
 !backend/HELP.md
+
+# === Screenshots & Large Media ===
+docs/screenshots/*.mp4
+

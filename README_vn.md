@@ -111,8 +111,10 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
   3. Kéo thả đồ nội thất từ danh mục bên trái vào không gian 3D.
   4. Dùng chuột để di chuyển, xoay hoặc xóa đồ vật (Hệ thống vật lý Rapier sẽ ngăn không cho đồ vật đâm xuyên nhau).
   5. Lưu lại thiết kế phòng vào tài khoản cá nhân.
-- 🎬 **Video/GIF Demo:** *(USER: Thay thế file `3d-demo.gif` trong thư mục `docs/screenshots/` bằng video/GIF quay cảnh bạn thao tác kéo thả 3D nhé)*
-![3D Feature Demo](docs/screenshots/3d-demo.gif)
+- 🎬 **Video Demo:**
+  
+  <video src="docs/screenshots/3d-demo.mp4" width="100%" controls></video>
+
 
 ### 2. Trải Nghiệm Mua Sắm Xuyên Suốt
 - **Tính năng:** Cung cấp luồng mua sắm hoàn chỉnh: Lọc động, danh sách yêu thích (wishlist), quản lý giỏ hàng, và quy trình thanh toán an toàn qua JWT Auth.

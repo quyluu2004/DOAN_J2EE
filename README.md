@@ -110,8 +110,9 @@ Below are some of the core endpoints implemented in this project:
   2. Select a pre-built room template or start from an empty canvas.
   3. Drag furniture items from the side catalog and drop them into the 3D space.
   4. Use the mouse to rotate, move, or remove objects (collision detection prevents items from overlapping).
-  5. Save your customized room design to your account.
+- 🎬 **Video Demo:**
   
+  <video src="docs/screenshots/3d-demo.mp4" width="100%" controls></video>
 
 
 

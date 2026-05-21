@@ -110,7 +110,7 @@ Below are some of the core endpoints implemented in this project:
   2. Select a pre-built room template or start from an empty canvas.
   3. Drag furniture items from the side catalog and drop them into the 3D space.
   4. Use the mouse to rotate, move, or remove objects (collision detection prevents items from overlapping).
-- 🎬 **Video Demo:**
+  <video src="https://github.com/quyluu2004/DOAN_J2EE/releases/download/v1.0.0/Dang.ghi.2026%2005%2021.153458.mp4" controls width="100%"></video>
   
 <video src="https://github.com/quyluu2004/DOAN_J2EE/releases/download/v1.0.0/Dang.ghi.2026-05-21.153458.mp4" controls width="100%">
 </video>

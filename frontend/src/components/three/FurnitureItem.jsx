@@ -6,7 +6,8 @@ import * as THREE from 'three';
 // Component phụ để tải mô hình, giúp kiểm soát Hook useGLTF
 const ModelLoader = ({ url, isGhost, scale }) => {
   // useGLTF sẽ throw error nếu url không hợp lệ hoặc 404
-  const { scene } = useGLTF(url);
+  // Tham số thứ hai true để tự động kích hoạt giải nén Draco (Draco Decoder) từ CDN
+  const { scene } = useGLTF(url, true);
   const clonedScene = React.useMemo(() => scene ? scene.clone() : null, [scene]);
 
   return clonedScene ? (

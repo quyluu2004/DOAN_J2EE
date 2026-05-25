@@ -47,7 +47,9 @@ public class WishlistService {
 
     @Transactional(readOnly = true)
     public List<Product> getUserWishlist(String email) {
-        return wishlistRepository.findProductsByUserEmail(email);
+        return wishlistRepository.findByUserEmail(email).stream()
+                .map(Wishlist::getProduct)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Transactional(readOnly = true)

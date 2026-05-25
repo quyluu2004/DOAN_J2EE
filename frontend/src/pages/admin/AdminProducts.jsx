@@ -12,7 +12,8 @@ import { OrbitControls, useGLTF, Environment, Center } from '@react-three/drei';
 
 /* ── Inline GLB Preview Component ── */
 function GlbModel({ url }) {
-  const { scene } = useGLTF(url);
+  // Tham số thứ hai true để tự động giải nén Draco từ CDN
+  const { scene } = useGLTF(url, true);
   return (
     <Center>
       <primitive object={scene.clone()} />

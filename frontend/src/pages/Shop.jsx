@@ -24,6 +24,19 @@ export default function Shop() {
   const [categories, setCategories] = useState([]);
   const [availableColors, setAvailableColors] = useState([]);
   const [availableMaterials, setAvailableMaterials] = useState([]);
+  const [showWarmUpMsg, setShowWarmUpMsg] = useState(false);
+
+  useEffect(() => {
+    let timer;
+    if (loading) {
+      timer = setTimeout(() => {
+        setShowWarmUpMsg(true);
+      }, 3000);
+    } else {
+      setShowWarmUpMsg(false);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   
   const location = useLocation();
@@ -329,10 +342,21 @@ export default function Shop() {
           </div>
 
           {loading ? (
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
-                {[1,2,3,4,5,6].map(i => (
-                  <div key={i} className="aspect-[3/4] bg-[#fff2e0] rounded-sm"></div>
-                ))}
+             <div className="space-y-6">
+                {showWarmUpMsg && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-[#fff2e0] border border-[#703225]/20 p-4 rounded-sm text-center text-xs text-[#703225] font-serif italic max-w-2xl mx-auto"
+                  >
+                    💡 Vì hệ thống sử dụng máy chủ thử nghiệm miễn phí, server có thể cần 1-2 phút để khởi động lại trong lần truy cập đầu tiên của ngày. Xin lỗi vì sự bất tiện này! ☕
+                  </motion.div>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
+                   {[1,2,3,4,5,6].map(i => (
+                     <div key={i} className="aspect-[3/4] bg-[#fff2e0] rounded-sm"></div>
+                   ))}
+                </div>
              </div>
           ) : products.length === 0 ? (
              <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} className="py-32 flex flex-col items-center justify-center bg-[#fff2e0] rounded-sm">

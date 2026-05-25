@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"product.variants"})
-    @org.springframework.data.jpa.repository.Query("SELECT w.product FROM Wishlist w WHERE w.user.email = ?1")
-    List<Product> findProductsByUserEmail(String email);
+    @org.springframework.data.jpa.repository.Query("SELECT w FROM Wishlist w WHERE w.user.email = ?1")
+    List<Wishlist> findByUserEmail(String email);
 
     @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"product.variants"})
     @org.springframework.data.jpa.repository.Query("SELECT w FROM Wishlist w JOIN FETCH w.product WHERE w.user = ?1")

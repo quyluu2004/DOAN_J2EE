@@ -110,9 +110,14 @@ Below are some of the core endpoints implemented in this project:
   2. Select a pre-built room template or start from an empty canvas.
   3. Drag furniture items from the side catalog and drop them into the 3D space.
   4. Use the mouse to rotate, move, or remove objects (collision detection prevents items from overlapping).
-- 🎬 **Video Demo:**
   
-  <video src="docs/screenshots/3d-demo.mp4" width="100%" controls></video>
+  
+
+
+https://github.com/user-attachments/assets/8c0e36b9-77d6-441c-8c4f-6e356c7013f9
+
+
+
 
 
 
@@ -299,4 +304,4 @@ To deploy via Render Blueprint:
 
 **Lưu Phú Quý** - [LinkedIn](https://linkedin.com/in/your-profile) - luuphuquyaa@gmail.com
 
-Project Link: [https://github.com/your-username/etalian-website](https://github.com/your-username/etalian-website)
+Social:(https://www.facebook.com/quy.luu.31149/)

@@ -304,4 +304,4 @@ To deploy via Render Blueprint:
 
 **Lưu Phú Quý** - [LinkedIn](https://linkedin.com/in/your-profile) - luuphuquyaa@gmail.com
 
-Project Link: [https://github.com/your-username/etalian-website](https://github.com/your-username/etalian-website)
+Social:(https://www.facebook.com/quy.luu.31149/)

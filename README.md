@@ -119,24 +119,24 @@ Below are some of the core endpoints implemented in this project:
 
 | Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :---: |
-| `POST` | `/api/auth/register` | Registers a new user account | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `POST` | `/api/auth/login` | Authenticates a user and returns a JWT token | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `POST` | `/api/auth/social-login` | Fast authentication via Google / Facebook OAuth2 | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `POST` | `/api/auth/forgot-password` | Dispatches a password reset link to user's email | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `POST` | `/api/auth/reset-password` | Verifies reset token and updates password | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `GET` | `/api/products` | Retrieves paginated product catalog | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `GET` | `/api/products/search` | Advanced search & filters (color, material, price...) | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `GET` | `/api/products/{id}` | Retrieves detailed information of a product | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `POST` | `/api/products/wishlist/{productId}` | Toggles a product in the user's wishlist | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `GET` | `/api/cart` | Retrieves the active user's cart | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `POST` | `/api/cart/items` | Adds a specific product to the cart | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `POST` | `/api/orders` | Playout a new order (requires checkout email OTP) | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `GET` | `/api/orders/{orderId}` | Retrieves specific order details | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `POST` | `/api/products/import-file` | Bulk imports products via Excel spreadsheet | ![Admin](https://img.shields.io/badge/Admin-f44336?style=flat-square) |
-| `POST` | `/api/designs` | Saves user's custom 3D room layouts | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `POST` | `/api/reviews/product/{productId}` | Submits user review for a product | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `GET` | `/api/stats/dashboard` | Fetches overall revenue & sales analytics | ![Admin](https://img.shields.io/badge/Admin-f44336?style=flat-square) |
-| `GET` | `/api/health` | System health check (used for Keep-Alive cron) | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
+| `POST` | `/api/auth/register` | Registers a new user account | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `POST` | `/api/auth/login` | Authenticates a user and returns a JWT token | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `POST` | `/api/auth/social-login` | Fast authentication via Google / Facebook OAuth2 | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `POST` | `/api/auth/forgot-password` | Dispatches a password reset link to user's email | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `POST` | `/api/auth/reset-password` | Verifies reset token and updates password | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `GET` | `/api/products` | Retrieves paginated product catalog | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `GET` | `/api/products/search` | Advanced search & filters (color, material, price...) | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `GET` | `/api/products/{id}` | Retrieves detailed information of a product | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `POST` | `/api/products/wishlist/{productId}` | Toggles a product in the user's wishlist | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `GET` | `/api/cart` | Retrieves the active user's cart | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `POST` | `/api/cart/items` | Adds a specific product to the cart | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `POST` | `/api/orders` | Playout a new order (requires checkout email OTP) | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `GET` | `/api/orders/{orderId}` | Retrieves specific order details | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `POST` | `/api/products/import-file` | Bulk imports products via Excel spreadsheet | ![Admin](https://img.shields.io/badge/Admin-f44336?style=for-the-badge) |
+| `POST` | `/api/designs` | Saves user's custom 3D room layouts | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `POST` | `/api/reviews/product/{productId}` | Submits user review for a product | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `GET` | `/api/stats/dashboard` | Fetches overall revenue & sales analytics | ![Admin](https://img.shields.io/badge/Admin-f44336?style=for-the-badge) |
+| `GET` | `/api/health` | System health check (used for Keep-Alive cron) | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
 
 ---
 
@@ -246,15 +246,15 @@ cp src/main/resources/application.properties.example src/main/resources/applicat
 
   | Property | Status | Default Fallback Value | Purpose & Setup Instructions |
   | :--- | :--- | :--- | :--- |
-  | **`spring.datasource.url`** | ![Recommended](https://img.shields.io/badge/Recommended-f0ad4e?style=flat-square) | Pre-configured cloud DB | **MySQL Database Connection.** By default, the project connects to a cloud-hosted database so you can boot it instantly. To run in isolated local mode, install MySQL Server and set this to: `jdbc:mysql://127.0.0.1:3306/etalian_website?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC` |
-  | **`spring.datasource.username`** | ![Recommended](https://img.shields.io/badge/Recommended-f0ad4e?style=flat-square) | `your_db_username` | **MySQL Username.** (Typically `root` on local machines) |
-  | **`spring.datasource.password`** | ![Recommended](https://img.shields.io/badge/Recommended-f0ad4e?style=flat-square) | `your_db_password` | **MySQL Password.** Update this with your local MySQL password when shifting to a local DB. |
-  | **`cloudinary.url`** | ![Mandatory for 3D](https://img.shields.io/badge/Mandatory_for_3D-d9534f?style=flat-square) | *(Empty)* | **Cloudinary Connection URL.** Required to save product images and upload/stream `.glb`/`.gltf` 3D files dynamically. <br>👉 *How to get:* Register a free account on [Cloudinary](https://cloudinary.com/) -> Go to Dashboard -> Copy the **API Environment variable** value (looks like `cloudinary://API_KEY:API_SECRET@CLOUD_NAME`). |
-  | **`jwt.secret`** | ![Optional](https://img.shields.io/badge/Optional-337ab7?style=flat-square) | `your_jwt_secret_key` | **JWT Token Signature Secret Key.** Used to secure user login sessions. Pre-filled with a secure default key. You can generate a new one using the terminal command: `openssl rand -base64 64`. |
-  | **`spring.mail.username`** <br> `spring.mail.password` | ![Optional](https://img.shields.io/badge/Optional-337ab7?style=flat-square) | `your_email@gmail.com` <br> `your_app_password` | **Gmail SMTP OTP Dispatch Configuration.** Enter your Gmail account and Gmail App Password to enable OTP email dispatch. <br>👉 *To customize:* Go to Gmail -> Account Security -> Enable 2-Step Verification -> Create an App Password and insert credentials here. |
-  | **`google.client-id`** <br> `facebook.app-id` | ![Optional](https://img.shields.io/badge/Optional-337ab7?style=flat-square) | `your_google_client_id` <br> `your_facebook_app_id` | **Social Fast Authentication (Google & Facebook).** Enter your custom client ID and App ID to enable fast social logins. <br>👉 *To customize:* Create developer apps in Google Cloud Console & Meta for Developers to generate your custom credentials. |
-  | **`discord.bot.token`** | ![Optional](https://img.shields.io/badge/Optional-337ab7?style=flat-square) | `your_discord_bot_token` | **Discord Bot notifications & 2FA.** Enter your Discord Bot token if you wish to enable notifications. |
-  | **`spring.autoconfigure.exclude`** | ![Optional](https://img.shields.io/badge/Optional-337ab7?style=flat-square) | Redis Auto-Config classes excluded | **Redis Configuration.** Excluded by default to prevent application boot-crashes if Redis is not installed locally. To enable Redis catalog caching, clear this value and run a local Redis service. |
+  | **`spring.datasource.url`** | ![Recommended](https://img.shields.io/badge/Recommended-f0ad4e?style=for-the-badge) | Pre-configured cloud DB | **MySQL Database Connection.** By default, the project connects to a cloud-hosted database so you can boot it instantly. To run in isolated local mode, install MySQL Server and set this to: `jdbc:mysql://127.0.0.1:3306/etalian_website?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC` |
+  | **`spring.datasource.username`** | ![Recommended](https://img.shields.io/badge/Recommended-f0ad4e?style=for-the-badge) | `your_db_username` | **MySQL Username.** (Typically `root` on local machines) |
+  | **`spring.datasource.password`** | ![Recommended](https://img.shields.io/badge/Recommended-f0ad4e?style=for-the-badge) | `your_db_password` | **MySQL Password.** Update this with your local MySQL password when shifting to a local DB. |
+  | **`cloudinary.url`** | ![Mandatory for 3D](https://img.shields.io/badge/Mandatory_for_3D-d9534f?style=for-the-badge) | *(Empty)* | **Cloudinary Connection URL.** Required to save product images and upload/stream `.glb`/`.gltf` 3D files dynamically. <br>👉 *How to get:* Register a free account on [Cloudinary](https://cloudinary.com/) -> Go to Dashboard -> Copy the **API Environment variable** value (looks like `cloudinary://API_KEY:API_SECRET@CLOUD_NAME`). |
+  | **`jwt.secret`** | ![Optional](https://img.shields.io/badge/Optional-337ab7?style=for-the-badge) | `your_jwt_secret_key` | **JWT Token Signature Secret Key.** Used to secure user login sessions. Pre-filled with a secure default key. You can generate a new one using the terminal command: `openssl rand -base64 64`. |
+  | **`spring.mail.username`** <br> `spring.mail.password` | ![Optional](https://img.shields.io/badge/Optional-337ab7?style=for-the-badge) | `your_email@gmail.com` <br> `your_app_password` | **Gmail SMTP OTP Dispatch Configuration.** Enter your Gmail account and Gmail App Password to enable OTP email dispatch. <br>👉 *To customize:* Go to Gmail -> Account Security -> Enable 2-Step Verification -> Create an App Password and insert credentials here. |
+  | **`google.client-id`** <br> `facebook.app-id` | ![Optional](https://img.shields.io/badge/Optional-337ab7?style=for-the-badge) | `your_google_client_id` <br> `your_facebook_app_id` | **Social Fast Authentication (Google & Facebook).** Enter your custom client ID and App ID to enable fast social logins. <br>👉 *To customize:* Create developer apps in Google Cloud Console & Meta for Developers to generate your custom credentials. |
+  | **`discord.bot.token`** | ![Optional](https://img.shields.io/badge/Optional-337ab7?style=for-the-badge) | `your_discord_bot_token` | **Discord Bot notifications & 2FA.** Enter your Discord Bot token if you wish to enable notifications. |
+  | **`spring.autoconfigure.exclude`** | ![Optional](https://img.shields.io/badge/Optional-337ab7?style=for-the-badge) | Redis Auto-Config classes excluded | **Redis Configuration.** Excluded by default to prevent application boot-crashes if Redis is not installed locally. To enable Redis catalog caching, clear this value and run a local Redis service. |
 
 * Boot up the Backend using the Maven wrapper:
   * **On Windows (CMD/PowerShell):**

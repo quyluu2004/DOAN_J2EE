@@ -119,24 +119,24 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 
 | Method | Endpoint | Mô Tả | Yêu cầu Auth |
 | :--- | :--- | :--- | :---: |
-| `POST` | `/api/auth/register` | Đăng ký tài khoản người dùng mới | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `POST` | `/api/auth/login` | Đăng nhập tài khoản, trả về mã thông báo JWT | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `POST` | `/api/auth/social-login` | Đăng nhập nhanh thông qua Google / Facebook OAuth2 | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `POST` | `/api/auth/forgot-password` | Gửi liên kết đặt lại mật khẩu qua email | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `POST` | `/api/auth/reset-password` | Xác thực token và cập nhật mật khẩu mới | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `GET` | `/api/products` | Lấy danh sách sản phẩm phân trang | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `GET` | `/api/products/search` | Tìm kiếm & lọc sản phẩm nâng cao (màu, chất liệu, giá...) | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `GET` | `/api/products/{id}` | Lấy chi tiết thông tin một sản phẩm | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-| `POST` | `/api/products/wishlist/{productId}` | Thêm hoặc loại bỏ sản phẩm khỏi danh sách yêu thích | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `GET` | `/api/cart` | Lấy thông tin chi tiết giỏ hàng của người dùng | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `POST` | `/api/cart/items` | Thêm sản phẩm vào giỏ hàng | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `POST` | `/api/orders` | Đặt hàng mới (yêu cầu xác thực OTP qua email) | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `GET` | `/api/orders/{orderId}` | Xem chi tiết thông tin đơn hàng đã mua | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `POST` | `/api/products/import-file` | Nhập sản phẩm hàng loạt bằng file Excel (Quyền Admin) | ![Admin](https://img.shields.io/badge/Admin-f44336?style=flat-square) |
-| `POST` | `/api/designs` | Lưu trữ bản thiết kế phòng 3D cá nhân | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `POST` | `/api/reviews/product/{productId}` | Gửi đánh giá và bình luận sản phẩm | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
-| `GET` | `/api/stats/dashboard` | Lấy số liệu thống kê tổng quan doanh thu & đơn hàng (Admin) | ![Admin](https://img.shields.io/badge/Admin-f44336?style=flat-square) |
-| `GET` | `/api/health` | Kiểm tra trạng thái hoạt động của hệ thống (Keep Alive) | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
+| `POST` | `/api/auth/register` | Đăng ký tài khoản người dùng mới | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `POST` | `/api/auth/login` | Đăng nhập tài khoản, trả về mã thông báo JWT | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `POST` | `/api/auth/social-login` | Đăng nhập nhanh thông qua Google / Facebook OAuth2 | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `POST` | `/api/auth/forgot-password` | Gửi liên kết đặt lại mật khẩu qua email | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `POST` | `/api/auth/reset-password` | Xác thực token và cập nhật mật khẩu mới | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `GET` | `/api/products` | Lấy danh sách sản phẩm phân trang | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `GET` | `/api/products/search` | Tìm kiếm & lọc sản phẩm nâng cao (màu, chất liệu, giá...) | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `GET` | `/api/products/{id}` | Lấy chi tiết thông tin một sản phẩm | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
+| `POST` | `/api/products/wishlist/{productId}` | Thêm hoặc loại bỏ sản phẩm khỏi danh sách yêu thích | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `GET` | `/api/cart` | Lấy thông tin chi tiết giỏ hàng của người dùng | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `POST` | `/api/cart/items` | Thêm sản phẩm vào giỏ hàng | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `POST` | `/api/orders` | Đặt hàng mới (yêu cầu xác thực OTP qua email) | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `GET` | `/api/orders/{orderId}` | Xem chi tiết thông tin đơn hàng đã mua | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `POST` | `/api/products/import-file` | Nhập sản phẩm hàng loạt bằng file Excel (Quyền Admin) | ![Admin](https://img.shields.io/badge/Admin-f44336?style=for-the-badge) |
+| `POST` | `/api/designs` | Lưu trữ bản thiết kế phòng 3D cá nhân | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `POST` | `/api/reviews/product/{productId}` | Gửi đánh giá và bình luận sản phẩm | ![Required](https://img.shields.io/badge/Required-4caf50?style=for-the-badge) |
+| `GET` | `/api/stats/dashboard` | Lấy số liệu thống kê tổng quan doanh thu & đơn hàng (Admin) | ![Admin](https://img.shields.io/badge/Admin-f44336?style=for-the-badge) |
+| `GET` | `/api/health` | Kiểm tra trạng thái hoạt động của hệ thống (Keep Alive) | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=for-the-badge) |
 
 ---
 
@@ -240,15 +240,15 @@ cp src/main/resources/application.properties.example src/main/resources/applicat
 
   | Tham số cấu hình | Trạng thái | Giá trị mặc định (Fallback) | Ý nghĩa & Cách lấy thông tin |
   | :--- | :--- | :--- | :--- |
-  | **`spring.datasource.url`** | ![Khuyến Nghị](https://img.shields.io/badge/Khuy%E1%BA%BFn_Ngh%E1%BB%8B-f0ad4e?style=flat-square) | Cổng DB đám mây hoạt động sẵn | **Kết nối CSDL MySQL.** Mặc định dự án kết nối đến Cloud DB được cung cấp sẵn để chạy thử nghiệm ngay. Để chạy độc lập dưới local, hãy cài đặt MySQL Server và đổi thành: `jdbc:mysql://127.0.0.1:3306/etalian_website?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC` |
-  | **`spring.datasource.username`** | ![Khuyến Nghị](https://img.shields.io/badge/Khuy%E1%BA%BFn_Ngh%E1%BB%8B-f0ad4e?style=flat-square) | `your_db_username` | **Tên đăng nhập MySQL.** (Thường là `root` khi chạy dưới máy cá nhân) |
-  | **`spring.datasource.password`** | ![Khuyến Nghị](https://img.shields.io/badge/Khuy%E1%BA%BFn_Ngh%E1%BB%8B-f0ad4e?style=flat-square) | `your_db_password` | **Mật khẩu MySQL.** Điền mật khẩu MySQL local của bạn nếu đổi sang database cá nhân. |
-  | **`cloudinary.url`** | ![Bắt Buộc (3D)](https://img.shields.io/badge/B%E1%BA%AFt_Bu%E1%BB%99c_(3D)-d9534f?style=flat-square) | *(Để trống)* | **URL kết nối Cloudinary.** Dùng để lưu trữ hình ảnh sản phẩm và upload/truy xuất file 3D (.glb). <br>👉 *Cách lấy:* Đăng ký tài khoản miễn phí tại [Cloudinary](https://cloudinary.com/) -> Vào Dashboard -> Copy giá trị **API Environment variable** (dạng `cloudinary://API_KEY:API_SECRET@CLOUD_NAME`). |
-  | **`jwt.secret`** | ![Tùy Chọn](https://img.shields.io/badge/T%C3%B9y_Ch%E1%BB%8Dn-337ab7?style=flat-square) | `your_jwt_secret_key` | **Khóa bảo mật mã hóa JWT.** Dùng để tạo token đăng nhập. Đã cấu hình sẵn khóa an toàn, bạn có thể giữ nguyên hoặc đổi thành chuỗi ngẫu nhiên bằng cách chạy lệnh `openssl rand -base64 64` trên terminal. |
-  | **`spring.mail.username`** <br> `spring.mail.password` | ![Tùy Chọn](https://img.shields.io/badge/T%C3%B9y_Ch%E1%BB%8Dn-337ab7?style=flat-square) | `your_email@gmail.com` <br> `your_app_password` | **Cấu hình SMTP gửi email OTP.** Nhập tài khoản Gmail và Mật khẩu ứng dụng (App Password) của bạn để chạy gửi email. <br>👉 *Cách lấy:* Vào tài khoản Google cá nhân -> Bảo mật -> Bật xác minh 2 bước -> Tạo mật khẩu ứng dụng (App Password) và điền vào đây. |
-  | **`google.client-id`** <br> `facebook.app-id` | ![Tùy Chọn](https://img.shields.io/badge/T%C3%B9y_Ch%E1%BB%8Dn-337ab7?style=flat-square) | `your_google_client_id` <br> `your_facebook_app_id` | **Đăng nhập nhanh bằng MXH (Google & Facebook).** Điền thông tin Client ID và App ID của bạn để dùng tính năng đăng nhập nhanh. <br>👉 *Cách lấy:* Tạo ứng dụng trên Google Cloud Console & Meta for Developers để lấy ID mới. |
-  | **`discord.bot.token`** | ![Tùy Chọn](https://img.shields.io/badge/T%C3%B9y_Ch%E1%BB%8Dn-337ab7?style=flat-square) | `your_discord_bot_token` | **Gửi thông báo & OTP qua Discord bot.** Điền Token bot Discord của bạn nếu dùng tính năng này. |
-  | **`spring.autoconfigure.exclude`** | ![Tùy Chọn](https://img.shields.io/badge/T%C3%B9y_Ch%E1%BB%8Dn-337ab7?style=flat-square) | Loại trừ Redis Auto-Configuration | **Cấu hình Redis.** Theo mặc định, để tránh dự án bị lỗi tắt (crash) khi local không có Redis, cấu hình này đã loại trừ các class tự động khởi động của Redis. Nếu muốn kích hoạt Caching, hãy xóa giá trị này và chạy Redis cục bộ. |
+  | **`spring.datasource.url`** | ![Khuyến Nghị](https://img.shields.io/badge/Khuy%E1%BA%BFn_Ngh%E1%BB%8B-f0ad4e?style=for-the-badge) | Cổng DB đám mây hoạt động sẵn | **Kết nối CSDL MySQL.** Mặc định dự án kết nối đến Cloud DB được cung cấp sẵn để chạy thử nghiệm ngay. Để chạy độc lập dưới local, hãy cài đặt MySQL Server và đổi thành: `jdbc:mysql://127.0.0.1:3306/etalian_website?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC` |
+  | **`spring.datasource.username`** | ![Khuyến Nghị](https://img.shields.io/badge/Khuy%E1%BA%BFn_Ngh%E1%BB%8B-f0ad4e?style=for-the-badge) | `your_db_username` | **Tên đăng nhập MySQL.** (Thường là `root` khi chạy dưới máy cá nhân) |
+  | **`spring.datasource.password`** | ![Khuyến Nghị](https://img.shields.io/badge/Khuy%E1%BA%BFn_Ngh%E1%BB%8B-f0ad4e?style=for-the-badge) | `your_db_password` | **Mật khẩu MySQL.** Điền mật khẩu MySQL local của bạn nếu đổi sang database cá nhân. |
+  | **`cloudinary.url`** | ![Bắt Buộc (3D)](https://img.shields.io/badge/B%E1%BA%AFt_Bu%E1%BB%99c_(3D)-d9534f?style=for-the-badge) | *(Để trống)* | **URL kết nối Cloudinary.** Dùng để lưu trữ hình ảnh sản phẩm và upload/truy xuất file 3D (.glb). <br>👉 *Cách lấy:* Đăng ký tài khoản miễn phí tại [Cloudinary](https://cloudinary.com/) -> Vào Dashboard -> Copy giá trị **API Environment variable** (dạng `cloudinary://API_KEY:API_SECRET@CLOUD_NAME`). |
+  | **`jwt.secret`** | ![Tùy Chọn](https://img.shields.io/badge/T%C3%B9y_Ch%E1%BB%8Dn-337ab7?style=for-the-badge) | `your_jwt_secret_key` | **Khóa bảo mật mã hóa JWT.** Dùng để tạo token đăng nhập. Đã cấu hình sẵn khóa an toàn, bạn có thể giữ nguyên hoặc đổi thành chuỗi ngẫu nhiên bằng cách chạy lệnh `openssl rand -base64 64` trên terminal. |
+  | **`spring.mail.username`** <br> `spring.mail.password` | ![Tùy Chọn](https://img.shields.io/badge/T%C3%B9y_Ch%E1%BB%8Dn-337ab7?style=for-the-badge) | `your_email@gmail.com` <br> `your_app_password` | **Cấu hình SMTP gửi email OTP.** Nhập tài khoản Gmail và Mật khẩu ứng dụng (App Password) của bạn để chạy gửi email. <br>👉 *Cách lấy:* Vào tài khoản Google cá nhân -> Bảo mật -> Bật xác minh 2 bước -> Tạo mật khẩu ứng dụng (App Password) và điền vào đây. |
+  | **`google.client-id`** <br> `facebook.app-id` | ![Tùy Chọn](https://img.shields.io/badge/T%C3%B9y_Ch%E1%BB%8Dn-337ab7?style=for-the-badge) | `your_google_client_id` <br> `your_facebook_app_id` | **Đăng nhập nhanh bằng MXH (Google & Facebook).** Điền thông tin Client ID và App ID của bạn để dùng tính năng đăng nhập nhanh. <br>👉 *Cách lấy:* Tạo ứng dụng trên Google Cloud Console & Meta for Developers để lấy ID mới. |
+  | **`discord.bot.token`** | ![Tùy Chọn](https://img.shields.io/badge/T%C3%B9y_Ch%E1%BB%8Dn-337ab7?style=for-the-badge) | `your_discord_bot_token` | **Gửi thông báo & OTP qua Discord bot.** Điền Token bot Discord của bạn nếu dùng tính năng này. |
+  | **`spring.autoconfigure.exclude`** | ![Tùy Chọn](https://img.shields.io/badge/T%C3%B9y_Ch%E1%BB%8Dn-337ab7?style=for-the-badge) | Loại trừ Redis Auto-Configuration | **Cấu hình Redis.** Theo mặc định, để tránh dự án bị lỗi tắt (crash) khi local không có Redis, cấu hình này đã loại trừ các class tự động khởi động của Redis. Nếu muốn kích hoạt Caching, hãy xóa giá trị này và chạy Redis cục bộ. |
 
 * Khởi chạy Backend bằng Maven Wrapper:
   * **Hệ điều hành Windows (CMD/PowerShell):**

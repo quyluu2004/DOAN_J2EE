@@ -90,9 +90,9 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 | `GET` | `/api/products` | Lấy danh sách sản phẩm phân trang | ❌ |
 | `POST` | `/api/cart/items` | Thêm sản phẩm vào giỏ hàng | ✅ |
 | `POST` | `/api/orders` | Tạo một đơn hàng mới | ✅ |
-| `POST` | `/api/import-file` | Import hàng loạt sản phẩm qua Excel (Admin) | ✅ |
-| `POST` | `/api/room-designs` | Lưu bản vẽ thiết kế phòng 3D | ✅ |
-| `POST` | `/api/review/product/{id}` | Gửi đánh giá cho sản phẩm | ✅ |
+| `POST` | `/api/products/import-file` | Import hàng loạt sản phẩm qua Excel (Admin) | ✅ |
+| `POST` | `/api/designs` | Lưu bản vẽ thiết kế phòng 3D | ✅ |
+| `POST` | `/api/reviews/product/{productId}` | Gửi đánh giá cho sản phẩm | ✅ |
 
 ---
 
@@ -277,7 +277,7 @@ Dự án được phân tách rõ ràng để tối ưu hóa việc lưu trữ c
 
 | Thách Thức Hệ Thống | Giới Hạn Hạ Tầng (Free Tier) | Giải Pháp Kỹ Thuật (Mitigation in Code) | Độ Hoàn Thiện |
 | :--- | :--- | :--- | :---: |
-| ❄️ **Khởi Động Lạnh (Cold Starts)** | Render tắt server sau 15 phút không hoạt động | Tự động hóa bằng GitHub Actions Cron (`keep-render-alive.yml`) để ping và giữ server luôn thức | 🟢 **100%** |
+| ❄️ **Khởi Động Lạnh (Cold Starts)** | Render tắt server sau 15 phút không hoạt động | Cấu hình service cron ngoài (như `cron-job.org`) ping endpoint `/api/health` mỗi 10 phút | 🟢 **100%** |
 | 🗄️ **Quá Tải Cơ Sở Dữ Liệu** | MySQL miễn phí giới hạn nghiêm ngặt số kết nối | Triển khai **Redis Caching** (`ProductCacheService` với TTL) và tối ưu JPA để giảm tải tối đa cho DB | 🟡 **70%** |
 | ⚖️ **Tính Khả Dụng Cao (HA)** | Đang chạy trên 1 node duy nhất (Single Node) | Kiến trúc hoàn toàn **Stateless** (JWT Auth). Dễ dàng scale ngang (Thêm Load Balancer, Replica) mà không cần sửa code | 🟢 **100%** |
 | 📦 **Giới Hạn Băng Thông** | Cloudinary giới hạn tải file 3D `.glb` nặng | *Giới hạn vật lý của bản Free.* Cần nâng cấp lên kiến trúc AWS S3 + CloudFront CDN cho quy mô doanh nghiệp | 🔴 **Pending** |
@@ -296,6 +296,6 @@ Dự án được phân tách rõ ràng để tối ưu hóa việc lưu trữ c
 
 ## Liên Hệ (Contact)
 
-**Tên Của Bạn** - [LinkedIn](https://linkedin.com/in/your-profile) - your.email@example.com
+**Lưu Phú Quý** - [Facebook](https://www.facebook.com/quy.luu.31149/) - luuphuquyaa@gmail.com
 
-Link Dự Án: [https://github.com/your-username/etalian-website](https://github.com/your-username/etalian-website)
+Link Dự Án: [https://github.com/quyluu2004/DOAN_J2EE](https://github.com/quyluu2004/DOAN_J2EE)

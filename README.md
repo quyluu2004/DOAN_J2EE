@@ -90,9 +90,9 @@ Below are some of the core endpoints implemented in this project:
 | `GET` | `/api/products` | Retrieves paginated product catalog | ❌ |
 | `POST` | `/api/cart/items` | Adds a specific product to cart | ✅ |
 | `POST` | `/api/orders` | Creates a new order | ✅ |
-| `POST` | `/api/import-file` | Bulk import products via Excel (Admin) | ✅ |
-| `POST` | `/api/room-designs` | Saves user's 3D room layout | ✅ |
-| `POST` | `/api/review/product/{id}` | Submits a product review | ✅ |
+| `POST` | `/api/products/import-file` | Bulk import products via Excel (Admin) | ✅ |
+| `POST` | `/api/designs` | Saves user's 3D room layout | ✅ |
+| `POST` | `/api/reviews/product/{productId}` | Submits a product review | ✅ |
 
 ---
 
@@ -283,7 +283,7 @@ To deploy via Render Blueprint:
 
 | Infrastructure Limitation | Free-Tier Constraint | Engineering Mitigation (Codebase Level) | Readiness |
 | :--- | :--- | :--- | :---: |
-| ❄️ **Cold Starts** | Render spins down after 15 mins of inactivity | Implemented GitHub Actions Cron (`keep-render-alive.yml`) to automatically ping and keep the server warm | 🟢 **100%** |
+| ❄️ **Cold Starts** | Render spins down after 15 mins of inactivity | Configure an external cron service (e.g. `cron-job.org`) to ping the `/api/health` endpoint every 10 minutes | 🟢 **100%** |
 | 🗄️ **Database Overload** | Free MySQL/Redis have strict connection limits | Applied **Redis Caching** (`ProductCacheService` with TTL) and JPA optimizations to drastically reduce DB hits | 🟡 **70%** |
 | ⚖️ **High Availability (HA)**| Currently running on a single free node | Architecture is fully **Stateless** (JWT Auth) with centralized caching. Ready to scale horizontally (Load Balancers, Replicas) with zero code changes | 🟢 **100%** |
 | 📦 **Asset Bandwidth** | Cloudinary limits large 3D `.glb` streaming | *Physical limitation of free tier.* Production scale requires migrating to AWS S3 + CloudFront CDN | 🔴 **Pending** |
@@ -302,6 +302,6 @@ To deploy via Render Blueprint:
 
 ## Contact
 
-**Lưu Phú Quý** - [LinkedIn](https://linkedin.com/in/your-profile) - luuphuquyaa@gmail.com
+**Lưu Phú Quý** - [Facebook](https://www.facebook.com/quy.luu.31149/) - luuphuquyaa@gmail.com
 
-Social:(https://www.facebook.com/quy.luu.31149/)
+Project Link: [https://github.com/quyluu2004/DOAN_J2EE](https://github.com/quyluu2004/DOAN_J2EE)

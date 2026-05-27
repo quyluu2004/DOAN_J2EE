@@ -136,7 +136,7 @@ Below are some of the core endpoints implemented in this project:
 | `POST` | `/api/designs` | Saves user's custom 3D room layouts | ✅ |
 | `POST` | `/api/reviews/product/{productId}` | Submits user review for a product | ✅ |
 | `GET` | `/api/stats/dashboard` | Fetches overall revenue & sales analytics | ✅ (Admin) |
-| `GET` | `/api/health` | System health check (used for Keep-Alive cron) | ❌ |
+
 
 ---
 

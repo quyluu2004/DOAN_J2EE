@@ -79,6 +79,40 @@ The system utilizes a monolithic backend approach connected to a modern SPA fron
 
 ---
 
+## 📁 Folder Structure
+
+The project is structured with a clear separation between the Backend (Spring Boot) and the Frontend (React), making it easy to manage and scale:
+
+```yaml
+etalian-website/
+  ├── 📂 backend/                      # Spring Boot REST API Backend source code
+  │     ├── 📂 src/main/java/.../
+  │     │     ├── 📂 config/           # Spring Security, CORS & JWT security configurations
+  │     │     ├── 📂 controller/       # REST Controllers (API endpoints receiving requests)
+  │     │     ├── 📂 dto/              # Data Transfer Objects (Request/Response DTO models)
+  │     │     ├── 📂 entity/           # Database Entities (JPA Models mapped to MySQL tables)
+  │     │     ├── 📂 repository/       # Database access layers (Spring Data JPA Repositories)
+  │     │     └── 📂 service/          # Core business logic processing layers (Services)
+  │     ├── 📂 src/main/resources/     # Environment configurations (properties) & email templates
+  │     ├── 📄 Dockerfile              # Docker container packaging config for Render deployment
+  │     └── 📄 pom.xml                 # Maven dependencies declaration file
+  │
+  ├── 📂 frontend/                     # React 19 + Vite + Tailwind CSS v4 Frontend source code
+  │     ├── 📂 public/                 # Static assets & 3D furniture models (.glb)
+  │     ├── 📂 src/
+  │     │     ├── 📂 components/       # Reusable React components & 3D Room Designer canvas
+  │     │     ├── 📂 pages/            # User views (Shop, Auth, Admin CMS, 3D Canvas page)
+  │     │     ├── 📂 services/         # Axios API service integrations
+  │     │     ├── 📂 store/            # Global state management using Zustand
+  │     │     └── 📄 config.js         # Global API Base URL configuration
+  │     ├── 📄 package.json            # npm package dependencies (React 19, Three.js, Recharts...)
+  │     └── 📄 vite.config.js          # Vite and PostCSS/Tailwind plugin configurations
+  │
+  └── 📄 render.yaml                   # Render Blueprint configuration for automated infrastructure
+```
+
+---
+
 ## API Reference
 
 Below are some of the core endpoints implemented in this project:

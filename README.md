@@ -119,7 +119,6 @@ Below are some of the core endpoints implemented in this project:
 
 | Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :---: |
-<<<<<<< HEAD
 | `POST` | `/api/auth/register` | Registers a new user account | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
 | `POST` | `/api/auth/login` | Authenticates a user and returns a JWT token | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
 | `POST` | `/api/auth/social-login` | Fast authentication via Google / Facebook OAuth2 | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
@@ -138,26 +137,6 @@ Below are some of the core endpoints implemented in this project:
 | `POST` | `/api/reviews/product/{productId}` | Submits user review for a product | ![Required](https://img.shields.io/badge/Required-4caf50?style=flat-square) |
 | `GET` | `/api/stats/dashboard` | Fetches overall revenue & sales analytics | ![Admin](https://img.shields.io/badge/Admin-f44336?style=flat-square) |
 | `GET` | `/api/health` | System health check (used for Keep-Alive cron) | ![Public](https://img.shields.io/badge/Public-8a8a8a?style=flat-square) |
-=======
-| `POST` | `/api/auth/register` | Registers a new user account | ❌ |
-| `POST` | `/api/auth/login` | Authenticates a user and returns a JWT token | ❌ |
-| `POST` | `/api/auth/social-login` | Fast authentication via Google / Facebook OAuth2 | ❌ |
-| `POST` | `/api/auth/forgot-password` | Dispatches a password reset link to user's email | ❌ |
-| `POST` | `/api/auth/reset-password` | Verifies reset token and updates password | ❌ |
-| `GET` | `/api/products` | Retrieves paginated product catalog | ❌ |
-| `GET` | `/api/products/search` | Advanced search & filters (color, material, price...) | ❌ |
-| `GET` | `/api/products/{id}` | Retrieves detailed information of a product | ❌ |
-| `POST` | `/api/products/wishlist/{productId}` | Toggles a product in the user's wishlist | ✅ |
-| `GET` | `/api/cart` | Retrieves the active user's cart | ✅ |
-| `POST` | `/api/cart/items` | Adds a specific product to the cart | ✅ |
-| `POST` | `/api/orders` | Playout a new order (requires checkout email OTP) | ✅ |
-| `GET` | `/api/orders/{orderId}` | Retrieves specific order details | ✅ |
-| `POST` | `/api/products/import-file` | Bulk imports products via Excel spreadsheet | ✅ (Admin) |
-| `POST` | `/api/designs` | Saves user's custom 3D room layouts | ✅ |
-| `POST` | `/api/reviews/product/{productId}` | Submits user review for a product | ✅ |
-| `GET` | `/api/stats/dashboard` | Fetches overall revenue & sales analytics | ✅ (Admin) |
-
->>>>>>> 0cc39061020264686573269b27886161d6aa1a97
 
 ---
 

@@ -119,14 +119,24 @@ Below are some of the core endpoints implemented in this project:
 
 | Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :---: |
-| `POST` | `/api/auth/login` | Authenticates a user and returns JWT | ❌ |
-| `POST` | `/api/auth/social-login` | Handles Google OAuth2 login callback | ❌ |
+| `POST` | `/api/auth/register` | Registers a new user account | ❌ |
+| `POST` | `/api/auth/login` | Authenticates a user and returns a JWT token | ❌ |
+| `POST` | `/api/auth/social-login` | Fast authentication via Google / Facebook OAuth2 | ❌ |
+| `POST` | `/api/auth/forgot-password` | Dispatches a password reset link to user's email | ❌ |
+| `POST` | `/api/auth/reset-password` | Verifies reset token and updates password | ❌ |
 | `GET` | `/api/products` | Retrieves paginated product catalog | ❌ |
-| `POST` | `/api/cart/items` | Adds a specific product to cart | ✅ |
-| `POST` | `/api/orders` | Creates a new order | ✅ |
-| `POST` | `/api/products/import-file` | Bulk import products via Excel (Admin) | ✅ |
-| `POST` | `/api/designs` | Saves user's 3D room layout | ✅ |
-| `POST` | `/api/reviews/product/{productId}` | Submits a product review | ✅ |
+| `GET` | `/api/products/search` | Advanced search & filters (color, material, price...) | ❌ |
+| `GET` | `/api/products/{id}` | Retrieves detailed information of a product | ❌ |
+| `POST` | `/api/products/wishlist/{productId}` | Toggles a product in the user's wishlist | ✅ |
+| `GET` | `/api/cart` | Retrieves the active user's cart | ✅ |
+| `POST` | `/api/cart/items` | Adds a specific product to the cart | ✅ |
+| `POST` | `/api/orders` | Playout a new order (requires checkout email OTP) | ✅ |
+| `GET` | `/api/orders/{orderId}` | Retrieves specific order details | ✅ |
+| `POST` | `/api/products/import-file` | Bulk imports products via Excel spreadsheet | ✅ (Admin) |
+| `POST` | `/api/designs` | Saves user's custom 3D room layouts | ✅ |
+| `POST` | `/api/reviews/product/{productId}` | Submits user review for a product | ✅ |
+| `GET` | `/api/stats/dashboard` | Fetches overall revenue & sales analytics | ✅ (Admin) |
+| `GET` | `/api/health` | System health check (used for Keep-Alive cron) | ❌ |
 
 ---
 

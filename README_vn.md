@@ -119,14 +119,24 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 
 | Method | Endpoint | Mô Tả | Yêu cầu Auth |
 | :--- | :--- | :--- | :---: |
-| `POST` | `/api/auth/login` | Xác thực người dùng và trả về JWT | ❌ |
-| `POST` | `/api/auth/social-login` | Xử lý callback đăng nhập Google OAuth2 | ❌ |
+| `POST` | `/api/auth/register` | Đăng ký tài khoản người dùng mới | ❌ |
+| `POST` | `/api/auth/login` | Đăng nhập tài khoản, trả về mã thông báo JWT | ❌ |
+| `POST` | `/api/auth/social-login` | Đăng nhập nhanh thông qua Google / Facebook OAuth2 | ❌ |
+| `POST` | `/api/auth/forgot-password` | Gửi liên kết đặt lại mật khẩu qua email | ❌ |
+| `POST` | `/api/auth/reset-password` | Xác thực token và cập nhật mật khẩu mới | ❌ |
 | `GET` | `/api/products` | Lấy danh sách sản phẩm phân trang | ❌ |
+| `GET` | `/api/products/search` | Tìm kiếm & lọc sản phẩm nâng cao (màu, chất liệu, giá...) | ❌ |
+| `GET` | `/api/products/{id}` | Lấy chi tiết thông tin một sản phẩm | ❌ |
+| `POST` | `/api/products/wishlist/{productId}` | Thêm hoặc loại bỏ sản phẩm khỏi danh sách yêu thích | ✅ |
+| `GET` | `/api/cart` | Lấy thông tin chi tiết giỏ hàng của người dùng | ✅ |
 | `POST` | `/api/cart/items` | Thêm sản phẩm vào giỏ hàng | ✅ |
-| `POST` | `/api/orders` | Tạo một đơn hàng mới | ✅ |
-| `POST` | `/api/products/import-file` | Import hàng loạt sản phẩm qua Excel (Admin) | ✅ |
-| `POST` | `/api/designs` | Lưu bản vẽ thiết kế phòng 3D | ✅ |
-| `POST` | `/api/reviews/product/{productId}` | Gửi đánh giá cho sản phẩm | ✅ |
+| `POST` | `/api/orders` | Đặt hàng mới (yêu cầu xác thực OTP qua email) | ✅ |
+| `GET` | `/api/orders/{orderId}` | Xem chi tiết thông tin đơn hàng đã mua | ✅ |
+| `POST` | `/api/products/import-file` | Nhập sản phẩm hàng loạt bằng file Excel (Quyền Admin) | ✅ (Admin) |
+| `POST` | `/api/designs` | Lưu trữ bản thiết kế phòng 3D cá nhân | ✅ |
+| `POST` | `/api/reviews/product/{productId}` | Gửi đánh giá và bình luận sản phẩm | ✅ |
+| `GET` | `/api/stats/dashboard` | Lấy số liệu thống kê tổng quan doanh thu & đơn hàng (Admin) | ✅ (Admin) |
+| `GET` | `/api/health` | Kiểm tra trạng thái hoạt động của hệ thống (Keep Alive) | ❌ |
 
 ---
 

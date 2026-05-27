@@ -64,7 +64,7 @@ Beyond the 3D experience, Etalian is a robust, production-ready system featuring
 * ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB) **React 19** & **Vite**
 * ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white) **Tailwind CSS v4** & **Shadcn UI**
 * ![Threejs](https://img.shields.io/badge/Three.js-black?style=flat-square&logo=threedotjs&logoColor=white) **Three.js** / **React Three Fiber**
-* ![Zustand](https://img.shields.io/badge/Zustand-764ABC?style=flat-square&logo=redux&logoColor=white) **Zustand** (State Management)
+* ![Zustand](https://img.shields.io/badge/Zustand-764ABC?style=flat-square&logo=redux&logoColor=white) **Zustand** (Real-time global state management for the 3D Canvas, furniture positions, and room layouts to prevent lag-inducing re-renders)
 
 ---
 
@@ -72,7 +72,7 @@ Beyond the 3D experience, Etalian is a robust, production-ready system featuring
 
 The system utilizes a monolithic backend approach connected to a modern SPA frontend, structured to support future microservices scaling:
 
-1. **Presentation Layer:** React single-page application using Zustand for centralized state, routing via React Router DOM.
+1. **Presentation Layer:** React single-page application. Uses **Zustand** as a global store to coordinate 3D room objects, collision states, and dimensional coordinates across the canvas, sidebars, and control forms, preventing lag-inducing re-renders. Routing is handled via React Router DOM.
 2. **Controller Layer (API):** Spring Boot REST controllers securely handling HTTP requests and delegating to services.
 3. **Service Layer:** Core business logic (Orders, Product Import, Auth). Interacts with Cloudinary for asset streaming and Apache POI for Excel data processing.
 4. **Data Access Layer:** JPA Repositories executing transactional queries to MySQL. Redis is utilized to cache high-traffic endpoints and manage session-like states (OTP, tokens).

@@ -63,8 +63,8 @@ Bên cạnh trải nghiệm 3D đột phá, Etalian còn là một hệ thống 
 **Frontend**
 * ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB) **React 19** & **Vite**
 * ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white) **Tailwind CSS v4** & **Shadcn UI**
-* ![Threejs](https://img.shields.io/badge/Three.js-black?style=flat-square&logo=threedotjs&logoColor=white) **Three.js** / **React Three Fiber**
-* ![Zustand](https://img.shields.io/badge/Zustand-764ABC?style=flat-square&logo=redux&logoColor=white) **Zustand** (Quản lý State)
+* ![Threejs](https://img.shields.io/badge/Three.js-black?style=for-the-badge&logo=threedotjs&logoColor=white) **Three.js** / **React Three Fiber**
+* ![Zustand](https://img.shields.io/badge/Zustand-764ABC?style=flat-square&logo=redux&logoColor=white) **Zustand** (Quản lý trạng thái Canvas 3D, tọa độ và góc xoay của nội thất thời gian thực, ngăn re-render giật lag)
 
 ---
 
@@ -72,7 +72,7 @@ Bên cạnh trải nghiệm 3D đột phá, Etalian còn là một hệ thống 
 
 Hệ thống sử dụng kiến trúc Backend nguyên khối (Monolith) kết nối với Frontend SPA hiện đại, được cấu trúc rõ ràng để sẵn sàng chuyển đổi sang Microservices trong tương lai:
 
-1. **Presentation Layer:** Ứng dụng React trang đơn (SPA) sử dụng Zustand để quản lý State tập trung, định tuyến qua React Router DOM.
+1. **Presentation Layer:** Ứng dụng React trang đơn (SPA). Sử dụng **Zustand** làm bộ lưu trữ dùng chung (Global Store) để điều phối trạng thái phòng 3D, danh sách nội thất, tọa độ định vị và va chạm, giúp tối ưu hóa hiệu năng, tránh re-render đơ chuột khi di chuyển vật thể. Định tuyến thông qua React Router DOM.
 2. **Controller Layer (API):** Các REST Controllers của Spring Boot xử lý an toàn các HTTP requests và ủy quyền cho service.
 3. **Service Layer:** Logic nghiệp vụ cốt lõi (Đơn hàng, Auth, Import SP). Giao tiếp trực tiếp với Cloudinary để stream assets và Apache POI để xử lý data từ Excel.
 4. **Data Access Layer:** Các JPA Repositories thực thi truy vấn tới MySQL. Redis được sử dụng để cache các endpoints truy cập nhiều và quản lý các trạng thái phiên như OTP, Token.

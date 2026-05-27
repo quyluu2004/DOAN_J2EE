@@ -136,7 +136,7 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 | `POST` | `/api/designs` | Lưu trữ bản thiết kế phòng 3D cá nhân | ✅ |
 | `POST` | `/api/reviews/product/{productId}` | Gửi đánh giá và bình luận sản phẩm | ✅ |
 | `GET` | `/api/stats/dashboard` | Lấy số liệu thống kê tổng quan doanh thu & đơn hàng (Admin) | ✅ (Admin) |
-| `GET` | `/api/health` | Kiểm tra trạng thái hoạt động của hệ thống (Keep Alive) | ❌ |
+
 
 ---
 

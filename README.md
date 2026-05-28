@@ -142,9 +142,7 @@ Below are some of the core endpoints implemented in this project:
 
 ## 📸 Key Features & Showcases
 
-> 💡 **NOTE FOR YOU (USER):**
-> 1. **Video/GIF:** Use an animated `.gif` or a short video for the **3D Room Designer** to properly showcase the drag-and-drop and spatial interaction. Place the file in `docs/screenshots/`.
-> 2. **Static Images:** Use high-quality screenshots (`.png`/`.jpg`) for the **Storefront** and **Admin Dashboard** to highlight UI/UX and functionalities. Place the files in `docs/screenshots/`.
+
 
 ### 1. Interactive 3D Room Designer
 - **What it does:** Allows users to dynamically drag, drop, and rotate 3D furniture models (`.gltf`/`.glb`) in a virtual room using `react-three/fiber` and the Rapier physics engine.

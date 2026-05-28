@@ -168,8 +168,9 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
   2. Nhấn biểu tượng "Trái tim" để lưu vào Wishlist (cần đăng nhập).
   3. Thêm vào Giỏ hàng (Cart) và tiến hành Thanh toán (Checkout) điền thông tin giao hàng.
   4. Theo dõi tiến độ giao hàng tại trang Hồ sơ cá nhân (Profile).
-- 🖼️ **Hình Ảnh Giao Diện:** *(USER: Thay thế file `storefront.png` trong `docs/screenshots/` bằng ảnh chụp thật đẹp trang Shop của bạn)*
-![Giao diện Cửa Hàng](docs/screenshots/storefront.png)
+- 🖼️ **Hình Ảnh Giao Diện:**
+<img width="937" height="896" alt="Ảnh chụp màn hình 2026-05-28 110321" src="https://github.com/user-attachments/assets/e5ec5ab8-1350-4294-ae97-3d5271981f23" />
+<img width="1919" height="1079" alt="Ảnh chụp màn hình 2026-05-28 110201" src="https://github.com/user-attachments/assets/0cbc7999-64f7-40d3-9f89-5828311ef2b4" />
 
 ### 3. Hệ Thống Quản Trị Trung Tâm (Admin Dashboard & CMS)
 - **Tính năng:** Cung cấp bảng điều khiển tập trung với các biểu đồ phân tích thời gian thực (Recharts), quản lý toàn diện (CRUD) và xử lý dữ liệu phức tạp (nhập file Excel, quản lý file 3D).
@@ -181,8 +182,8 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 1. **Bảng Điều Khiển Phân Tích (Analytics):**
    * **Tính năng:** Theo dõi doanh thu thời gian thực, trạng thái đơn hàng và sản phẩm bán chạy nhất qua các biểu đồ tương tác.
    * 📝 **Hướng dẫn sử dụng:** Đăng nhập tài khoản Admin -> Xem trang Dashboard mặc định -> Rê chuột vào các biểu đồ Recharts để xem số liệu doanh thu chi tiết.
-   * 🖼️ **Ảnh chụp:** *(USER: Chèn ảnh `admin-dashboard.png` của bạn vào đây)*
-   * ![Dashboard Analytics](docs/screenshots/admin-dashboard.png)
+    * 🖼️ **Ảnh chụp:**
+<img width="1869" height="1071" alt="Ảnh chụp màn hình 2026-05-28 115335" src="https://github.com/user-attachments/assets/ae158e85-9f04-4671-9070-35a81499cf39" />
 
 2. **Quản Lý Sản Phẩm & Tài Nguyên 3D Tiên Tiến:**
    * **Tính năng:** Kiểm soát toàn bộ danh mục, tồn kho, thao tác file Excel và quản lý file 3D.
@@ -191,18 +192,23 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
      2. **Thêm Sản phẩm:** Vào menu *Products* -> Thêm mới -> Điền thông tin và chọn Color/Material đã tạo.
      3. **Tích hợp 3D:** Trong trang chỉnh sửa sản phẩm, upload file `.glb/.gltf` qua widget Cloudinary. Sản phẩm này sẽ tự động xuất hiện trong công cụ vẽ 3D ở trang chủ.
      4. **Nhập liệu hàng loạt:** Nhấn nút *Import Excel*, chọn file `.xlsx`. Hệ thống sẽ tự động quét và thêm hàng trăm sản phẩm cùng lúc.
-   * 🎬 **Video/GIF:** *(USER: Chèn `admin-products.gif` quay cảnh thêm sản phẩm và upload file 3D vào đây)*
-   * ![Product Management](docs/screenshots/admin-products.gif)
+    * 🎬 **Video/GIF:**
+    
+https://github.com/user-attachments/assets/2cf1339e-2a0e-4d25-9382-30936eccfe35
+
+https://github.com/user-attachments/assets/1d42c883-c3fe-442f-b0ea-0150a9e3afd9
 
 3. **Xử Lý Đơn Hàng & Xuất Hóa Đơn:**
    * **Tính năng:** Quản lý vòng đời đơn hàng và thanh toán tự động.
    * 📝 **Hướng dẫn sử dụng:** Vào menu *Orders* -> Bấm vào một đơn hàng 'Pending' để xem chi tiết -> Đổi trạng thái sang 'Processing' -> Bấm nút **Xuất Hóa Đơn** (Generate Invoice) để tải file PDF tự động -> Cập nhật sang 'Shipped' khi đã giao cho vận chuyển.
-   * 🖼️ **Ảnh chụp:** *(USER: Chèn ảnh `admin-orders.png` của bạn vào đây)*
-   * ![Order Management](docs/screenshots/admin-orders.png)
+    * 🖼️ **Ảnh chụp:**
+    <img width="1919" height="1079" alt="Ảnh chụp màn hình 2026-05-28 135653" src="https://github.com/user-attachments/assets/c43c8365-6360-4d40-9696-ad406a9a8810" />
 
 4. **Quản Lý Người Dùng & Phân Quyền (RBAC):**
    * **Tính năng:** Quản lý tài khoản khách hàng và bảo mật hệ thống.
-   * 📝 **Hướng dẫn sử dụng:** Vào menu *Users* -> Xem danh sách tài khoản -> Dùng nút gạt (toggle) để khóa/mở khóa các tài khoản đáng ngờ -> Phân quyền 'Admin' hoặc 'User' cho từng người.
+    * 📝 **Hướng dẫn sử dụng:** Vào menu *Users* -> Xem danh sách tài khoản -> Dùng nút gạt (toggle) để khóa/mở khóa các tài khoản đáng ngờ -> Phân quyền 'Admin' hoặc 'User' cho từng người.
+
+<img width="1905" height="866" alt="Ảnh chụp màn hình 2026-05-28 135839" src="https://github.com/user-attachments/assets/b258babf-8234-499b-a382-efd715617c48" />
 
 ---
 

@@ -157,7 +157,7 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
   5. Lưu lại thiết kế phòng vào tài khoản cá nhân.
 - 🎬 **Video Demo:**
   
-  <video src="docs/screenshots/3d-demo.mp4" width="100%" controls></video>
+  https://github.com/user-attachments/assets/8c0e36b9-77d6-441c-8c4f-6e356c7013f9
 
 
 ### 2. Trải Nghiệm Mua Sắm Xuyên Suốt

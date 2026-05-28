@@ -174,8 +174,8 @@ https://github.com/user-attachments/assets/8c0e36b9-77d6-441c-8c4f-6e356c7013f9
   2. Click the "Heart" icon to save items to your Wishlist (requires login).
   3. Add items to your Cart and proceed to checkout to enter shipping details.
   4. Track your order status from your User Profile page.
-- 🖼️ **UI Screenshot:** *(USER: Replace `storefront.png` in `docs/screenshots/` with a beautiful screenshot of your Shop or Product Detail page)*
-![Storefront UI](docs/screenshots/storefront.png)
+<img width="937" height="896" alt="Ảnh chụp màn hình 2026-05-28 110321" src="https://github.com/user-attachments/assets/e5ec5ab8-1350-4294-ae97-3d5271981f23" />
+<img width="1919" height="1079" alt="Ảnh chụp màn hình 2026-05-28 110201" src="https://github.com/user-attachments/assets/0cbc7999-64f7-40d3-9f89-5828311ef2b4" />
 
 ### 3. Comprehensive Admin Dashboard & Content Management (CMS)
 - **What it does:** A centralized control panel providing real-time interactive analytics via Recharts, full CRUD management, and complex data handling (bulk imports, 3D assets).

@@ -211,14 +211,15 @@ https://github.com/user-attachments/assets/1d42c883-c3fe-442f-b0ea-0150a9e3afd9
 3. **Order Fulfillment & Invoice Generation:**
    * **What it does:** Manages customer orders and automated billing.
    * 📝 **How to Use:** Go to *Orders* -> Click on a Pending order to view details -> Update status to 'Processing' -> Click the **Generate Invoice** button to download the automated PDF -> Update to 'Shipped' when handled.
-   * 🖼️ **Screenshot:** *(USER: Insert your `admin-orders.png` here)*
-   * ![Order Management](docs/screenshots/admin-orders.png)
+   <img width="1919" height="1079" alt="Ảnh chụp màn hình 2026-05-28 135653" src="https://github.com/user-attachments/assets/c43c8365-6360-4d40-9696-ad406a9a8810" />
+
 
 4. **User & Access Control (RBAC):**
    * **What it does:** Manages system security and staff access.
    * 📝 **How to Use:** Go to *Users* -> View all registered accounts -> Use the toggle to lock/unlock suspicious accounts -> Assign 'Admin' or 'User' roles to specific emails.
 
----
+<img width="1905" height="866" alt="Ảnh chụp màn hình 2026-05-28 135839" src="https://github.com/user-attachments/assets/b258babf-8234-499b-a382-efd715617c48" />
+
 
 ## Getting Started
 

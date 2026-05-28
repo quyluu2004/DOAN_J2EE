@@ -185,7 +185,7 @@ https://github.com/user-attachments/assets/8c0e36b9-77d6-441c-8c4f-6e356c7013f9
 1. **Analytics & Dashboard:**
    * **What it does:** Displays real-time revenue, order status distribution, and top-selling products using interactive charts.
    * 📝 **How to Use:** Login as Admin -> View the default Dashboard page -> Hover over the charts to see exact revenue numbers -> Use the date filters to analyze specific periods.
-   * 🖼️ **Screenshot:** *(USER: Insert your `admin-dashboard.png` here)*
+ 
 <img width="1869" height="1071" alt="Ảnh chụp màn hình 2026-05-28 115335" src="https://github.com/user-attachments/assets/ae158e85-9f04-4671-9070-35a81499cf39" />
 
 

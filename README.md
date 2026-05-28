@@ -188,7 +188,8 @@ https://github.com/user-attachments/assets/8c0e36b9-77d6-441c-8c4f-6e356c7013f9
    * **What it does:** Displays real-time revenue, order status distribution, and top-selling products using interactive charts.
    * 📝 **How to Use:** Login as Admin -> View the default Dashboard page -> Hover over the charts to see exact revenue numbers -> Use the date filters to analyze specific periods.
    * 🖼️ **Screenshot:** *(USER: Insert your `admin-dashboard.png` here)*
-   * ![Dashboard Analytics](docs/screenshots/admin-dashboard.png)
+<img width="1869" height="1071" alt="Ảnh chụp màn hình 2026-05-28 115335" src="https://github.com/user-attachments/assets/ae158e85-9f04-4671-9070-35a81499cf39" />
+
 
 2. **Advanced Product & Asset Management:**
    * **What it does:** Complete control over catalog, inventory, Excel bulk operations, and 3D assets.
@@ -200,6 +201,10 @@ https://github.com/user-attachments/assets/8c0e36b9-77d6-441c-8c4f-6e356c7013f9
 
 
 https://github.com/user-attachments/assets/2cf1339e-2a0e-4d25-9382-30936eccfe35
+
+https://github.com/user-attachments/assets/1d42c883-c3fe-442f-b0ea-0150a9e3afd9
+
+
 
 
 

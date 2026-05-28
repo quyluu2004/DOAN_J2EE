@@ -197,8 +197,11 @@ https://github.com/user-attachments/assets/8c0e36b9-77d6-441c-8c4f-6e356c7013f9
      2. **Single Product:** Go to *Products* -> Add New. Fill in details, select the pre-defined Color/Material.
      3. **3D Integration:** While editing a product, upload a `.glb`/`.gltf` file via the Cloudinary widget. This product will instantly sync with the Storefront's 3D Room Designer.
      4. **Bulk Import:** Click *Import Excel*, upload your `.xlsx` file. The system will automatically parse and insert hundreds of products.
-   * 🎬 **Video/GIF:** *(USER: Insert `admin-products.gif` showing the creation of a product and uploading a 3D model here)*
-   * ![Product Management](docs/screenshots/admin-products.gif)
+
+
+https://github.com/user-attachments/assets/2cf1339e-2a0e-4d25-9382-30936eccfe35
+
+
 
 3. **Order Fulfillment & Invoice Generation:**
    * **What it does:** Manages customer orders and automated billing.

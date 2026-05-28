@@ -142,9 +142,7 @@ Dưới đây là một số API cốt lõi được triển khai trong dự án
 
 ## 📸 Tính Năng Nổi Bật & Demo Thực Tế (Key Features & Showcases)
 
-> 💡 **LƯU Ý DÀNH CHO BẠN (USER):**
-> 1. **Video/GIF:** Sử dụng định dạng ảnh động `.gif` hoặc video ngắn gọn cho phần **Thiết Kế 3D** để lột tả được tính năng kéo/thả, xoay mô hình không gian. Đặt file vào `docs/screenshots/`.
-> 2. **Hình ảnh (Image):** Sử dụng ảnh chụp màn hình rõ nét (`.png`/`.jpg`) cho phần **Cửa Hàng** và **Admin Dashboard** để thể hiện tư duy thiết kế UI/UX và chức năng. Đặt file vào `docs/screenshots/`.
+
 
 ### 1. Công Cụ Thiết Kế Phòng 3D Tương Tác
 - **Tính năng:** Cho phép người dùng kéo, thả, và xoay các mô hình nội thất 3D (`.gltf`/`.glb`) trong không gian ảo bằng `react-three/fiber` và engine vật lý Rapier.

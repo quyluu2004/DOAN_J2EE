@@ -142,9 +142,7 @@ Below are some of the core endpoints implemented in this project:
 
 ## 📸 Key Features & Showcases
 
-> 💡 **NOTE FOR YOU (USER):**
-> 1. **Video/GIF:** Use an animated `.gif` or a short video for the **3D Room Designer** to properly showcase the drag-and-drop and spatial interaction. Place the file in `docs/screenshots/`.
-> 2. **Static Images:** Use high-quality screenshots (`.png`/`.jpg`) for the **Storefront** and **Admin Dashboard** to highlight UI/UX and functionalities. Place the files in `docs/screenshots/`.
+
 
 ### 1. Interactive 3D Room Designer
 - **What it does:** Allows users to dynamically drag, drop, and rotate 3D furniture models (`.gltf`/`.glb`) in a virtual room using `react-three/fiber` and the Rapier physics engine.
@@ -187,7 +185,7 @@ https://github.com/user-attachments/assets/8c0e36b9-77d6-441c-8c4f-6e356c7013f9
 1. **Analytics & Dashboard:**
    * **What it does:** Displays real-time revenue, order status distribution, and top-selling products using interactive charts.
    * 📝 **How to Use:** Login as Admin -> View the default Dashboard page -> Hover over the charts to see exact revenue numbers -> Use the date filters to analyze specific periods.
-   * 🖼️ **Screenshot:** *(USER: Insert your `admin-dashboard.png` here)*
+ 
 <img width="1869" height="1071" alt="Ảnh chụp màn hình 2026-05-28 115335" src="https://github.com/user-attachments/assets/ae158e85-9f04-4671-9070-35a81499cf39" />
 
 

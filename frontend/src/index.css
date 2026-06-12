@@ -184,7 +184,51 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-size: 1rem; /* 16px minimum for body text readability */
+    line-height: 1.6; /* Optimal 1.4-1.6 range */
+    text-align: left; /* Left alignment is most readable */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground font-serif tracking-tight;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  h1 {
+    font-size: clamp(2.25rem, 5vw, 4rem); /* Responsive heading typography */
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  h3 {
+    font-size: clamp(1.5rem, 3vw, 1.875rem);
+  }
+
+  h4 {
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  }
+
+  p {
+    max-width: 75ch; /* Optimal line length of 60 to 80 characters */
+    line-height: 1.6;
+    text-align: left;
+    @apply font-sans;
+  }
+
+  a, button {
+    @apply transition-colors duration-200;
   }
 }
